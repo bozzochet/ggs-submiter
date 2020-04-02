@@ -1,0 +1,42 @@
+##########################
+# Basic simulation setup #
+##########################
+
+##### Setup the particle generator #####
+/GGS/generatorActions/set gun               # Use the GGS gun generator
+/GGS/generatorActions/gun/particle geantino # Shoot geantinos...
+/GGS/generatorActions/gun/energy 10 GeV     # ... of 10 GeV ...
+/GGS/generatorActions/gun/minTheta 0 deg    # ... with a polar angle between 0 ...
+/GGS/generatorActions/gun/maxTheta 90 deg   # ... and 90 deg ...
+/GGS/generatorActions/gun/minPhi 0 deg      # ... and an azimuthal angle between 0 ...
+/GGS/generatorActions/gun/maxPhi 360 deg    # ... and 360 deg ...
+/GGS/generatorActions/gun/sphereCenter 0 0 -36.6 cm       # ... using a sphere with center in (0,0,-36.6) = Calo center
+/GGS/generatorActions/gun/sphereCapPosition 0 0 300 cm    # ... with radius = 300
+/GGS/generatorActions/gun/sphereCapExtension 180          # for an angle of 90 deg = hemisphere
+/GGS/generatorActions/gun/checkAcceptance true            #Turn on the acceptance check
+
+
+##### Setup the sensitive detectors #####
+##### No sensitive detectors for a purely geometrical simulation
+#/GGS/scoring/addGGSIntHitSD Crystal # Add integrated hits for LYSO crystals
+#/GGS/scoring/addGGSIntHitSD siLayer # Add integrated hits for lateral STK Si layers
+#/GGS/scoring/siLayer.GGSIntHitSD/storeParticleHits # Store also particle hits
+#/GGS/scoring/addGGSIntHitSD topSiLayer # Add integrated hits for top STK Si layers
+#/GGS/scoring/topSiLayer.GGSIntHitSD/storeParticleHits # Store also particle hits
+#/GGS/scoring/addGGSIntHitSD top_psd # Add integrated hits for top PSD scintillating layer
+#/GGS/scoring/top_psd.GGSIntHitSD/storeParticleHits # Store also particle hits
+#/GGS/scoring/addGGSIntHitSD side_psd # Add integrated hits for lateral PSD scintillating layer
+#/GGS/scoring/top_psd.GGSIntHitSD/storeParticleHits # Store also particle hits
+
+
+##### Setup the output on ROOT file #####
+#/GGS/userActions/addGGSHitsAction      # Save hits
+/GGS/userActions/addGGSMCTruthAction    # Save MC truth
+/GGS/rndmPrintModulo 100000
+
+##### Switch on acceptance check #####
+/GGS/generatorActions/gun/checkAcceptance true
+
+##### Shoot N particles #####
+#/run/beamOn 10000000
+/run/beamOn 10000

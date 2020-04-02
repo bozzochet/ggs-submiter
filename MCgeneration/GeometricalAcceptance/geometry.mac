@@ -1,0 +1,7 @@
+#### Set the PSD type to tiles
+/herd/geometry/parametric/psd/type tiles
+#### Activate all the sub-detectors
+/herd/geometry/parametric/general/tracker stk
+/herd/geometry/parametric/general/antiCoincidence psd
+/herd/geometry/parametric/general/calorimeter calo
+/herd/geometry/parametric/general/chargeID scd
