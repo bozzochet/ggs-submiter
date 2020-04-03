@@ -1,0 +1,31 @@
+Plugin HerdDataProviders
+Plugin HerdAlgorithms
+Plugin RootPersistence
+Plugin HerdDataObjectsDict
+
+DataProvider GGSDataProvider ggsDataProvider geantino_sphere.small.root
+  AttachToStore   evStore    event
+  AttachToStore   globStore  global
+
+Persistence RootPersistenceService rootPersistence  geantino_sphere.small.dig.root
+  Book mcTruth        event evStore
+  #Book caloHitsMC     event  evStore
+  #Book caloGeoParams global globStore
+  #Book stkHitsCollMC      event  evStore
+  #Book stkGeoParamsColl global globStore
+  #Book scdHitsCollMC      event  evStore
+  #Book scdGeoParamsColl global globStore
+  #Book psdHitsCollMC      event  evStore
+  #Book psdGeoParamsColl global globStore
+
+EventLoop
+  #Algo StkGeometricDigitizerAlgo stkGeomDig
+  #  Set pitch 0.0150
+  #Algo ScdGeometricDigitizerAlgo scdGeomDig
+  #  Set pitch 0.0150
+# Simulate 4cm x 4cm tiles on top and sides
+  #Algo PsdGeometricDigitizerAlgo psdGeomDig
+  #  Set topAggrFactorX  4
+  #  Set topAggrFactorY  4
+  #  Set latAggrFactorXY 4
+  #  Set latAggrFactorZ  4

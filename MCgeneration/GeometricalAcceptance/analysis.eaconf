@@ -1,0 +1,15 @@
+Plugin RootDataProvider
+Plugin HerdDataObjectsDict
+Plugin CommonAlgo
+Plugin RootPersistence
+
+DataProvider RootDataProvider rootProvider geantino_sphere.dig.root
+  AttachToStore   evStore    event
+  AttachToStore   globStore  global
+
+Persistence RootPersistenceService rootPersistence geantino_sphere.analyzed.root
+   Book h*       global globStore
+
+EventLoop 0 1000
+  Algo MCtruthHisto mctruthhisto
+

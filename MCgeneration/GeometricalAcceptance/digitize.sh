@@ -1,0 +1,1 @@
+EventAnalysis -c digitizeMC.eaconf
