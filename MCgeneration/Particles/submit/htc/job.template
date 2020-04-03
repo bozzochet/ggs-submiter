@@ -1,0 +1,39 @@
+#!/bin/bash
+
+WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Particles/
+SUBMITDIR=${WORKDIR}/submit/htc
+
+source /storage/gpfs_ams/ams/users/vvagelli/HERD/HerdSoftware.install/setherd.sh
+cd ${SUBMITDIR}
+
+HOME=`pwd`
+UNIQUE="$$_$RANDOM"
+SANDBOX=/data/$UNIQUE
+mkdir -vp $SANDBOX
+cd $SANDBOX
+pwd
+
+PENNY=GGSPenny 
+GEOMETRY=_GEOMETRY_
+DATACARD=_DATACARD_
+GEODATACARD=_GEODATACARD_
+OUTPUT=_OUTPUT_
+SEED1=_SEED1_
+SEED2=_SEED2_
+
+cp -v ${DATACARD} ${OUTPUT}.datacard
+cp -v ${GEODATACARD} ${OUTPUT}.geo
+
+# Launch the simulation
+EXEC="$PENNY -d $DATACARD -g $GEOMETRY -gd $GEODATACARD -ro $OUTPUT --seed1 ${SEED1} --seed2 ${SEED2}"
+
+CMD="time ${EXEC}"
+echo ${CMD}
+${CMD}
+
+ls -altrh
+cd $HOME
+pwd
+rm -frv $SANDBOX
+
+exit

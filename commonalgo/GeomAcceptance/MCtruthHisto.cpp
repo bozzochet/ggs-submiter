@@ -43,7 +43,7 @@ bool MCtruthHisto::Initialize() {
 
   // Create the histogram
   _hgencthetaphi = std::make_shared<TH2F>("hgencthetaphi","MCtruth Generation;cos(#theta);Phi (rad)",1000,-1,1,100,-TMath::Pi(),+TMath::Pi());
-  _hgencoo       = std::make_shared<TH3F>("hgencoo",      "MCtruth Generation;X(cm);Y(cm);Z(cm)",    1000,-500,500,1000,-500,500,1000,-500,500);
+  _hgencoo       = std::make_shared<TH3F>("hgencoo",      "MCtruth Generation;X(cm);Y(cm);Z(cm)",    100,-500,500,100,-500,500,100,-500,500);
   //_hgencoo       = std::make_shared<TH2F>("hgencoo",      "MCtruth Generation;X(cm);Y(cm)",    1000,-500,500,1000,-500,500);
   
   return true;
