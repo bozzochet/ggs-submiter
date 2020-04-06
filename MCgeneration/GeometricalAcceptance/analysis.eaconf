@@ -1,15 +1,24 @@
-Plugin RootDataProvider
+Plugin HerdDataProviders
+#Plugin RootDataProvider
 Plugin HerdDataObjectsDict
 Plugin CommonAlgo
 Plugin RootPersistence
+Plugin HerdAlgorithms
 
-DataProvider RootDataProvider rootProvider geantino_sphere.dig.root
+#DataProvider RootDataProvider rootProvider geantino_sphere.dig.root
+DataProvider GGSDataProvider ggsDataProvider geantino_sphere.root
+#DataProvider GGSDataProvider ggsDataProvider geantino_sphere.small.root
   AttachToStore   evStore    event
   AttachToStore   globStore  global
 
 Persistence RootPersistenceService rootPersistence geantino_sphere.analyzed.root
    Book h*       global globStore
+   Book g*       global globStore
 
-EventLoop 0 1000
+EventLoop 0 10000
+
+  #Compute the variables for Calo acceptance check
+  Algo CaloTrackInfoAlgo caloTrackInfoAlgo
+
   Algo MCtruthHisto mctruthhisto
 

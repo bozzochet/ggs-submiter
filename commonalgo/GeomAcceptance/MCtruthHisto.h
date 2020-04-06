@@ -10,11 +10,19 @@
 
 #include "algorithm/Algorithm.h"
 
+// HerdSoftware headers
+#include "dataobjects/MCTruth.h"
+#include "dataobjects/CaloHits.h"
+#include "dataobjects/TrackInfoForCalo.h"
+
 using namespace EA;
 
 class TH1F;
 class TH2F;
 class TH3F;
+class TGraph;
+class TGraph2D;
+class TVector3;
 
 /*! @brief An algorithm that plots the distribution of energy deposits in the calorimeter.
  *
@@ -71,10 +79,17 @@ private:
   // std::shared_ptr<TH1F> _histo; // Objects to be pushed on global store must be held by a shared_ptr
   std::shared_ptr<TH2F> _hgencthetaphi;
   std::shared_ptr<TH3F> _hgencoo;
+  std::shared_ptr<TGraph2D> _ggencoo;
+  std::shared_ptr<TGraph2D> _gcaloentry;
+  std::shared_ptr<TGraph2D> _gcaloexit;
+  std::shared_ptr<TH1F>_hshowerlength[Herd::RefFrame::NDirections][Herd::RefFrame::NDirections];
+
   //std::shared_ptr<TH2F> _hgencoo;
 
   // Utility variables
   observer_ptr<EventDataStore> _evStore; // Pointer to the event data store
+
+  TVector3 InterceptX(double, const TVector3 &, const TVector3 &) const;
 };
 
 #endif /* MCTRUTHHISTO_H_ */
