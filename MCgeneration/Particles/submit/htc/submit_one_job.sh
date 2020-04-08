@@ -2,7 +2,7 @@
 #
 USER=`whoami`
 
-NAME="protons_sphere_10GeV_10000GeV_E-1"
+NAME="electrons_sphere_1000GeV"
 
 WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Particles/
 SUBMITDIR=${WORKDIR}/submit/htc
@@ -31,7 +31,7 @@ rm -fv ${LOGFILE}
 
 GEOMETRY=${HERDINSTALL}/plugin/libHerdMCParametricGeo.so
 GEODATACARD=${WORKDIR}/geometry.mac
-DATACARD=${WORKDIR}/protons.mac
+DATACARD=${WORKDIR}/electrons_sphere_1000GeV.mac
 OUTPUT=${OUTDIR}/${NAME}_${ii}.root
 SEED1="$RANDOM"
 SEED2="$RANDOM"

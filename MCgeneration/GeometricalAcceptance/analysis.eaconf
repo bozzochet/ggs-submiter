@@ -7,7 +7,7 @@ Plugin HerdAlgorithms
 
 #DataProvider RootDataProvider rootProvider geantino_sphere.dig.root
 DataProvider GGSDataProvider ggsDataProvider geantino_sphere.root
-#DataProvider GGSDataProvider ggsDataProvider geantino_sphere.small.root
+
   AttachToStore   evStore    event
   AttachToStore   globStore  global
 
@@ -15,10 +15,19 @@ Persistence RootPersistenceService rootPersistence geantino_sphere.analyzed.root
    Book h*       global globStore
    Book g*       global globStore
 
-EventLoop 0 10000
+Persistence TreePersistence treePersistence tree.root
+   Set BookMCtruthProcess true
+
+EventLoop 0 100
 
   #Compute the variables for Calo acceptance check
   Algo CaloTrackInfoAlgo caloTrackInfoAlgo
 
-  Algo MCtruthHisto mctruthhisto
+  #Compute the variables for St acceptance check
+  Algo StkIntersectionsAlgo stkTrackInfoAlgo
 
+  Algo MCtruthProcessStore MCtruthProcessStore
+
+
+  Algo MCtruthHisto mctruthhisto
+       Set minstkintersections 0

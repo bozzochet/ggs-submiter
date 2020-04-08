@@ -13,7 +13,7 @@ add_library(CommonAlgo  SHARED #CaloEDepCut.cpp
                         #StkPrimaryHitsAlgo.cpp
                         #StkStripEDepHisto.cpp
                         #ScdStripEDepHisto.cpp
-			MCtruthProcess.cpp
+			TreePersistence.cpp
            )
 
 target_link_libraries(CommonAlgo EACore EAData EAAlgorithm EAUtils EAAnalysis HerdDataObjects ${ROOT_LIBRARIES})

@@ -1,12 +1,5 @@
-/*
- * CaloEDepHisto.h
- *
- *  Created on: 11 Feb 2019
- *      Author: Nicola Mori
- */
-
-#ifndef MCTRUTHHISTO_H_
-#define MCTRUTHHISTO_H_
+#ifndef MCTRUTHPROCESS_H_
+#define MCTRUTHPROCESS_H_
 
 #include "algorithm/Algorithm.h"
 
@@ -14,6 +7,7 @@
 #include "dataobjects/MCTruth.h"
 #include "dataobjects/CaloHits.h"
 #include "dataobjects/TrackInfoForCalo.h"
+#include "dataobjects/StkIntersections.h"
 
 using namespace EA;
 
@@ -23,6 +17,7 @@ class TH3F;
 class TGraph;
 class TGraph2D;
 class TVector3;
+class MCtruthProcessStore;
 
 /*! @brief An algorithm that plots the distribution of energy deposits in the calorimeter.
  *
@@ -45,13 +40,13 @@ class TVector3;
  *  axis       | std::vector<float> | {100, 0, 100} | The parameters of the X axis {nBins, minEDep, maEDep} [energy
  * deposits in GeV].
  */
-class MCtruthHisto : public Algorithm {
+class MCtruthProcess : public Algorithm {
 public:
   /*! @brief Constructor.
    *
    * @param name The name of the algorithm object.
    */
-  MCtruthHisto(const std::string &name);
+  MCtruthProcess(const std::string &name);
 
   /*! @brief Initializes the histogram.
    *
@@ -72,17 +67,24 @@ public:
   bool Finalize();
 
 private:
+
+  //Store pointer
+  std::shared_ptr<MCtruthProcessStore> _processstore;
   // Algorithm parameters
-  //std::vector<float> _axis;
+  int _minstkintersections;
 
   // Created global objects
   // std::shared_ptr<TH1F> _histo; // Objects to be pushed on global store must be held by a shared_ptr
+  std::shared_ptr<TGraph> _gdiscarded;
+  std::shared_ptr<TH1F> _hstkintersections;
   std::shared_ptr<TH2F> _hgencthetaphi;
   std::shared_ptr<TH3F> _hgencoo;
   std::shared_ptr<TGraph2D> _ggencoo;
   std::shared_ptr<TGraph2D> _gcaloentry;
   std::shared_ptr<TGraph2D> _gcaloexit;
+  std::shared_ptr<TH2F>_hcaloentryexitdir;
   std::shared_ptr<TH1F>_hshowerlength[Herd::RefFrame::NDirections][Herd::RefFrame::NDirections];
+  std::shared_ptr<TH1F>_hshowerlengthall;
 
   //std::shared_ptr<TH2F> _hgencoo;
 
@@ -92,4 +94,53 @@ private:
   TVector3 InterceptX(double, const TVector3 &, const TVector3 &) const;
 };
 
-#endif /* MCTRUTHHISTO_H_ */
+class MCtruthProcessStore : public Algorithm {
+public:
+  /*! @brief Constructor.
+   *
+   * @param name The name of the algorithm object.
+   */
+  MCtruthProcessStore(const std::string &name);
+
+  /*! @brief Initializes the histogram.
+   *
+   * @return true if initialization is done without errors, false otherwise.
+   */
+  bool Initialize();
+
+  /*! @brief Fills the histogram.
+   *
+   * @return true if no error occurs during processing, false otherwise.
+   */
+  bool Process();
+
+  /*! @brief Puts the histogram on the event store.
+   *
+   * @return true if no error occurs during finalization, false otherwise.
+   */
+  bool Finalize();
+
+  bool Reset();
+
+  int mcNdiscarded;
+  float mcDir[3];
+  float mcCoo[3];
+  float mcMom;
+  float mcPhi;
+  float mcCtheta;
+  int mcStkintersections;
+  float mcTracklengthcalox0;
+  float mcTrackcaloentry[3];
+  float mcTrackcaloexit[3];
+  int mcTrackcaloentryplane;
+  int mcTrackcaloexitplane;
+
+private:
+  // Algorithm parameters
+
+  // Created global objects
+
+  // Utility variables
+};
+
+#endif /* MCTRUTHPROCESS_H_ */
