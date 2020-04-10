@@ -100,8 +100,17 @@ add_subdirectory(commonalgo)
 #endif()
 
 
-set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "commonalgo/GeomAcceptance/MCtruthProcess.h")
-set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "commonalgo/TreePersistence/TreePersistence.h")
+#set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "commonalgo/GeomAcceptance/MCtruthProcess.h")
+#set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "commonalgo/TreePersistence/TreePersistence.h")
+#set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "commonalgo/GeomAcceptance/CaloGeomFidVolume.h")
+
+set(MY_PUBLIC_HEADERS
+  commonalgo/GeomAcceptance/MCtruthProcess.h
+  commonalgo/TreePersistence/TreePersistence.h
+  commonalgo/GeomAcceptance/CaloGeomFidVolume.h
+)
+
+set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")
 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
 INSTALL(TARGETS CommonAlgo 

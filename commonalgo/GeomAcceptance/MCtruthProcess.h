@@ -8,6 +8,7 @@
 #include "dataobjects/CaloHits.h"
 #include "dataobjects/TrackInfoForCalo.h"
 #include "dataobjects/StkIntersections.h"
+#include "dataobjects/CaloGeoParams.h"
 
 using namespace EA;
 
@@ -72,6 +73,7 @@ private:
   std::shared_ptr<MCtruthProcessStore> _processstore;
   // Algorithm parameters
   int _minstkintersections;
+  bool _printcalocubemap;
 
   // Created global objects
   // std::shared_ptr<TH1F> _histo; // Objects to be pushed on global store must be held by a shared_ptr
@@ -89,6 +91,8 @@ private:
   //std::shared_ptr<TH2F> _hgencoo;
 
   // Utility variables
+    void PrintCaloCubeMap();
+
   observer_ptr<EventDataStore> _evStore; // Pointer to the event data store
 
   TVector3 InterceptX(double, const TVector3 &, const TVector3 &) const;
@@ -96,30 +100,10 @@ private:
 
 class MCtruthProcessStore : public Algorithm {
 public:
-  /*! @brief Constructor.
-   *
-   * @param name The name of the algorithm object.
-   */
   MCtruthProcessStore(const std::string &name);
-
-  /*! @brief Initializes the histogram.
-   *
-   * @return true if initialization is done without errors, false otherwise.
-   */
   bool Initialize();
-
-  /*! @brief Fills the histogram.
-   *
-   * @return true if no error occurs during processing, false otherwise.
-   */
   bool Process();
-
-  /*! @brief Puts the histogram on the event store.
-   *
-   * @return true if no error occurs during finalization, false otherwise.
-   */
   bool Finalize();
-
   bool Reset();
 
   int mcNdiscarded;
@@ -136,11 +120,7 @@ public:
   int mcTrackcaloexitplane;
 
 private:
-  // Algorithm parameters
-
-  // Created global objects
-
-  // Utility variables
+  
 };
 
 #endif /* MCTRUTHPROCESS_H_ */

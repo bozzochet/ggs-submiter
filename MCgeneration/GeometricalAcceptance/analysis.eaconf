@@ -17,8 +17,9 @@ Persistence RootPersistenceService rootPersistence geantino_sphere.analyzed.root
 
 Persistence TreePersistence treePersistence tree.root
    Set BookMCtruthProcess true
+   Set BookCaloGeomFidVolume true
 
-EventLoop 0 100
+EventLoop 100000
 
   #Compute the variables for Calo acceptance check
   Algo CaloTrackInfoAlgo caloTrackInfoAlgo
@@ -26,8 +27,13 @@ EventLoop 0 100
   #Compute the variables for St acceptance check
   Algo StkIntersectionsAlgo stkTrackInfoAlgo
 
+  Algo CaloGeomFidVolumeAlgo caloGeomFidVolumeAlgo
+       Set filterenable false
+  Algo CaloGeomFidVolumeStore caloGeomFidVolumeStore
+
+
   Algo MCtruthProcessStore MCtruthProcessStore
 
-
-  Algo MCtruthHisto mctruthhisto
+  Algo MCtruthProcess mctruthprocess
        Set minstkintersections 0
+       Set printcalocubemap false

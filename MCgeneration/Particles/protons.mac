@@ -48,11 +48,11 @@
 #/GGS/userActions/hitsAction/setHitThreshold scdSiWaferSideV particle -1 GeV  # Uncomment to save also particle hits with null energy release on side SCD
 /GGS/userActions/addGGSMCTruthAction                                          # Save MC truth
 
-/GGS/rndmPrintModulo 100000
+/GGS/rndmPrintModulo 50
 
 ##### Switch on acceptance check #####
 /GGS/generatorActions/gun/checkAcceptance true
 
 ##### Shoot N particles #####
 #/run/beamOn 10000000
-/run/beamOn 1000000
+/run/beamOn 100000

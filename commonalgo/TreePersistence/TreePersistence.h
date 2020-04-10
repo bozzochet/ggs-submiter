@@ -97,7 +97,19 @@ private:
   int mcTrackcaloentryplane;
   int mcTrackcaloexitplane;
 
-  
+  bool bookCaloGeomFidVolume;
+  float calofidvolalpha;
+  bool calofidvolpass;
+  short calofidvolxpos;
+  short calofidvolxneg;
+  short calofidvolypos;
+  short calofidvolyneg;
+  short calofidvolzpos;
+  short calofidvolzneg;
+  short calofidvolxnegyneg;
+  short calofidvolxposyneg;
+  short calofidvolxnegypos;
+  short calofidvolxposypos;
   // Flag for optional output objects
   //bool _isPSDBooked;
   //std::string _psdStoreName; // Name of the data store where the PSD data object is located

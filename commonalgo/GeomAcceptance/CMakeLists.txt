@@ -14,6 +14,7 @@ add_library(CommonAlgo  SHARED #CaloEDepCut.cpp
                         #StkStripEDepHisto.cpp
                         #ScdStripEDepHisto.cpp
 			MCtruthProcess.cpp
+                        CaloGeomFidVolume.cpp
            )
 
 target_link_libraries(CommonAlgo EACore EAData EAAlgorithm EAUtils EAAnalysis HerdDataObjects ${ROOT_LIBRARIES})

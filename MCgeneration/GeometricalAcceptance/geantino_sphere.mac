@@ -13,7 +13,7 @@
 /GGS/generatorActions/gun/sphereCenter 0 0 -36.6 cm       # ... using a sphere with center in (0,0,-36.6) = Calo center
 /GGS/generatorActions/gun/sphereCapPosition 0 0 300 cm    # ... with radius = 300
 /GGS/generatorActions/gun/sphereCapExtension 180          # for an angle of 90 deg = hemisphere
-/GGS/generatorActions/gun/checkAcceptance true            #Turn on the acceptance check
+/GGS/generatorActions/gun/checkAcceptance false            #Turn on the acceptance check ?
 
 
 ##### Setup the sensitive detectors #####
@@ -39,4 +39,4 @@
 
 ##### Shoot N particles #####
 #/run/beamOn 10000000
-/run/beamOn 1000
+/run/beamOn 10000000

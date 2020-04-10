@@ -25,10 +25,11 @@ RegisterAlgorithm(MCtruthProcessStore);
 
 
 MCtruthProcess::MCtruthProcess(const std::string &name) :
-  Algorithm{name}//,//quando esegui il xostruttore, esegui prima il costruttore di algorithm
+  Algorithm{name}, _printcalocubemap{false}//,//quando esegui il xostruttore, esegui prima il costruttore di algorithm
   // _axis{100., 0., 100.} { 
    {
      DefineParameter("minstkintersections", _minstkintersections);
+     DefineParameter("printcalocubemap", _printcalocubemap);
   }
 
 bool MCtruthProcess::Initialize() {
@@ -39,6 +40,8 @@ bool MCtruthProcess::Initialize() {
     COUT(ERROR) << "Event data store not found." << ENDL;
     return false;
   }
+
+  if(_printcalocubemap) PrintCaloCubeMap();
 
   _processstore = std::make_shared<MCtruthProcessStore>("MCtruthProcessStore");
   COUT(INFO) << "InitializedProcessStore::" <<_processstore << ENDL;
@@ -142,10 +145,7 @@ bool MCtruthProcess::Finalize() {
   const std::string routineName("MCtruthProcess::Finalize");
 
   auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
-  if (!globStore) {
-    COUT(ERROR) << "Global data store not found." << ENDL;
-    return false;
-  }
+  if (!globStore) {COUT(ERROR) << "Global data store not found." << ENDL;return false;}
 
   globStore->AddObject(_hgencoo->GetName(), _hgencoo);
   globStore->AddObject(_hgencthetaphi->GetName(),_hgencthetaphi);
@@ -165,6 +165,22 @@ bool MCtruthProcess::Finalize() {
 
   return true;
 }
+
+void MCtruthProcess::PrintCaloCubeMap(){
+  const std::string routineName("MCtruthProcess::PrintCaloCubeMap");
+  auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
+  if (!globStore) {COUT(ERROR) << "Global data store not found." << ENDL;}
+  auto caloGeoParams = globStore->GetObject<Herd::CaloGeoParams>("caloGeoParams");
+  if (!caloGeoParams) {COUT(ERROR) << "Event data store not found." << ENDL;}
+  else
+  {
+    for(unsigned int icube=0; icube<caloGeoParams->NCubes(); icube++){
+    printf("[%04u]\t%.2f\t%.2f\t%.2f\t%.2f\n", icube, caloGeoParams->CubeSize(), caloGeoParams->Position(icube)[Herd::RefFrame::Coo::X],caloGeoParams->Position(icube)[Herd::RefFrame::Coo::Y],caloGeoParams->Position(icube)[Herd::RefFrame::Coo::Z]);
+  }
+  }
+
+}
+
 
 //***************************
 
