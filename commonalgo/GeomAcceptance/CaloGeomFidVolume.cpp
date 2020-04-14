@@ -99,10 +99,10 @@ bool CaloGeomFidVolumeAlgo::Process() {
   Line track(Pos, Mom);
 
   //Build additional planes
-  Plane PlaneX6 (Point( -_XSideSmall / 2., 0., _ZCaloCenter), M_PI / 2., M_PI);          //verify these angles...
-  Plane PlaneX14(Point( +_XSideSmall / 2., 0., _ZCaloCenter), M_PI / 2., 0);             //verify these angles...
-  Plane PlaneY6 (Point(0., -_YSideSmall / 2., _ZCaloCenter), M_PI / 2., M_PI * 3. / 2.);  //verify these angles...
-  Plane PlaneY14(Point(0., +_YSideSmall / 2., _ZCaloCenter), M_PI / 2., M_PI / 2.);       //verify these angles...
+  Plane PlaneX6 (Point( -_XSideSmall/2., 0., _ZCaloCenter), M_PI / 2., M_PI);          //verify these angles...
+  Plane PlaneX14(Point( +_XSideSmall/2., 0., _ZCaloCenter), M_PI / 2., 0);             //verify these angles...
+  Plane PlaneY6 (Point(0., -_YSideSmall/2.,  _ZCaloCenter), M_PI / 2., M_PI * 3. / 2.);  //verify these angles...
+  Plane PlaneY14(Point(0., +_YSideSmall/2.,  _ZCaloCenter), M_PI / 2., M_PI / 2.);       //verify these angles...
 
   //Prepare additional variables
   double mXNEGYNEG = tan(_Planes[RefFrame::Direction::XnegYneg].Azimuth() + M_PI / 2.);
@@ -137,24 +137,24 @@ bool CaloGeomFidVolumeAlgo::Process() {
   int nintXpos=0;
   if( intXpos[RefFrame::Coo::Y] < +_YSideSmall/2.                  &&   
       intXpos[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&   
-      intXpos[RefFrame::Coo::Z] > -_ZCaloHeight                 &&   
-      intXpos[RefFrame::Coo::Z] < 0.                              ) nintXpos++;
+      intXpos[RefFrame::Coo::Z] > -_ZCaloHeight                    &&   
+      intXpos[RefFrame::Coo::Z] < 0.                              ) { nintXpos++; FillCoo(intXpos,_processstore->calofidvolxposEntry,nintXpos-1); }
   if( intZpos[RefFrame::Coo::X] < +_XSideBig/2.                    &&   
       intZpos[RefFrame::Coo::X] > +_XSideBig/2.  - alpha*cubeside  &&   
       intZpos[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&   
-      intZpos[RefFrame::Coo::Y] < +_YSideSmall/2.                    ) nintXpos++;
+      intZpos[RefFrame::Coo::Y] < +_YSideSmall/2.                    ) { nintXpos++; FillCoo(intZpos,_processstore->calofidvolxposEntry,nintXpos-1); }
   if( intZneg[RefFrame::Coo::X] < +_XSideBig/2.                    &&
       intZneg[RefFrame::Coo::X] > +_XSideBig/2.  - alpha*cubeside  &&   
       intZneg[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&   
-      intZneg[RefFrame::Coo::Y] < +_YSideSmall/2.                    ) nintXpos++;
+      intZneg[RefFrame::Coo::Y] < +_YSideSmall/2.                    ) { nintXpos++; FillCoo(intZneg,_processstore->calofidvolxposEntry,nintXpos-1); }
   if( intY6  [RefFrame::Coo::X] < +_XSideBig/2.                    &&   
       intY6  [RefFrame::Coo::X] > +_XSideBig/2.  - alpha*cubeside  &&
-      intY6  [RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intY6  [RefFrame::Coo::Z] < 0.                              ) nintXpos++;
+      intY6  [RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intY6  [RefFrame::Coo::Z] < 0.                              ) { nintXpos++; FillCoo(intY6,_processstore->calofidvolxposEntry,nintXpos-1); }
   if( intY14 [RefFrame::Coo::X] < +_XSideBig/2.                    &&   
       intY14 [RefFrame::Coo::X] > +_XSideBig/2.  - alpha*cubeside  &&
-      intY14 [RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intY14 [RefFrame::Coo::Z] < 0.                              ) nintXpos++;
+      intY14 [RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intY14 [RefFrame::Coo::Z] < 0.                              ) { nintXpos++; FillCoo(intY14,_processstore->calofidvolxposEntry,nintXpos-1); }
   if( nintXpos >  2) {COUT(ERROR)<<"intXpos>2"<<ENDL;} //}return false;}    
   if( nintXpos == 2) {    
     _processstore->calofidvolxpos=1; _processstore->calofidvolpass=false;
@@ -167,24 +167,24 @@ bool CaloGeomFidVolumeAlgo::Process() {
   int nintXneg=0;
   if( intXneg[RefFrame::Coo::Y] < +_YSideSmall/2.                  &&   
       intXneg[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&   
-      intXneg[RefFrame::Coo::Z] > -_ZCaloHeight                 &&   
-      intXneg[RefFrame::Coo::Z] < 0.                              ) { /*COUT(ERROR)<<"Xneg"<<ENDL;*/ nintXneg++; }
+      intXneg[RefFrame::Coo::Z] > -_ZCaloHeight                    &&   
+      intXneg[RefFrame::Coo::Z] < 0.                              ) { nintXneg++; FillCoo(intXneg,_processstore->calofidvolxnegEntry,nintXneg-1); }
   if( intZpos[RefFrame::Coo::X] < -_XSideBig/2. +  alpha*cubeside  &&   
       intZpos[RefFrame::Coo::X] > -_XSideBig/2.                    &&   
       intZpos[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&   
-      intZpos[RefFrame::Coo::Y] < +_YSideSmall/2.                    ) { /*COUT(ERROR)<<"Xneg"<<ENDL;*/ nintXneg++; }
+      intZpos[RefFrame::Coo::Y] < +_YSideSmall/2.                    ) { nintXneg++; FillCoo(intZpos,_processstore->calofidvolxnegEntry,nintXneg-1); }
   if( intZneg[RefFrame::Coo::X] < -_XSideBig/2. +  alpha*cubeside  &&   
       intZneg[RefFrame::Coo::X] > -_XSideBig/2.                    &&   
       intZneg[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&   
-      intZneg[RefFrame::Coo::Y] < +_YSideSmall/2.                    ) { /*COUT(ERROR)<<"Xneg"<<ENDL;*/ nintXneg++; }
+      intZneg[RefFrame::Coo::Y] < +_YSideSmall/2.                    ) { nintXneg++; FillCoo(intZneg,_processstore->calofidvolxnegEntry,nintXneg-1); }
   if( intY6  [RefFrame::Coo::X] < -_XSideBig/2. +  alpha*cubeside  &&   
       intY6  [RefFrame::Coo::X] > -_XSideBig/2.                    &&   
-      intY6  [RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intY6  [RefFrame::Coo::Z] < 0.                              ) { /*COUT(ERROR)<<"Xneg"<<ENDL;*/ nintXneg++; }
+      intY6  [RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intY6  [RefFrame::Coo::Z] < 0.                              ) {  nintXneg++; FillCoo(intY6,_processstore->calofidvolxnegEntry,nintXneg-1); }
   if( intY14 [RefFrame::Coo::X] < -_XSideBig/2. +  alpha*cubeside  &&   
       intY14 [RefFrame::Coo::X] > -_XSideBig/2.                    &&   
-      intY14 [RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intY14 [RefFrame::Coo::Z] < 0.                              ) { /*COUT(ERROR)<<"Xneg"<<ENDL;*/ nintXneg++; }
+      intY14 [RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intY14 [RefFrame::Coo::Z] < 0.                              ) { nintXneg++; FillCoo(intY14,_processstore->calofidvolxnegEntry,nintXneg-1); }
   if( nintXneg >  2) {COUT(ERROR)<<"intXneg>2"<<ENDL; 
     COUT(ERROR)<<GetEventLoopProxy()->GetCurrentEvent()<<ENDL;
     COUT(ERROR)<<nintXneg<<ENDL;
@@ -206,24 +206,24 @@ bool CaloGeomFidVolumeAlgo::Process() {
   int nintYpos=0;
   if( intYpos[RefFrame::Coo::X] < +_XSideSmall/2.                  &&   
       intYpos[RefFrame::Coo::X] > -_XSideSmall/2.                  &&   
-      intYpos[RefFrame::Coo::Z] > -_ZCaloHeight                 &&   
-      intYpos[RefFrame::Coo::Z] < 0.                              ) nintYpos++;
+      intYpos[RefFrame::Coo::Z] > -_ZCaloHeight                    &&   
+      intYpos[RefFrame::Coo::Z] < 0.                              )  { nintYpos++; FillCoo(intYpos,_processstore->calofidvolyposEntry,nintYpos-1); }
   if( intZpos[RefFrame::Coo::X] < +_XSideSmall/2.                  &&   
       intZpos[RefFrame::Coo::X] > -_XSideSmall/2.                  &&     
       intZpos[RefFrame::Coo::Y] < +_YSideBig/2.                    &&   
-      intZpos[RefFrame::Coo::Y] > +_YSideBig/2. -  alpha*cubeside    ) nintYpos++;
+      intZpos[RefFrame::Coo::Y] > +_YSideBig/2. -  alpha*cubeside    ) { nintYpos++; FillCoo(intZpos,_processstore->calofidvolyposEntry,nintYpos-1); }
   if( intZneg[RefFrame::Coo::X] < +_XSideSmall/2.                  &&   
       intZneg[RefFrame::Coo::X] > -_XSideSmall/2.                  &&     
       intZneg[RefFrame::Coo::Y] < +_YSideBig/2.                    &&   
-      intZneg[RefFrame::Coo::Y] > +_YSideBig/2. -  alpha*cubeside    ) nintYpos++;
+      intZneg[RefFrame::Coo::Y] > +_YSideBig/2. -  alpha*cubeside    ) { nintYpos++; FillCoo(intZneg,_processstore->calofidvolyposEntry,nintYpos-1); }
   if( intX6  [RefFrame::Coo::Y] < +_YSideBig/2.                    &&   
       intX6  [RefFrame::Coo::Y] > +_YSideBig/2. -  alpha*cubeside  &&
-      intX6  [RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intX6  [RefFrame::Coo::Z] < 0.                              ) nintYpos++;
+      intX6  [RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intX6  [RefFrame::Coo::Z] < 0.                              ) { nintYpos++; FillCoo(intX6,_processstore->calofidvolyposEntry,nintYpos-1); }
   if( intX14 [RefFrame::Coo::Y] < +_YSideBig/2.                    &&  
       intX14 [RefFrame::Coo::Y] > +_YSideBig/2. -  alpha*cubeside  &&
-      intX14 [RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intX14 [RefFrame::Coo::Z] < 0.                              ) nintYpos++;
+      intX14 [RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intX14 [RefFrame::Coo::Z] < 0.                              ) { nintYpos++; FillCoo(intX14,_processstore->calofidvolyposEntry,nintYpos-1); }
   if( nintYpos >  2) {COUT(ERROR)<<"intYpos>2"<<ENDL;}// return false;}    
   if( nintYpos == 2) {
     _processstore->calofidvolypos=1; _processstore->calofidvolpass=false;
@@ -238,24 +238,24 @@ bool CaloGeomFidVolumeAlgo::Process() {
   int nintYneg=0;
   if( intYneg[RefFrame::Coo::X] < +_XSideSmall/2.                  &&   
       intYneg[RefFrame::Coo::X] > -_XSideSmall/2.                  &&   
-      intYneg[RefFrame::Coo::Z] > -_ZCaloHeight                 &&   
-      intYneg[RefFrame::Coo::Z] < 0.                              ) nintYneg++;
+      intYneg[RefFrame::Coo::Z] > -_ZCaloHeight                    &&   
+      intYneg[RefFrame::Coo::Z] < 0.                              ) { nintYneg++; FillCoo(intYneg,_processstore->calofidvolynegEntry,nintYneg-1); }
   if( intZpos[RefFrame::Coo::X] < +_XSideSmall/2.                  &&   
       intZpos[RefFrame::Coo::X] > -_XSideSmall/2.                  &&     
       intZpos[RefFrame::Coo::Y] > -_YSideBig/2.                    &&   
-      intZpos[RefFrame::Coo::Y] < -_YSideBig/2. +  alpha*cubeside    ) nintYneg++;
+      intZpos[RefFrame::Coo::Y] < -_YSideBig/2. +  alpha*cubeside    ) { nintYneg++; FillCoo(intZpos,_processstore->calofidvolynegEntry,nintYneg-1); }
   if( intZneg[RefFrame::Coo::X] < +_XSideSmall/2.                  &&   
       intZneg[RefFrame::Coo::X] > -_XSideSmall/2.                  &&     
       intZneg[RefFrame::Coo::Y] > -_YSideBig/2.                    &&   
-      intZneg[RefFrame::Coo::Y] < -_YSideBig/2. +  alpha*cubeside    ) nintYneg++;
+      intZneg[RefFrame::Coo::Y] < -_YSideBig/2. +  alpha*cubeside    ) { nintYneg++; FillCoo(intZneg,_processstore->calofidvolynegEntry,nintYneg-1); }
   if( intX6  [RefFrame::Coo::Y] > -_YSideBig/2.                    &&   
       intX6  [RefFrame::Coo::Y] < -_YSideBig/2. +  alpha*cubeside  &&   
-      intX6  [RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intX6  [RefFrame::Coo::Z] < 0.                              ) nintYneg++;
+      intX6  [RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intX6  [RefFrame::Coo::Z] < 0.                              ) { nintYneg++; FillCoo(intX6,_processstore->calofidvolynegEntry,nintYneg-1); }
   if( intX14 [RefFrame::Coo::Y] > -_YSideBig/2.                    &&   
       intX14 [RefFrame::Coo::Y] < -_YSideBig/2. +  alpha*cubeside  &&    
-      intX14 [RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intX14 [RefFrame::Coo::Z] < 0.                              ) nintYneg++;
+      intX14 [RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intX14 [RefFrame::Coo::Z] < 0.                              ) { nintYneg++; FillCoo(intX14,_processstore->calofidvolynegEntry,nintYneg-1); }
   if( nintYneg >  2) {COUT(ERROR)<<"intYneg>2"<<ENDL;}// return false;}    
   if( nintYneg == 2) {    
     _processstore->calofidvolyneg=1; _processstore->calofidvolpass=false;
@@ -267,54 +267,54 @@ bool CaloGeomFidVolumeAlgo::Process() {
 //TOP CAP CHECK: ZPOS
   // Assume an octagon
   int nintZpos=0;
-  if( intZpos[RefFrame::Coo::X] < +_XSideBig/2.                  &&   
-      intZpos[RefFrame::Coo::X] > -_XSideBig/2.                  &&   
-      intZpos[RefFrame::Coo::Y] > -_YSideBig/2.                  &&   
-      intZpos[RefFrame::Coo::Y] < +_YSideBig/2.                  &&
+  if( intZpos[RefFrame::Coo::X] < +_XSideBig/2.                    &&   
+      intZpos[RefFrame::Coo::X] > -_XSideBig/2.                    &&   
+      intZpos[RefFrame::Coo::Y] > -_YSideBig/2.                    &&   
+      intZpos[RefFrame::Coo::Y] < +_YSideBig/2.                    &&
       intZpos[RefFrame::Coo::Y] < mXNEGYPOS * intZpos[RefFrame::Coo::X] + qXNEGYPOS  &&
       intZpos[RefFrame::Coo::Y] < mXPOSYPOS * intZpos[RefFrame::Coo::X] + qXPOSYPOS  &&
       intZpos[RefFrame::Coo::Y] > mXPOSYNEG * intZpos[RefFrame::Coo::X] + qXPOSYNEG  &&
-      intZpos[RefFrame::Coo::Y] > mXNEGYNEG * intZpos[RefFrame::Coo::X] + qXNEGYNEG     ) nintZpos++;       
+      intZpos[RefFrame::Coo::Y] > mXNEGYNEG * intZpos[RefFrame::Coo::X] + qXNEGYNEG     ) { nintZpos++; FillCoo(intZpos,_processstore->calofidvolzposEntry,nintZpos-1); }    
   if( intYneg[RefFrame::Coo::X] > -_XSideSmall/2.                  &&
       intYneg[RefFrame::Coo::X] < +_XSideSmall/2.                  &&
-      intYneg[RefFrame::Coo::Z] < 0                             &&
-      intYneg[RefFrame::Coo::Z] > 0 - alpha*cubeside                                    ) nintZpos++;
+      intYneg[RefFrame::Coo::Z] < 0                                &&
+      intYneg[RefFrame::Coo::Z] > 0 - alpha*cubeside                                    ) { nintZpos++; FillCoo(intYneg,_processstore->calofidvolzposEntry,nintZpos-1); }    
   if( intYpos[RefFrame::Coo::X] > -_XSideSmall/2.                  &&
       intYpos[RefFrame::Coo::X] < +_XSideSmall/2.                  &&
-      intYpos[RefFrame::Coo::Z] < 0                             &&
-      intYpos[RefFrame::Coo::Z] > 0 - alpha*cubeside                                    ) nintZpos++;
+      intYpos[RefFrame::Coo::Z] < 0                                &&
+      intYpos[RefFrame::Coo::Z] > 0 - alpha*cubeside                                    ) { nintZpos++; FillCoo(intYpos,_processstore->calofidvolzposEntry,nintZpos-1); }    
   if( intXneg[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&
       intXneg[RefFrame::Coo::Y] < +_YSideSmall/2.                  &&
-      intXneg[RefFrame::Coo::Z] < 0                             &&
-      intXneg[RefFrame::Coo::Z] > 0 - alpha*cubeside                                    ) nintZpos++;
+      intXneg[RefFrame::Coo::Z] < 0                                &&
+      intXneg[RefFrame::Coo::Z] > 0 - alpha*cubeside                                    ) { nintZpos++; FillCoo(intXneg,_processstore->calofidvolzposEntry,nintZpos-1); }    
   if( intXpos[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&
-      intXpos[RefFrame::Coo::X] < +_YSideSmall/2.                  &&
-      intXpos[RefFrame::Coo::Z] < 0                             &&
-      intXpos[RefFrame::Coo::Z] > 0 - alpha*cubeside                                    ) nintZpos++;
+      intXpos[RefFrame::Coo::Y] < +_YSideSmall/2.                  &&
+      intXpos[RefFrame::Coo::Z] < 0                                &&
+      intXpos[RefFrame::Coo::Z] > 0 - alpha*cubeside                                    ) { nintZpos++; FillCoo(intXpos,_processstore->calofidvolzposEntry,nintZpos-1); }    
   if( intXposYneg[RefFrame::Coo::X] > +_XSideSmall/2.              &&
       intXposYneg[RefFrame::Coo::X] < +_XSideBig/2.                &&
-      intXposYneg[RefFrame::Coo::Y] > -_XSideBig/2.                &&
-      intXposYneg[RefFrame::Coo::Y] < -_XSideSmall/2.              &&
-      intXposYneg[RefFrame::Coo::Z] < 0                         &&
-      intXposYneg[RefFrame::Coo::Z] > 0 - alpha*cubeside                                ) nintZpos++;
+      intXposYneg[RefFrame::Coo::Y] > -_YSideBig/2.                &&
+      intXposYneg[RefFrame::Coo::Y] < -_YSideSmall/2.              &&
+      intXposYneg[RefFrame::Coo::Z] < 0                            &&
+      intXposYneg[RefFrame::Coo::Z] > 0 - alpha*cubeside                                ) { nintZpos++; FillCoo(intXposYneg,_processstore->calofidvolzposEntry,nintZpos-1); }    
   if( intXnegYneg[RefFrame::Coo::X] > -_XSideBig/2.                &&
       intXnegYneg[RefFrame::Coo::X] < -_XSideSmall/2.              &&
-      intXnegYneg[RefFrame::Coo::Y] > -_XSideBig/2.                &&
-      intXnegYneg[RefFrame::Coo::Y] < -_XSideSmall/2.              &&
-      intXnegYneg[RefFrame::Coo::Z] < 0                         &&
-      intXnegYneg[RefFrame::Coo::Z] > 0 - alpha*cubeside                                ) nintZpos++;
+      intXnegYneg[RefFrame::Coo::Y] > -_YSideBig/2.                &&
+      intXnegYneg[RefFrame::Coo::Y] < -_YSideSmall/2.              &&
+      intXnegYneg[RefFrame::Coo::Z] < 0                            &&
+      intXnegYneg[RefFrame::Coo::Z] > 0 - alpha*cubeside                                ) { nintZpos++; FillCoo(intXnegYneg,_processstore->calofidvolzposEntry,nintZpos-1); }    
   if( intXnegYpos[RefFrame::Coo::X] > -_XSideBig/2.                &&
       intXnegYpos[RefFrame::Coo::X] < -_XSideSmall/2.              &&
-      intXnegYpos[RefFrame::Coo::Y] > +_XSideSmall/2.              &&
-      intXnegYpos[RefFrame::Coo::Y] < +_XSideBig/2.                &&
-      intXnegYpos[RefFrame::Coo::Z] < 0                         &&
-      intXnegYpos[RefFrame::Coo::Z] > 0 - alpha*cubeside                                ) nintZpos++;
-  if( intXposYpos[RefFrame::Coo::X] > -_XSideBig/2.                &&
-      intXposYpos[RefFrame::Coo::X] < -_XSideSmall/2.              &&
-      intXposYpos[RefFrame::Coo::Y] > +_XSideSmall/2.              &&
-      intXposYpos[RefFrame::Coo::Y] < +_XSideBig/2.                &&
-      intXposYpos[RefFrame::Coo::Z] < 0                         &&
-      intXposYpos[RefFrame::Coo::Z] > 0 - alpha*cubeside                                ) nintZpos++;
+      intXnegYpos[RefFrame::Coo::Y] > +_YSideSmall/2.              &&
+      intXnegYpos[RefFrame::Coo::Y] < +_YSideBig/2.                &&
+      intXnegYpos[RefFrame::Coo::Z] < 0                            &&
+      intXnegYpos[RefFrame::Coo::Z] > 0 - alpha*cubeside                                ) { nintZpos++; FillCoo(intXnegYpos,_processstore->calofidvolzposEntry,nintZpos-1); }    
+  if( intXposYpos[RefFrame::Coo::X] > +_XSideSmall/2.                &&
+      intXposYpos[RefFrame::Coo::X] < +_XSideBig/2.              &&
+      intXposYpos[RefFrame::Coo::Y] > +_YSideSmall/2.              &&
+      intXposYpos[RefFrame::Coo::Y] < +_YSideBig/2.                &&
+      intXposYpos[RefFrame::Coo::Z] < 0                            &&
+      intXposYpos[RefFrame::Coo::Z] > 0 - alpha*cubeside                                ) { nintZpos++; FillCoo(intXposYpos,_processstore->calofidvolzposEntry,nintZpos-1); }    
   if( nintZpos >  2) {COUT(ERROR)<<"intZpos>2"<<ENDL;}// return false;}     
   if( nintZpos == 2) {
     _processstore->calofidvolzpos=1; _processstore->calofidvolpass=false;
@@ -326,54 +326,54 @@ bool CaloGeomFidVolumeAlgo::Process() {
   //BOTTOM CAP CHECK: ZNEG
   // Assume an octagon
   int nintZneg=0;
-  if( intZneg[RefFrame::Coo::X] < +_XSideBig/2.                 &&   
-      intZneg[RefFrame::Coo::X] > -_XSideBig/2.                  &&   
-      intZneg[RefFrame::Coo::Y] > -_YSideBig/2.                  &&   
-      intZneg[RefFrame::Coo::Y] < +_YSideBig/2.                  &&
+  if( intZneg[RefFrame::Coo::X] < +_XSideBig/2.                    &&   
+      intZneg[RefFrame::Coo::X] > -_XSideBig/2.                    &&   
+      intZneg[RefFrame::Coo::Y] > -_YSideBig/2.                    &&   
+      intZneg[RefFrame::Coo::Y] < +_YSideBig/2.                    &&
       intZneg[RefFrame::Coo::Y] < mXNEGYPOS * intZneg[RefFrame::Coo::X] + qXNEGYPOS  &&
       intZneg[RefFrame::Coo::Y] < mXPOSYPOS * intZneg[RefFrame::Coo::X] + qXPOSYPOS  &&
       intZneg[RefFrame::Coo::Y] > mXPOSYNEG * intZneg[RefFrame::Coo::X] + qXPOSYNEG  &&
-      intZneg[RefFrame::Coo::Y] > mXNEGYNEG * intZneg[RefFrame::Coo::X] + qXNEGYNEG     ) nintZneg++;       
+      intZneg[RefFrame::Coo::Y] > mXNEGYNEG * intZneg[RefFrame::Coo::X] + qXNEGYNEG     ) { nintZneg++; FillCoo(intZneg,_processstore->calofidvolznegEntry,nintZneg-1); }      
   if( intYneg[RefFrame::Coo::X] > -_XSideSmall/2.                  &&
       intYneg[RefFrame::Coo::X] < +_XSideSmall/2.                  &&
-      intYneg[RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intYneg[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                        ) nintZneg++;
+      intYneg[RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intYneg[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                        ) { nintZneg++; FillCoo(intYneg,_processstore->calofidvolznegEntry,nintZneg-1); }   
   if( intYpos[RefFrame::Coo::X] > -_XSideSmall/2.                  &&
       intYpos[RefFrame::Coo::X] < +_XSideSmall/2.                  &&
-      intYpos[RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intYpos[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                      ) nintZneg++;
+      intYpos[RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intYpos[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                      ) { nintZneg++; FillCoo(intYpos,_processstore->calofidvolznegEntry,nintZneg-1); }   
   if( intXneg[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&
       intXneg[RefFrame::Coo::Y] < +_YSideSmall/2.                  &&
-      intXneg[RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intXneg[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                      ) nintZneg++;
+      intXneg[RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intXneg[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                      ) { nintZneg++; FillCoo(intXneg,_processstore->calofidvolznegEntry,nintZneg-1); }   
   if( intXpos[RefFrame::Coo::Y] > -_YSideSmall/2.                  &&
-      intXpos[RefFrame::Coo::X] < +_YSideSmall/2.                  &&
-      intXpos[RefFrame::Coo::Z] > -_ZCaloHeight                 &&
-      intXpos[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                      ) nintZneg++;
+      intXpos[RefFrame::Coo::Y] < +_YSideSmall/2.                  &&
+      intXpos[RefFrame::Coo::Z] > -_ZCaloHeight                    &&
+      intXpos[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                      ) { nintZneg++; FillCoo(intXpos,_processstore->calofidvolznegEntry,nintZneg-1); }   
   if( intXposYneg[RefFrame::Coo::X] > +_XSideSmall/2.              &&
       intXposYneg[RefFrame::Coo::X] < +_XSideBig/2.                &&
-      intXposYneg[RefFrame::Coo::Y] > -_XSideBig/2.                &&
-      intXposYneg[RefFrame::Coo::Y] < -_XSideSmall/2.              &&
-      intXposYneg[RefFrame::Coo::Z] > -_ZCaloHeight             &&
-      intXposYneg[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                    ) nintZneg++;
+      intXposYneg[RefFrame::Coo::Y] > -_YSideBig/2.                &&
+      intXposYneg[RefFrame::Coo::Y] < -_YSideSmall/2.              &&
+      intXposYneg[RefFrame::Coo::Z] > -_ZCaloHeight                &&
+      intXposYneg[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                    ) { nintZneg++; FillCoo(intXposYneg,_processstore->calofidvolznegEntry,nintZneg-1); }   
   if( intXnegYneg[RefFrame::Coo::X] > -_XSideBig/2.                &&
       intXnegYneg[RefFrame::Coo::X] < -_XSideSmall/2.              &&
-      intXnegYneg[RefFrame::Coo::Y] > -_XSideBig/2.                &&
-      intXnegYneg[RefFrame::Coo::Y] < -_XSideSmall/2.              &&
-      intXnegYneg[RefFrame::Coo::Z] > -_ZCaloHeight             &&
-      intXnegYneg[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                    ) nintZneg++;
+      intXnegYneg[RefFrame::Coo::Y] > -_YSideBig/2.                &&
+      intXnegYneg[RefFrame::Coo::Y] < -_YSideSmall/2.              &&
+      intXnegYneg[RefFrame::Coo::Z] > -_ZCaloHeight                &&
+      intXnegYneg[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                    ) { nintZneg++; FillCoo(intXnegYneg,_processstore->calofidvolznegEntry,nintZneg-1); }   
   if( intXnegYpos[RefFrame::Coo::X] > -_XSideBig/2.                &&
       intXnegYpos[RefFrame::Coo::X] < -_XSideSmall/2.              &&
-      intXnegYpos[RefFrame::Coo::Y] > +_XSideSmall/2.              &&
-      intXnegYpos[RefFrame::Coo::Y] < +_XSideBig/2.                &&
-      intXnegYpos[RefFrame::Coo::Z] > -_ZCaloHeight             &&
-      intXnegYpos[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                    ) nintZneg++;
-  if( intXposYpos[RefFrame::Coo::X] > -_XSideBig/2.                &&
-      intXposYpos[RefFrame::Coo::X] < -_XSideSmall/2.              &&
-      intXposYpos[RefFrame::Coo::Y] > +_XSideSmall/2.              &&
-      intXposYpos[RefFrame::Coo::Y] < +_XSideBig/2.                &&
-      intXposYpos[RefFrame::Coo::Z] > -_ZCaloHeight             &&
-      intXposYpos[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                    ) nintZneg++;
+      intXnegYpos[RefFrame::Coo::Y] > +_YSideSmall/2.              &&
+      intXnegYpos[RefFrame::Coo::Y] < +_YSideBig/2.                &&
+      intXnegYpos[RefFrame::Coo::Z] > -_ZCaloHeight                &&
+      intXnegYpos[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                    ) { nintZneg++; FillCoo(intXnegYpos,_processstore->calofidvolznegEntry,nintZneg-1); }   
+  if( intXposYpos[RefFrame::Coo::X] > +_XSideSmall/2.                &&
+      intXposYpos[RefFrame::Coo::X] < +_XSideBig/2.              &&
+      intXposYpos[RefFrame::Coo::Y] > +_YSideSmall/2.              &&
+      intXposYpos[RefFrame::Coo::Y] < +_YSideBig/2.                &&
+      intXposYpos[RefFrame::Coo::Z] > -_ZCaloHeight                &&
+      intXposYpos[RefFrame::Coo::Z] < -_ZCaloHeight + alpha*cubeside                    ) { nintZneg++; FillCoo(intXposYpos,_processstore->calofidvolznegEntry,nintZneg-1); }   
   if( nintZpos >  2) {COUT(ERROR)<<"intZpos>2"<<ENDL;}// return false;}     
   if( nintZpos == 2) {
     _processstore->calofidvolzneg=1; _processstore->calofidvolpass=false;
@@ -383,29 +383,29 @@ bool CaloGeomFidVolumeAlgo::Process() {
     {_processstore->calofidvolzneg=0;}
     
 //CORNER CAP CHECK: XNEGYNEG
-  int nintXegYneg=0; 
-  if( intXnegYneg[RefFrame::Coo::X] > -_XSideBig/2.                    &&   
-      intXnegYneg[RefFrame::Coo::X] < -_XSideSmall/2.                  &&   
+  int nintXnegYneg=0; 
+  if( intXnegYneg[RefFrame::Coo::X] > -_XSideBig/2.                 &&   
+      intXnegYneg[RefFrame::Coo::X] < -_XSideSmall/2.               &&   
       intXnegYneg[RefFrame::Coo::Z] > -_ZCaloHeight                 &&   
-      intXnegYneg[RefFrame::Coo::Z] < 0.                              ) nintXegYneg++;
+      intXnegYneg[RefFrame::Coo::Z] < 0.                              ) { nintXnegYneg++; FillCoo(intXnegYneg,_processstore->calofidvolxnegynegEntry,nintXnegYneg-1); }   
   if( intXneg[RefFrame::Coo::Y] > -_YSideSmall/2.                   &&   
       intXneg[RefFrame::Coo::Y] < -_YSideSmall/2. + alpha*cubeside  &&     
       intXneg[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
-      intXneg[RefFrame::Coo::Z] < 0.                                  ) nintXegYneg++;
-  if( intYneg[RefFrame::Coo::Y] < +_YSideBig/2.                        &&   
-      intYneg[RefFrame::Coo::Y] > +_YSideBig/2. -  alpha*cubeside      &&   
-      intXneg[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
-      intXneg[RefFrame::Coo::Z] < 0.                                 ) nintXegYneg++;
-  if( intZpos[RefFrame::Coo::X] > -_XSideBig/2.                       &&   
-      intZpos[RefFrame::Coo::Y] > -_YSideBig/2.                        &&
+      intXneg[RefFrame::Coo::Z] < 0.                                  ) { nintXnegYneg++; FillCoo(intXneg,_processstore->calofidvolxnegynegEntry,nintXnegYneg-1); }   
+  if( intYneg[RefFrame::Coo::X] > -_XSideSmall/2.                     &&   
+      intYneg[RefFrame::Coo::X] < -_XSideSmall/2. +  alpha*cubeside   &&   
+      intYneg[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
+      intYneg[RefFrame::Coo::Z] < 0.                                 )  { nintXnegYneg++; FillCoo(intYneg,_processstore->calofidvolxnegynegEntry,nintXnegYneg-1); }   
+  if( intZpos[RefFrame::Coo::X] > -_XSideBig/2.                     &&   
+      intZpos[RefFrame::Coo::Y] > -_YSideBig/2.                     &&
       intZpos[RefFrame::Coo::Y] > mXNEGYNEG * intZpos[RefFrame::Coo::X] + qXNEGYNEG  &&
-      intZpos[RefFrame::Coo::Y] < mXNEGYNEG * intZpos[RefFrame::Coo::X] + qXNEGYNEG  + alpha*cubeside) nintXegYneg++;
-  if( intZneg[RefFrame::Coo::X] > -_XSideBig/2.                        &&   
-      intZneg[RefFrame::Coo::Y] > -_YSideBig/2.                        &&
+      intZpos[RefFrame::Coo::Y] < mXNEGYNEG * intZpos[RefFrame::Coo::X] + qXNEGYNEG  + alpha*cubeside) { nintXnegYneg++; FillCoo(intZpos,_processstore->calofidvolxnegynegEntry,nintXnegYneg-1); }   
+  if( intZneg[RefFrame::Coo::X] > -_XSideBig/2.                     &&   
+      intZneg[RefFrame::Coo::Y] > -_YSideBig/2.                     &&
       intZneg[RefFrame::Coo::Y] > mXNEGYNEG * intZneg[RefFrame::Coo::X] + qXNEGYNEG  &&
-      intZneg[RefFrame::Coo::Y] < mXNEGYNEG * intZneg[RefFrame::Coo::X] + qXNEGYNEG  + alpha*cubeside) nintXegYneg++;
-  if( nintXegYneg >  2) {COUT(ERROR)<<"nintXegYneg>2"<<ENDL;}// return false;}    
-  if( nintXegYneg == 2) {
+      intZneg[RefFrame::Coo::Y] < mXNEGYNEG * intZneg[RefFrame::Coo::X] + qXNEGYNEG  + alpha*cubeside) { nintXnegYneg++; FillCoo(intZneg,_processstore->calofidvolxnegynegEntry,nintXnegYneg-1); }   
+  if( nintXnegYneg >  2) {COUT(ERROR)<<"nintXegYneg>2"<<ENDL;}// return false;}    
+  if( nintXnegYneg == 2) {
     _processstore->calofidvolxnegyneg=1; _processstore->calofidvolpass=false;
     SetFilterResult(FilterResult::REJECT);
     }
@@ -414,26 +414,26 @@ bool CaloGeomFidVolumeAlgo::Process() {
 
 //CORNER CAP CHECK: XPOSYNEG
   int nintXposYneg=0; 
-  if( intXposYneg[RefFrame::Coo::X] > +_XSideSmall/2.                  &&   
-      intXposYneg[RefFrame::Coo::X] < +_XSideBig/2.                    &&   
+  if( intXposYneg[RefFrame::Coo::X] > +_XSideSmall/2.               &&   
+      intXposYneg[RefFrame::Coo::X] < +_XSideBig/2.                 &&   
       intXposYneg[RefFrame::Coo::Z] > -_ZCaloHeight                 &&   
-      intXposYneg[RefFrame::Coo::Z] < 0.                              ) nintXposYneg++;
+      intXposYneg[RefFrame::Coo::Z] < 0.                              ) { nintXposYneg++; FillCoo(intXposYneg,_processstore->calofidvolxposynegEntry,nintXposYneg-1); } 
   if( intXpos[RefFrame::Coo::Y] > -_YSideSmall/2.                   &&   
       intXpos[RefFrame::Coo::Y] < -_YSideSmall/2. + alpha*cubeside  &&     
       intXpos[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
-      intXpos[RefFrame::Coo::Z] < 0.                                  ) nintXposYneg++;
+      intXpos[RefFrame::Coo::Z] < 0.                                  ) { nintXposYneg++; FillCoo(intXpos,_processstore->calofidvolxposynegEntry,nintXposYneg-1); } 
   if( intYneg[RefFrame::Coo::X] < +_XSideSmall/2.                   &&   
       intYneg[RefFrame::Coo::X] > +_XSideSmall/2  - alpha*cubeside  &&     
       intYneg[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
-      intYneg[RefFrame::Coo::Z] < 0.                                  ) nintXposYneg++;
-  if( intZpos[RefFrame::Coo::X] < +_XSideBig/2.                        &&   
-      intZpos[RefFrame::Coo::Y] > -_YSideBig/2.                        &&
+      intYneg[RefFrame::Coo::Z] < 0.                                  ) { nintXposYneg++; FillCoo(intYneg,_processstore->calofidvolxposynegEntry,nintXposYneg-1); } 
+  if( intZpos[RefFrame::Coo::X] < +_XSideBig/2.                     &&   
+      intZpos[RefFrame::Coo::Y] > -_YSideBig/2.                     &&
       intZpos[RefFrame::Coo::Y] > mXPOSYNEG * intZpos[RefFrame::Coo::X] + qXPOSYNEG  &&
-      intZpos[RefFrame::Coo::Y] < mXPOSYNEG * intZpos[RefFrame::Coo::X] + qXPOSYNEG  + alpha*cubeside) nintXposYneg++;
-  if( intZneg[RefFrame::Coo::X] < +_XSideBig/2.                    &&   
-      intZneg[RefFrame::Coo::Y] > -_YSideBig/2.                    &&
+      intZpos[RefFrame::Coo::Y] < mXPOSYNEG * intZpos[RefFrame::Coo::X] + qXPOSYNEG  + alpha*cubeside) { nintXposYneg++; FillCoo(intZpos,_processstore->calofidvolxposynegEntry,nintXposYneg-1); } 
+  if( intZneg[RefFrame::Coo::X] < +_XSideBig/2.                     &&   
+      intZneg[RefFrame::Coo::Y] > -_YSideBig/2.                     &&
       intZneg[RefFrame::Coo::Y] > mXPOSYNEG * intZneg[RefFrame::Coo::X] + qXPOSYNEG  &&
-      intZneg[RefFrame::Coo::Y] < mXPOSYNEG * intZneg[RefFrame::Coo::X] + qXPOSYNEG + alpha*cubeside) nintXposYneg++;
+      intZneg[RefFrame::Coo::Y] < mXPOSYNEG * intZneg[RefFrame::Coo::X] + qXPOSYNEG + alpha*cubeside) { nintXposYneg++; FillCoo(intZneg,_processstore->calofidvolxposynegEntry,nintXposYneg-1); } 
   if( nintXposYneg >  2) {COUT(ERROR)<<"nintXposYneg>2"<<ENDL; }//return false;}    
   if( nintXposYneg == 2) {
     _processstore->calofidvolxposyneg=1; _processstore->calofidvolpass=false;
@@ -446,26 +446,26 @@ bool CaloGeomFidVolumeAlgo::Process() {
 
 //CORNER CAP CHECK: XNEGYPOS
   int nintXnegYpos=0; 
-  if( intXnegYpos[RefFrame::Coo::X] > -_XSideBig/2.                    &&   
-      intXnegYpos[RefFrame::Coo::X] < -_XSideSmall/2.                  &&   
+  if( intXnegYpos[RefFrame::Coo::X] > -_XSideBig/2.                 &&   
+      intXnegYpos[RefFrame::Coo::X] < -_XSideSmall/2.               &&   
       intXnegYpos[RefFrame::Coo::Z] > -_ZCaloHeight                 &&   
-      intXnegYpos[RefFrame::Coo::Z] < 0.                              ) nintXnegYpos++;
+      intXnegYpos[RefFrame::Coo::Z] < 0.                              ) { nintXnegYpos++; FillCoo(intXnegYpos,_processstore->calofidvolxnegyposEntry,nintXnegYpos-1); } 
   if( intXneg[RefFrame::Coo::Y] < +_YSideSmall/2.                   &&   
-      intXneg[RefFrame::Coo::Y] > +_YSideSmall/2. - alpha*cubeside  &&     
+      intXneg[RefFrame::Coo::Y] > +_YSideSmall/2. - alpha*cubeside  &&
       intXneg[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
-      intXneg[RefFrame::Coo::Z] < 0.                                  ) nintXnegYpos++;
+      intXneg[RefFrame::Coo::Z] < 0.                                  ) { nintXnegYpos++; FillCoo(intXneg,_processstore->calofidvolxnegyposEntry,nintXnegYpos-1); }  
   if( intYpos[RefFrame::Coo::X] > -_XSideSmall/2.                   &&   
       intYpos[RefFrame::Coo::X] < -_XSideSmall/2  + alpha*cubeside  &&     
       intYpos[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
-      intYpos[RefFrame::Coo::Z] < 0.                                  ) nintXnegYpos++;
-  if( intZpos[RefFrame::Coo::X] > -_XSideBig/2.                        &&   
-      intZpos[RefFrame::Coo::Y] < +_YSideBig/2.                        &&
+      intYpos[RefFrame::Coo::Z] < 0.                                  ) { nintXnegYpos++; FillCoo(intYpos,_processstore->calofidvolxnegyposEntry,nintXnegYpos-1); } 
+  if( intZpos[RefFrame::Coo::X] > -_XSideBig/2.                     &&   
+      intZpos[RefFrame::Coo::Y] < +_YSideBig/2.                     &&
       intZpos[RefFrame::Coo::Y] < mXNEGYPOS * intZpos[RefFrame::Coo::X] + qXNEGYPOS  &&
-      intZpos[RefFrame::Coo::Y] > mXNEGYPOS * intZpos[RefFrame::Coo::X] + qXNEGYPOS  - alpha*cubeside) nintXnegYpos++;
-  if( intZneg[RefFrame::Coo::X] > -_XSideBig/2.                    &&   
-      intZneg[RefFrame::Coo::Y] < +_YSideBig/2.                    &&
+      intZpos[RefFrame::Coo::Y] > mXNEGYPOS * intZpos[RefFrame::Coo::X] + qXNEGYPOS  - alpha*cubeside) { nintXnegYpos++; FillCoo(intZpos,_processstore->calofidvolxnegyposEntry,nintXnegYpos-1); } 
+  if( intZneg[RefFrame::Coo::X] > -_XSideBig/2.                     &&   
+      intZneg[RefFrame::Coo::Y] < +_YSideBig/2.                     &&
       intZneg[RefFrame::Coo::Y] < mXNEGYPOS * intZneg[RefFrame::Coo::X] + qXNEGYPOS  &&
-      intZneg[RefFrame::Coo::Y] > mXNEGYPOS * intZneg[RefFrame::Coo::X] + qXNEGYPOS - alpha*cubeside) nintXnegYpos++;
+      intZneg[RefFrame::Coo::Y] > mXNEGYPOS * intZneg[RefFrame::Coo::X] + qXNEGYPOS - alpha*cubeside) { nintXnegYpos++; FillCoo(intZneg,_processstore->calofidvolxnegyposEntry,nintXnegYpos-1); }  
   if( nintXnegYpos >  2) {COUT(ERROR)<<"nintXnegYpos>2"<<ENDL; }//return false;}    
   if( nintXnegYpos == 2) {
     _processstore->calofidvolxnegypos=1; _processstore->calofidvolpass=false;
@@ -476,26 +476,26 @@ bool CaloGeomFidVolumeAlgo::Process() {
 
 //CORNER CAP CHECK: XPOSYPOS
   int nintXposYpos=0; 
-  if( intXposYpos[RefFrame::Coo::X] > +_XSideSmall/2.                  &&   
-      intXposYpos[RefFrame::Coo::X] < +_XSideBig/2.                    &&   
+  if( intXposYpos[RefFrame::Coo::X] > +_XSideSmall/2.               &&   
+      intXposYpos[RefFrame::Coo::X] < +_XSideBig/2.                 &&   
       intXposYpos[RefFrame::Coo::Z] > -_ZCaloHeight                 &&   
-      intXposYpos[RefFrame::Coo::Z] < 0.                              ) nintXposYpos++;
+      intXposYpos[RefFrame::Coo::Z] < 0.                              ) { nintXposYpos++; FillCoo(intXposYpos,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
   if( intXpos[RefFrame::Coo::Y] < +_YSideSmall/2.                   &&   
       intXpos[RefFrame::Coo::Y] > +_YSideSmall/2. - alpha*cubeside  &&     
       intXpos[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
-      intXpos[RefFrame::Coo::Z] < 0.                                  ) nintXposYpos++;
+      intXpos[RefFrame::Coo::Z] < 0.                                  ) { nintXposYpos++; FillCoo(intXpos,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
   if( intYpos[RefFrame::Coo::X] < +_XSideSmall/2.                   &&   
       intYpos[RefFrame::Coo::X] > +_XSideSmall/2  - alpha*cubeside  &&     
       intYpos[RefFrame::Coo::Z] > -_ZCaloHeight                     &&   
-      intYpos[RefFrame::Coo::Z] < 0.                                  ) nintXposYpos++;
-  if( intZpos[RefFrame::Coo::X] < +_XSideBig/2.                        &&   
-      intZpos[RefFrame::Coo::Y] < +_YSideBig/2.                        &&
+      intYpos[RefFrame::Coo::Z] < 0.                                  ) { nintXposYpos++; FillCoo(intYpos,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
+  if( intZpos[RefFrame::Coo::X] < +_XSideBig/2.                     &&   
+      intZpos[RefFrame::Coo::Y] < +_YSideBig/2.                     &&
       intZpos[RefFrame::Coo::Y] < mXPOSYPOS * intZpos[RefFrame::Coo::X] + qXPOSYPOS  &&
-      intZpos[RefFrame::Coo::Y] > mXPOSYPOS * intZpos[RefFrame::Coo::X] + qXPOSYPOS  - alpha*cubeside) nintXposYpos++;
-  if( intZneg[RefFrame::Coo::X] < +_XSideBig/2.                    &&   
-      intZneg[RefFrame::Coo::Y] < +_YSideBig/2.                    &&
+      intZpos[RefFrame::Coo::Y] > mXPOSYPOS * intZpos[RefFrame::Coo::X] + qXPOSYPOS  - alpha*cubeside) { nintXposYpos++; FillCoo(intZpos,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
+  if( intZneg[RefFrame::Coo::X] < +_XSideBig/2.                     &&   
+      intZneg[RefFrame::Coo::Y] < +_YSideBig/2.                     &&
       intZneg[RefFrame::Coo::Y] < mXPOSYPOS * intZneg[RefFrame::Coo::X] + qXPOSYPOS  &&
-      intZneg[RefFrame::Coo::Y] > mXPOSYPOS * intZneg[RefFrame::Coo::X] + qXPOSYPOS - alpha*cubeside) nintXposYpos++;
+      intZneg[RefFrame::Coo::Y] > mXPOSYPOS * intZneg[RefFrame::Coo::X] + qXPOSYPOS - alpha*cubeside) { nintXposYpos++; FillCoo(intZneg,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
   if( nintXposYpos >  2) {COUT(ERROR)<<"nintXposYpos>2"<<ENDL;}// return false;}    
   if( nintXposYpos == 2) {
     _processstore->calofidvolxposypos=1; _processstore->calofidvolpass=false;
@@ -514,9 +514,15 @@ bool CaloGeomFidVolumeAlgo::Process() {
 
 bool CaloGeomFidVolumeAlgo::Finalize() { return true; }
 
+
+void CaloGeomFidVolumeAlgo::FillCoo(const Herd::Point p, float coo[2][3], int index) {
+coo[index][0] = p[RefFrame::Coo::X];
+coo[index][1] = p[RefFrame::Coo::Y];
+coo[index][2] = p[RefFrame::Coo::Z];
+return;
 }
 
-
+}
 
 //***************************
 
@@ -554,7 +560,19 @@ bool CaloGeomFidVolumeStore::Reset() {
   calofidvolxposyneg = 0;
   calofidvolxnegypos = 0;
   calofidvolxposypos = 0;
-
+    for(int ii=0; ii<2; ii++){
+    for(int jj=0; jj<3; jj++){
+    calofidvolxposEntry[ii][jj] = -999;
+    calofidvolxnegEntry[ii][jj] = -999;
+    calofidvolyposEntry[ii][jj] = -999;
+    calofidvolynegEntry[ii][jj] = -999;
+    calofidvolzposEntry[ii][jj] = -999;
+    calofidvolznegEntry[ii][jj] = -999;
+    calofidvolxnegynegEntry[ii][jj] = -999;
+    calofidvolxposynegEntry[ii][jj] = -999;
+    calofidvolxnegyposEntry[ii][jj] = -999;
+    calofidvolxposyposEntry[ii][jj] = 999;
+    }}
   return true;
 }
 

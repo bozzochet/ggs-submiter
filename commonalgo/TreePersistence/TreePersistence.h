@@ -110,6 +110,17 @@ private:
   short calofidvolxposyneg;
   short calofidvolxnegypos;
   short calofidvolxposypos;
+  float calofidvolxposEntry[2][3];
+  float calofidvolxnegEntry[2][3];
+  float calofidvolyposEntry[2][3];
+  float calofidvolynegEntry[2][3];
+  float calofidvolzposEntry[2][3];
+  float calofidvolznegEntry[2][3];
+  float calofidvolxnegynegEntry[2][3];
+  float calofidvolxposynegEntry[2][3];
+  float calofidvolxnegyposEntry[2][3];
+  float calofidvolxposyposEntry[2][3];
+  
   // Flag for optional output objects
   //bool _isPSDBooked;
   //std::string _psdStoreName; // Name of the data store where the PSD data object is located

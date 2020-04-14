@@ -85,6 +85,8 @@ private:
   float cubeside; //cm
   float alpha;    //fraction of cube size to be contained in the fiducuial volume
 
+  void FillCoo(const Herd::Point p, float coo[2][3], int index);
+
   // const float _meanActiveFractionZview; // 21*3/73.2; old parameter, not used now
   // const float _meanActiveFractionXview; // 21*3/79;
   // const float _meanActiveFractionYview; // 21*3/73.2;
@@ -115,9 +117,19 @@ public:
   short calofidvolxposyneg;
   short calofidvolxnegypos;
   short calofidvolxposypos;
+  float calofidvolxposEntry[2][3];
+  float calofidvolxnegEntry[2][3];
+  float calofidvolyposEntry[2][3];
+  float calofidvolynegEntry[2][3];
+  float calofidvolzposEntry[2][3];
+  float calofidvolznegEntry[2][3];
+  float calofidvolxnegynegEntry[2][3];
+  float calofidvolxposynegEntry[2][3];
+  float calofidvolxnegyposEntry[2][3];
+  float calofidvolxposyposEntry[2][3];
 
-private:
   
+private:
 };
 
 #endif /* HERD_CALOGEOMFIDVOLUMEALGO_H_ */

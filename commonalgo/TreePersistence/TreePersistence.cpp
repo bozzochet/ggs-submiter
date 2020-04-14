@@ -69,6 +69,16 @@ bool TreePersistence::Connect() {
   _outputTree->Branch("calofidvolxposyneg",  &(calofidvolxposyneg), "calofidvolxposyneg/S");
   _outputTree->Branch("calofidvolxnegypos",  &(calofidvolxnegypos), "calofidvolxnegypos/S");
   _outputTree->Branch("calofidvolxposypos",  &(calofidvolxposypos), "calofidvolxposypos/S");
+  _outputTree->Branch("calofidvolxposEntry",      &(calofidvolxposEntry[0]),     "calofidvolxposEntry[2][3]/F");
+  _outputTree->Branch("calofidvolxnegEntry",      &(calofidvolxnegEntry[0]),     "calofidvolxnegEntry[2][3]/F");
+  _outputTree->Branch("calofidvolyposEntry",      &(calofidvolyposEntry[0]),     "calofidvolyposEntry[2][3]/F");
+  _outputTree->Branch("calofidvolynegEntry",      &(calofidvolynegEntry[0]),     "calofidvolynegEntry[2][3]/F");
+  _outputTree->Branch("calofidvolzposEntry",      &(calofidvolzposEntry[0]),     "calofidvolzposEntry[2][3]/F");
+  _outputTree->Branch("calofidvolznegEntry",      &(calofidvolznegEntry[0]),     "calofidvolznegEntry[2][3]/F");
+  _outputTree->Branch("calofidvolxnegynegEntry",  &(calofidvolxnegynegEntry[0]), "calofidvolxnegynegEntry[2][3]/F");
+  _outputTree->Branch("calofidvolxposynegEntry",  &(calofidvolxposynegEntry[0]), "calofidvolxposynegEntry[2][3]/F");
+  _outputTree->Branch("calofidvolxnegyposEntry",  &(calofidvolxnegyposEntry[0]), "calofidvolxnegyposEntry[2][3]/F");
+  _outputTree->Branch("calofidvolxposyposEntry",  &(calofidvolxposyposEntry[0]), "calofidvolxposyposEntry[2][3]/F");
 
   
   }
@@ -159,6 +169,24 @@ if( bookCaloGeomFidVolume )
   calofidvolxposyneg = caloGeomFidVolumeStore->calofidvolxposyneg;
   calofidvolxnegypos = caloGeomFidVolumeStore->calofidvolxnegypos;
   calofidvolxposypos = caloGeomFidVolumeStore->calofidvolxposypos;
+  for(int ii=0; ii<2; ii++){
+    for(int jj=0; jj<3; jj++){
+    calofidvolxposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposEntry[ii][jj];
+    calofidvolxnegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegEntry[ii][jj];
+    calofidvolyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolyposEntry[ii][jj];
+    calofidvolynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolynegEntry[ii][jj];
+    calofidvolzposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolzposEntry[ii][jj];
+    calofidvolznegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolznegEntry[ii][jj];
+    calofidvolxnegynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegynegEntry[ii][jj];
+    calofidvolxposynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposynegEntry[ii][jj];
+    calofidvolxnegyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegyposEntry[ii][jj];
+    calofidvolxposyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposyposEntry[ii][jj];
+      }
+  }
+
+
+
+
   }
 
   _outputTree->Fill();
