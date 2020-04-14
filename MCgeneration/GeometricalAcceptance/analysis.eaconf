@@ -19,7 +19,7 @@ Persistence TreePersistence treePersistence tree.root
    Set BookMCtruthProcess true
    Set BookCaloGeomFidVolume true
 
-EventLoop 100000
+EventLoop# 0 100
 
   #Compute the variables for Calo acceptance check
   Algo CaloTrackInfoAlgo caloTrackInfoAlgo
@@ -29,6 +29,8 @@ EventLoop 100000
 
   Algo CaloGeomFidVolumeAlgo caloGeomFidVolumeAlgo
        Set filterenable false
+       Set alpha 1.0
+
   Algo CaloGeomFidVolumeStore caloGeomFidVolumeStore
 
 

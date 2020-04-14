@@ -2,14 +2,17 @@
 #
 USER=`whoami`
 
-#NAME="protons_10GeV_10000GeV_E-1"
-#NAME="electrons_1000GeV_10000GeV_E-1"
-NAME="electrons_sphere_10GeV_1000GeV_E-1"
-WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Particles/
+NAME=$1
+INFILE=$2
+WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Digitize
 SUBMITDIR=${WORKDIR}/submit/htc
 
-JOBTEMPLATE=${SUBMITDIR}/job.template
+BASENAME=`basename $INFILE ".root"`
+echo $BASENAME
+
+JOBTEMPLATE=${SUBMITDIR}/job.dig.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
+DATACARDTEMPLATE=${SUBMITDIR}/digitize.eaconf.template
 
 OUTDIR=${SUBMITDIR}/output/${NAME}
 LOGDIR=${SUBMITDIR}/logs/${NAME}
@@ -19,34 +22,24 @@ if [ ! -d $OUTDIR ]; then mkdir -pv ${OUTDIR}; fi
 if [ ! -d $LOGDIR ]; then mkdir -pv ${LOGDIR}; fi
 if [ ! -d $JOBDIR ]; then mkdir -pv ${JOBDIR}; fi
 
-ii=$1
-SEED1="$RANDOM"
-SEED2="$RANDOM"
-JOBNAME="job_${ii}_${SEED1}_${SEED2}"
+JOBNAME="${BASENAME}"
+OUTROOT=${OUTDIR}/${BASENAME}.dig.root
+
 JOB=${JOBDIR}/${JOBNAME}.job
 SUB=${JOBDIR}/${JOBNAME}.sub
 ERRFILE=${LOGDIR}/${JOBNAME}.err
 LOGFILE=${LOGDIR}/${JOBNAME}.log
 OUTFILE=${LOGDIR}/${JOBNAME}.out
+DATACARD=${JOBDIR}/${BASENAME}.eaconf
 rm -fv ${ERRFILE}
 rm -fv ${LOGFILE}
 
-GEOMETRY=${HERDINSTALL}/plugin/libHerdMCParametricGeo.so
-GEODATACARD=${WORKDIR}/geometry.mac
-#DATACARD=${WORKDIR}/protons.mac
-#DATACARD=${WORKDIR}/electrons_1000GeV_10000GeV.mac
-DATACARD=${WORKDIR}/electrons.mac
-OUTPUT=${OUTDIR}/${NAME}_${ii}_${SEED1}_${SEED2}.root
+cp -v ${DATACARDTEMPLATE}                   ${DATACARD}
+sed -i "s%_INFILE_%${INFILE}%g"             ${DATACARD}
 
 cp -v ${JOBTEMPLATE}                        ${JOB}
-sed -i "s%_JOBNAME_%${JOBNAME}%g"           ${JOB}
-sed -i "s%_GEOMETRY_%${GEOMETRY}%g"         ${JOB}
-sed -i "s%_GEODATACARD_%${GEODATACARD}%g"   ${JOB}
 sed -i "s%_DATACARD_%${DATACARD}%g"         ${JOB}
-sed -i "s%_OUTDIR_%${OUTDIR}%g"             ${JOB}
-sed -i "s%_OUTPUT_%${OUTPUT}%g"             ${JOB}
-sed -i "s%_SEED1_%${SEED1}%g"               ${JOB}
-sed -i "s%_SEED2_%${SEED2}%g"               ${JOB}
+sed -i "s%_OUTROOT_%${OUTROOT}%g"           ${JOB}
 chmod 777 ${JOB}
 
 cp -v ${SUBTEMPLATE}                        ${SUB}

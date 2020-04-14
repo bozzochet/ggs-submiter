@@ -1,0 +1,34 @@
+#!/bin/bash
+
+WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Digitize/
+SUBMITDIR=${WORKDIR}/submit/htc
+
+source /storage/gpfs_ams/ams/users/vvagelli/HERD/setherd.sh
+cd ${SUBMITDIR}
+
+HOME=`pwd`
+UNIQUE="$$_$RANDOM"
+SANDBOX=/data/$UNIQUE
+mkdir -vp $SANDBOX
+cd $SANDBOX
+pwd
+
+DATACARD=_DATACARD_
+
+cp -v ${DATACARD} ${OUTDIR}.datacard
+
+# Launch the simulation
+EXEC="EventAnalysis -c $DATACARD"
+
+CMD="time ${EXEC}"
+echo ${CMD}
+${CMD}
+
+ls -altrh
+cp -v local.root _OUTROOT_
+
+cd $HOME
+pwd
+rm -frv $SANDBOX
+
+exit
