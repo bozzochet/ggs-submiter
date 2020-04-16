@@ -16,5 +16,7 @@ add_library(CommonAlgo  SHARED #CaloEDepCut.cpp
 			GeomAcceptance/MCtruthProcess.cpp
                         GeomAcceptance/CaloGeomFidVolume.cpp
                         TreePersistence/TreePersistence.cpp
+			Calo/CaloGlob.cpp
+                        Histo/EneHisto.cpp
            )
 target_link_libraries(CommonAlgo EACore EAData EAAlgorithm EAUtils EAAnalysis HerdDataObjects ${ROOT_LIBRARIES})

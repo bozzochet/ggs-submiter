@@ -14,6 +14,8 @@
 
 // EventAnalysis headers
 #include "persistence/PersistenceService.h"
+#include "algorithm/Algorithm.h"
+
 
 using namespace EA;
 
@@ -26,51 +28,16 @@ class MCTruth;
 class TTree;
 class TFile;
 
-/*! @brief A persistence which saves select event information on a simple Root tree.
- *
- * This class saves some event information as leaves of a Root tree.
- */
 
 class TreePersistence : public PersistenceService {
 public:
-  /*! @brief Constructor.
-   *
-   * @param name The name of the persistence object.
-   * @param output Name of the output file.
-   */
+ 
   TreePersistence(const std::string &name, const std::string &output);
 
-  /*! @brief Set up the output.
-   *
-   * Opens the output file and creates the output tree.
-   *
-   * @return true if the setup procedure succeeds.
-   */
   bool Connect();
-
-  /*! @brief finalize the output.
-   *
-   * Writes the tree and closes the output file.
-   *
-   * @return true if the setup finalization succeeds.
-   */
   bool Disconnect();
-
-  /*! @brief Book the optional objects.
-   *
-   * Currently the only optional objects that can be booked is "psdHitsCollMC". Booking it, the multiplicity of the hits
-   * on top PSD will be saved in the output file.
-   *
-   * @param objName The name of the object to be booked.
-   * @param objStore the data store
-   * @return true if the object has been correctly booked.
-   */
   bool BookEventObject(const std::string &objName, const std::string &objStore);
-
-  /*! @brief Fill the tree branches with information from current event.
-   *
-   * @return false if the needed event objects are not available.
-   */
+  bool BeginningOfEvent();
   bool EndOfEvent();
 
 
@@ -92,6 +59,7 @@ private:
   float mcCtheta;
   int mcStkintersections;
   float mcTracklengthcalox0;
+  float mcTracklengthlysox0;
   float mcTrackcaloentry[3];
   float mcTrackcaloexit[3];
   int mcTrackcaloentryplane;
@@ -121,6 +89,10 @@ private:
   float calofidvolxnegyposEntry[2][3];
   float calofidvolxposyposEntry[2][3];
   
+  bool bookCaloGlob;
+  int calonhits;
+  float calototedep;
+
   // Flag for optional output objects
   //bool _isPSDBooked;
   //std::string _psdStoreName; // Name of the data store where the PSD data object is located
@@ -131,6 +103,19 @@ private:
 
   // Configuration parameters
   //float _psdHitThreshold;
+};
+
+class TreePersistenceHelper : public Algorithm {
+public:
+  TreePersistenceHelper(const std::string &name);
+  bool Initialize();
+  bool Process();
+  bool Finalize();
+
+private:
+  StorePtr _evStore;
+  bool filltreethisevent;
+  //std::shared_ptr<bool> fillflag;
 };
 
 #endif /* TREEPERSISTENCE_H_ */

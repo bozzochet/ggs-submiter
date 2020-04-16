@@ -1,11 +1,3 @@
-/*
- * CaloEDepHisto.cpp
- *
- *  Created on: 11 Feb 2019
- *      Author: Nicola Mori
- */
-
-// Example headers
 #include "MCtruthProcess.h"
 
 // Root headers
@@ -25,15 +17,26 @@ RegisterAlgorithm(MCtruthProcessStore);
 
 
 MCtruthProcess::MCtruthProcess(const std::string &name) :
-  Algorithm{name}, _printcalocubemap{false}//,//quando esegui il xostruttore, esegui prima il costruttore di algorithm
-  // _axis{100., 0., 100.} { 
+  Algorithm{name},
+  printcalocubemap{false},
+  filterenable{true},
+  minstkintersections{-1},
+  mincalotrackx0{-999},
+  notfrombottom{true}
    {
-     DefineParameter("minstkintersections", _minstkintersections);
-     DefineParameter("printcalocubemap", _printcalocubemap);
+     DefineParameter("minstkintersections", minstkintersections);
+     DefineParameter("printcalocubemap",    printcalocubemap);
+     DefineParameter("filterenable",        filterenable);
+     DefineParameter("mincalotrackx0",      mincalotrackx0);
+     DefineParameter("notfrombottom",       notfrombottom);
+
   }
 
 bool MCtruthProcess::Initialize() {
   const std::string routineName("MCtruthProcess::Initialize");
+
+  // Setup the filter                                                                                                                                                                                                                       
+  if (filterenable) SetFilterStatus(FilterStatus::ENABLED); else SetFilterStatus(FilterStatus::DISABLED);
 
   _evStore = GetDataStoreManager()->GetEventDataStore("evStore");
   if (!_evStore) {
@@ -41,7 +44,7 @@ bool MCtruthProcess::Initialize() {
     return false;
   }
 
-  if(_printcalocubemap) PrintCaloCubeMap();
+  if(printcalocubemap) PrintCaloCubeMap();
 
   _processstore = std::make_shared<MCtruthProcessStore>("MCtruthProcessStore");
   COUT(INFO) << "InitializedProcessStore::" <<_processstore << ENDL;
@@ -79,8 +82,11 @@ bool MCtruthProcess::Process() {
   const std::string routineName("MCtruthProcess::Process");
 
   //Add the ProcessStore object for this event to the event data store
-  _processstore->Reset();
+  //_processstore->Reset();
   _evStore->AddObject("MCtruthProcessStore",_processstore);
+
+  //Set Filter Status
+  SetFilterResult(FilterResult::ACCEPT);
 
   auto mctruth = _evStore->GetObject<Herd::MCTruth>("mcTruth");
   if (!mctruth) { COUT(DEBUG) << "MCTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
@@ -116,28 +122,42 @@ bool MCtruthProcess::Process() {
   _processstore->mcCtheta = genmom.CosTheta();
   _processstore->mcStkintersections = nstkintersections;
 
-  if( nstkintersections >= _minstkintersections){
+  //Check number of intersections with STK
+  if( nstkintersections < minstkintersections)  { SetFilterResult(FilterResult::REJECT); }
     
-	  Herd::RefFrame::Direction entrydir = calotrack->entrancePlane;
-	  Herd::RefFrame::Direction exitdir = calotrack->exitPlane;
-    _hcaloentryexitdir->Fill( entrydir==Herd::RefFrame::Direction::NONE ? _hcaloentryexitdir->GetNbinsX()-0.5 : static_cast<int>(entrydir), exitdir==Herd::RefFrame::Direction::NONE ? _hcaloentryexitdir->GetNbinsY()-0.5 : static_cast<int>(exitdir));
-	  if( !(entrydir==Herd::RefFrame::Direction::NONE && exitdir==Herd::RefFrame::Direction::NONE) ){
-	  	_gcaloentry->SetPoint(_gcaloentry->GetN(), calotrack->entrance[Herd::RefFrame::Coo::X],calotrack->entrance[Herd::RefFrame::Coo::Y],calotrack->entrance[Herd::RefFrame::Coo::Z]);
-	  	_gcaloexit->SetPoint(_gcaloexit->GetN(), calotrack->exit[Herd::RefFrame::Coo::X],calotrack->exit[Herd::RefFrame::Coo::Y],calotrack->exit[Herd::RefFrame::Coo::Z]);
-	  	_hshowerlength[static_cast<int>(entrydir)][static_cast<int>(exitdir)]->Fill(calotrack->trackLengthCaloX0);
-      _hshowerlengthall->Fill(calotrack->trackLengthCaloX0);
-   
-      _processstore->mcTracklengthcalox0 = calotrack->trackLengthCaloX0;
-      _processstore->mcTrackcaloentry[0] = calotrack->entrance[Herd::RefFrame::Coo::X];
-      _processstore->mcTrackcaloentry[1] = calotrack->entrance[Herd::RefFrame::Coo::Y];
-      _processstore->mcTrackcaloentry[2] = calotrack->entrance[Herd::RefFrame::Coo::Z];
-      _processstore->mcTrackcaloexit[0] = calotrack->exit[Herd::RefFrame::Coo::X];
-      _processstore->mcTrackcaloexit[1] = calotrack->exit[Herd::RefFrame::Coo::Y];
-      _processstore->mcTrackcaloexit[2] = calotrack->exit[Herd::RefFrame::Coo::Z];
-      _processstore->mcTrackcaloentryplane = static_cast<int>(entrydir);
-      _processstore->mcTrackcaloexitplane = static_cast<int>(exitdir);
+	Herd::RefFrame::Direction entrydir = calotrack->entrancePlane;
+	Herd::RefFrame::Direction exitdir = calotrack->exitPlane;
+  _hcaloentryexitdir->Fill( entrydir==Herd::RefFrame::Direction::NONE ? _hcaloentryexitdir->GetNbinsX()-0.5 : static_cast<int>(entrydir), exitdir==Herd::RefFrame::Direction::NONE ? _hcaloentryexitdir->GetNbinsY()-0.5 : static_cast<int>(exitdir));
+	
+  //Check MC track entrance plane
+  if( notfrombottom) {
+    if(calotrack->entrancePlane == Herd::RefFrame::Direction::Zneg) SetFilterResult(FilterResult::REJECT);
+    } 
+
+  float calotracklengthx0=-1;
+  if( !(entrydir==Herd::RefFrame::Direction::NONE && exitdir==Herd::RefFrame::Direction::NONE) ){
+	  _gcaloentry->SetPoint(_gcaloentry->GetN(), calotrack->entrance[Herd::RefFrame::Coo::X],calotrack->entrance[Herd::RefFrame::Coo::Y],calotrack->entrance[Herd::RefFrame::Coo::Z]);
+	  _gcaloexit->SetPoint(_gcaloexit->GetN(), calotrack->exit[Herd::RefFrame::Coo::X],calotrack->exit[Herd::RefFrame::Coo::Y],calotrack->exit[Herd::RefFrame::Coo::Z]);
+	  _hshowerlength[static_cast<int>(entrydir)][static_cast<int>(exitdir)]->Fill(calotrack->trackLengthCaloX0);
+    _hshowerlengthall->Fill(calotrack->trackLengthCaloX0);
+    calotracklengthx0 = calotrack->trackLengthCaloX0;
+
+    _processstore->mcTracklengthcalox0 = calotrack->trackLengthCaloX0;
+    _processstore->mcTracklengthlysox0 = calotrack->trackLengthLYSOX0;
+
+    _processstore->mcTrackcaloentry[0] = calotrack->entrance[Herd::RefFrame::Coo::X];
+    _processstore->mcTrackcaloentry[1] = calotrack->entrance[Herd::RefFrame::Coo::Y];
+    _processstore->mcTrackcaloentry[2] = calotrack->entrance[Herd::RefFrame::Coo::Z];
+    _processstore->mcTrackcaloexit[0] = calotrack->exit[Herd::RefFrame::Coo::X];
+    _processstore->mcTrackcaloexit[1] = calotrack->exit[Herd::RefFrame::Coo::Y];
+    _processstore->mcTrackcaloexit[2] = calotrack->exit[Herd::RefFrame::Coo::Z];
+    _processstore->mcTrackcaloentryplane = static_cast<int>(entrydir);
+    _processstore->mcTrackcaloexitplane = static_cast<int>(exitdir);
 	  }
-  }
+
+  //Check MC track length
+  if(calotrack->trackLengthCaloX0<mincalotrackx0) SetFilterResult(FilterResult::REJECT);
+
   return true;
 }
 
@@ -214,6 +234,8 @@ bool MCtruthProcessStore::Reset() {
   mcCtheta = -999.;
   mcStkintersections = -999.;
   mcTracklengthcalox0 = -999.;
+  mcTracklengthlysox0 = -999.;
+
   for(int idir=0; idir<3; idir++) mcTrackcaloentry[idir] = -999.;
   for(int idir=0; idir<3; idir++) mcTrackcaloexit[idir] = -999.;
   mcTrackcaloentryplane = -1;

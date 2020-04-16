@@ -22,7 +22,6 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 SET(CMAKE_MACOSX_RPATH ON)
 
 set(herd-vv_VERSION "0.0")
-#include(version.cmake)
 
 if(NOT APPLE)
   set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed ${CMAKE_SHARED_LINKER_FLAGS}")
@@ -33,8 +32,6 @@ if(ROOT_FOUND)
   message(STATUS "Found ROOT: ${ROOT_DIR} (found version ${ROOT_VERSION})") 
   include(RootUtils.cmake)
 endif()
-
-#set(HerdSoftware_DIR ${HERDINSTALL}/cmake)
 
 find_package(HerdSoftware)
 if(HerdSoftware_FOUND)
@@ -51,63 +48,19 @@ if(EventAnalysis_FOUND)
 endif()
 
 
-
-
-
-#if (NOT DISABLE_EVENTANALYSIS)
-#  find_package(EventAnalysis 0.0)
-#endif()
-
-#if(NOT DISABLE_GGS)
-#  find_package(GGS 2.6.4)
-#endif()
-
 if(APPLE)
   set (CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup")
 endif()
 
-#add_subdirectory(MCgeneration)
 add_subdirectory(commonalgo)
 
-#include(install.cmake)
-
-# Install the pre-commit hook to automatically format newly added code
-#if(NOT DISABLE_AUTOFORMAT)
-#  find_program(CLANGFORMAT_EXE clang-format)
-#  if(CLANGFORMAT_EXE)
-#	  execute_process(COMMAND ${CMAKE_SOURCE_DIR}/.autoformat/git-pre-commit-format install
-#		          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-#	                  OUTPUT_VARIABLE autoformat_install_stdout
-#	                  ERROR_VARIABLE autoformat_install_stderr
-#	                  RESULT_VARIABLE autoformat_install_result
-#	                 )
-#	  if(${autoformat_install_result} EQUAL 2)
-#	    message(FATAL_ERROR "Cannot install the autoformat hook due to the following reason:\n    ${autoformat_install_stderr}")
-#	  endif()
-#	else()
-#	  message(STATUS "Missing clang-format executable. Autoformat hook will not be installed.")  
-#	endif()
-#else()
-#  execute_process(COMMAND ${CMAKE_SOURCE_DIR}/.autoformat/git-pre-commit-format uninstall
-#		  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-#	          OUTPUT_VARIABLE autoformat_install_stdout
-#	          ERROR_VARIABLE autoformat_install_stderr
-#	          RESULT_VARIABLE autoformat_install_result
-#	          )
-#  if(${autoformat_install_result} EQUAL 2)
-#    message(FATAL_ERROR "Cannot uninstall the autoformat hook due to the following reason:\n    ${autoformat_install_stderr}")
-#  endif()
-#endif()
-
-
-#set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "commonalgo/GeomAcceptance/MCtruthProcess.h")
-#set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "commonalgo/TreePersistence/TreePersistence.h")
-#set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "commonalgo/GeomAcceptance/CaloGeomFidVolume.h")
 
 set(MY_PUBLIC_HEADERS
   commonalgo/GeomAcceptance/MCtruthProcess.h
   commonalgo/TreePersistence/TreePersistence.h
   commonalgo/GeomAcceptance/CaloGeomFidVolume.h
+  commonalgo/Calo/CaloGlob.h
+  commonalgo/Histo/EneHisto.h
 )
 
 set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")

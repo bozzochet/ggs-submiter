@@ -7,12 +7,7 @@ find_package(ROOT)
 include_directories(${ROOT_INCLUDE_DIRS})
 
 
-add_library(CommonAlgo  SHARED #CaloEDepCut.cpp
-                        #CaloEDepHisto.cpp
-                        #StkNHitsCut.cpp
-                        #StkPrimaryHitsAlgo.cpp
-                        #StkStripEDepHisto.cpp
-                        #ScdStripEDepHisto.cpp
+add_library(CommonAlgo  SHARED 
 			MCtruthProcess.cpp
                         CaloGeomFidVolume.cpp
            )

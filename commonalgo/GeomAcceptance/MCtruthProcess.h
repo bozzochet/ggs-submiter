@@ -20,60 +20,26 @@ class TGraph2D;
 class TVector3;
 class MCtruthProcessStore;
 
-/*! @brief An algorithm that plots the distribution of energy deposits in the calorimeter.
- *
- * <B>Needed event objects:</B>
- *
- *   name       |     type    |  store  | optional | description
- * -------------|-------------|---------|----------|-------------------------
- * caloHits     |   CaloHits   | evStore |    no    | Hits in the CALO.
- *
- * <B>Produced gloabl objects:</B>
- *
- *   name           | type |   store   | description
- * -----------------|------|-----------|---------|-------------------------------
- * <algoName>       | TH1F | globStore | Histogram of energy deposit in the CALO.
- *
- * <B>Parameters:</B>
- *
- *  name       |         type       | default value | description
- * ------------|--------------------|---------------|-----------------------------------------------------------------------------------------
- *  axis       | std::vector<float> | {100, 0, 100} | The parameters of the X axis {nBins, minEDep, maEDep} [energy
- * deposits in GeV].
- */
+
 class MCtruthProcess : public Algorithm {
 public:
-  /*! @brief Constructor.
-   *
-   * @param name The name of the algorithm object.
-   */
+
   MCtruthProcess(const std::string &name);
-
-  /*! @brief Initializes the histogram.
-   *
-   * @return true if initialization is done without errors, false otherwise.
-   */
   bool Initialize();
-
-  /*! @brief Fills the histogram.
-   *
-   * @return true if no error occurs during processing, false otherwise.
-   */
   bool Process();
-
-  /*! @brief Puts the histogram on the event store.
-   *
-   * @return true if no error occurs during finalization, false otherwise.
-   */
   bool Finalize();
 
 private:
 
   //Store pointer
   std::shared_ptr<MCtruthProcessStore> _processstore;
+  
   // Algorithm parameters
-  int _minstkintersections;
-  bool _printcalocubemap;
+  bool filterenable;
+  int minstkintersections;
+  bool printcalocubemap;
+  float mincalotrackx0;
+  bool notfrombottom;
 
   // Created global objects
   // std::shared_ptr<TH1F> _histo; // Objects to be pushed on global store must be held by a shared_ptr
@@ -114,6 +80,7 @@ public:
   float mcCtheta;
   int mcStkintersections;
   float mcTracklengthcalox0;
+  float mcTracklengthlysox0;
   float mcTrackcaloentry[3];
   float mcTrackcaloexit[3];
   int mcTrackcaloentryplane;

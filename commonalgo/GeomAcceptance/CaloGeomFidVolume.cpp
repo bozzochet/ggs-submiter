@@ -89,8 +89,11 @@ bool CaloGeomFidVolumeAlgo::Process() {
   const std::string routineName = GetName() + "::Process";
 
   //Add the ProcessStore object for this event to the event data store
-  _processstore->Reset();
+  //_processstore->Reset();
   _evStore->AddObject("caloGeomFidVolumeStore",_processstore);
+
+  //Set Filter Status
+  SetFilterResult(FilterResult::ACCEPT);
 
   auto mcTruth = _evStore->GetObject<MCTruth>("mcTruth");
   if (!mcTruth) {COUT(ERROR) << "mcTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL;return false;}
@@ -504,11 +507,6 @@ bool CaloGeomFidVolumeAlgo::Process() {
   else
     {_processstore->calofidvolxposypos=0;} 
 
-  
-
-
-
-  SetFilterResult(FilterResult::ACCEPT);
   return true;
 }
 
@@ -576,192 +574,3 @@ bool CaloGeomFidVolumeStore::Reset() {
   return true;
 }
 
-/*bool CaloGeomFidVolumeAlgo::_CheckIfPointIsInCaloSurface(Point p, RefFrame::Direction view) {
-  // top or bottom surface: computed as a rectangle + 4 triangle
-  if (view == RefFrame::Direction::Zpos || view == RefFrame::Direction::Zneg) {
-    // check the big rectangle
-    if ((p[RefFrame::Coo::X] > -_XSideBig / 2.) && (p[RefFrame::Coo::X] < _XSideBig / 2.) &&
-        (p[RefFrame::Coo::Y] > -_YSideBig / 2.) && (p[RefFrame::Coo::Y] < _YSideBig / 2.)) {
-      // check if it above the lines which define the Y neg inclined planes
-      double mXNEGYNEG = tan(_Planes[RefFrame::Direction::XnegYneg].Azimuth() + M_PI / 2.);
-      double qXNEGYNEG = _Planes[RefFrame::Direction::XnegYneg].Origin()[RefFrame::Coo::Y] -
-                         mXNEGYNEG * _Planes[RefFrame::Direction::XnegYneg].Origin()[RefFrame::Coo::X];
-      double mXPOSYNEG = tan(_Planes[RefFrame::Direction::XposYneg].Azimuth() + M_PI / 2.);
-      double qXPOSYNEG = _Planes[RefFrame::Direction::XposYneg].Origin()[RefFrame::Coo::Y] -
-                         mXPOSYNEG * _Planes[RefFrame::Direction::XposYneg].Origin()[RefFrame::Coo::X];
-      if ((p[RefFrame::Coo::Y] < (mXNEGYNEG * p[RefFrame::Coo::X] + qXNEGYNEG)) ||
-          (p[RefFrame::Coo::Y] < (mXPOSYNEG * p[RefFrame::Coo::X] + qXPOSYNEG))) {
-        return false;
-      }
-      // check if it below the lines which define y pos planes
-      double mXNEGYPOS = tan(_Planes[RefFrame::Direction::XnegYpos].Azimuth() + M_PI / 2.);
-      double qXNEGYPOS = _Planes[RefFrame::Direction::XnegYpos].Origin()[RefFrame::Coo::Y] -
-                         mXNEGYPOS * _Planes[RefFrame::Direction::XnegYpos].Origin()[RefFrame::Coo::X];
-      double mXPOSYPOS = tan(_Planes[RefFrame::Direction::XposYpos].Azimuth() + M_PI / 2.);
-      double qXPOSYPOS = _Planes[RefFrame::Direction::XposYpos].Origin()[RefFrame::Coo::Y] -
-                         mXPOSYPOS * _Planes[RefFrame::Direction::XposYpos].Origin()[RefFrame::Coo::X];
-      if ((p[RefFrame::Coo::Y] > (mXNEGYPOS * p[RefFrame::Coo::X] + qXNEGYPOS)) ||
-          (p[RefFrame::Coo::Y] > (mXPOSYPOS * p[RefFrame::Coo::X] + qXPOSYPOS))) {
-        return false;
-      }
-      // line is in the top or bottom planes
-      return true;
-    }
-  } else if (view == RefFrame::Direction::Xneg || view == RefFrame::Direction::Xpos) {
-    if ((p[RefFrame::Coo::Y] > -_YSideSmall / 2.) && (p[RefFrame::Coo::Y] < _YSideSmall / 2.) &&
-        (p[RefFrame::Coo::Z] > (_ZCaloCenter - _ZCaloHeight / 2.)) &&
-        (p[RefFrame::Coo::Z] < (_ZCaloCenter + _ZCaloHeight / 2.))) {
-      return true;
-    }
-  } else if (view == RefFrame::Direction::Yneg || view == RefFrame::Direction::Ypos) {
-    if ((p[RefFrame::Coo::X] > -_XSideSmall / 2.) && (p[RefFrame::Coo::X] < _XSideSmall / 2.) &&
-        (p[RefFrame::Coo::Z] > (_ZCaloCenter - _ZCaloHeight / 2.)) &&
-        (p[RefFrame::Coo::Z] < (_ZCaloCenter + _ZCaloHeight / 2.))) {
-      return true;
-    }
-  } else if (view == RefFrame::Direction::XnegYneg) {
-    if ((p[RefFrame::Coo::X] > -_XSideBig / 2.) && (p[RefFrame::Coo::X] < -_XSideSmall / 2.) &&
-        (p[RefFrame::Coo::Y] > -_YSideBig / 2.) && (p[RefFrame::Coo::Y] < -_YSideSmall / 2.) &&
-        (p[RefFrame::Coo::Z] > (_ZCaloCenter - _ZCaloHeight / 2.)) &&
-        (p[RefFrame::Coo::Z] < (_ZCaloCenter + _ZCaloHeight / 2.))) {
-      return true;
-    }
-  } else if (view == RefFrame::Direction::XposYneg) {
-    if ((p[RefFrame::Coo::X] > _XSideSmall / 2.) && (p[RefFrame::Coo::X] < _XSideBig / 2.) &&
-        (p[RefFrame::Coo::Y] > -_YSideBig / 2.) && (p[RefFrame::Coo::Y] < -_YSideSmall / 2.) &&
-        (p[RefFrame::Coo::Z] > (_ZCaloCenter - _ZCaloHeight / 2.)) &&
-        (p[RefFrame::Coo::Z] < (_ZCaloCenter + _ZCaloHeight / 2.))) {
-      return true;
-    }
-  } else if (view == RefFrame::Direction::XposYpos) {
-    if ((p[RefFrame::Coo::X] > _XSideSmall / 2.) && (p[RefFrame::Coo::X] < _XSideBig / 2.) &&
-        (p[RefFrame::Coo::Y] > _YSideSmall / 2.) && (p[RefFrame::Coo::Y] < _YSideBig / 2.) &&
-        (p[RefFrame::Coo::Z] > (_ZCaloCenter - _ZCaloHeight / 2.)) &&
-        (p[RefFrame::Coo::Z] < (_ZCaloCenter + _ZCaloHeight / 2.))) {
-      return true;
-    }
-  } else if (view == RefFrame::Direction::XnegYpos) {
-    if ((p[RefFrame::Coo::X] > -_XSideBig / 2.) && (p[RefFrame::Coo::X] < -_XSideSmall / 2.) &&
-        (p[RefFrame::Coo::Y] > _YSideSmall / 2.) && (p[RefFrame::Coo::Y] < _YSideBig / 2.) &&
-        (p[RefFrame::Coo::Z] > (_ZCaloCenter - _ZCaloHeight / 2.)) &&
-        (p[RefFrame::Coo::Z] < (_ZCaloCenter + _ZCaloHeight / 2.))) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-float CaloGeomFidVolumeAlgo::_PntDistance(Point p1, Point p2) {
-  const std::string routineName = GetName() + "::_PntDistance";
-
-  float dist = 0;
-  for (int iVect = 0; iVect < 3; iVect++) {
-    dist += pow(p1[static_cast<RefFrame::Coo>(iVect)] - p2[static_cast<RefFrame::Coo>(iVect)], 2);
-  }
-  dist = sqrt(dist);
-  return dist;
-}
-*/
-/*
-float CaloGeomFidVolumeAlgo::_ComputeTrackLengthCaloX0() {
-
-  float projXcm = _trackInfoCalo->entrance[RefFrame::Coo::X] - _trackInfoCalo->exit[RefFrame::Coo::X];
-  float projYcm = _trackInfoCalo->entrance[RefFrame::Coo::Y] - _trackInfoCalo->exit[RefFrame::Coo::Y];
-  float projZcm = _trackInfoCalo->entrance[RefFrame::Coo::Z] - _trackInfoCalo->exit[RefFrame::Coo::Z];
-  float projXX0 = projXcm * _meanActiveFractionXview / _LYSO_X0;
-  float projYX0 = projYcm * _meanActiveFractionYview / _LYSO_X0;
-  float projZX0 = projZcm * _meanActiveFractionZview / _LYSO_X0;
-  float retval = sqrt(projXX0 * projXX0 + projYX0 * projYX0 + projZX0 * projZX0);
-
-
-  return retval;
-}
-*/
-/*
-bool CaloGeomFidVolumeAlgo::_ComputeTrackInfoForCalo(const Point startingPoint, Vec3D direction) {
-
-  const std::string routineName = GetName() + "::_ComputeTrackInfoForCalo";
-
-  // line with MC track
-  Line MCtrack(startingPoint, direction);
-
-  // compute intersections with the infinite Calo surfaces
-  DirectionsArray<Point> intersections;
-  for_each(RefFrame::Directions.begin(), RefFrame::Directions.end(),
-           [&](auto &itDir) { intersections[itDir] = _Planes[itDir].Intersection(MCtrack); });
-
-  if (DEBUG) {
-    cout << "Position: ";
-    startingPoint.Dump();
-    cout << "Direction: ";
-    direction.Dump();
-    auto itName = RefFrame::DirectionName.begin();
-    for_each(RefFrame::Directions.begin(), RefFrame::Directions.end(), [&itName, &intersections](auto &itDir) {
-      cout << "Int with dir " << *itName << " : ";
-      intersections[itDir].Dump();
-      itName++;
-    });
-  }
-
-  // Check if intercept are included in planes
-  int Nint = 0;
-  vector<Point> IntPoints;
-  vector<RefFrame::Direction> IntInfos;
-  for_each(RefFrame::Directions.begin(), RefFrame::Directions.end(), [&](auto &itDir) {
-    if (Nint < 2 && this->_CheckIfPointIsInCaloSurface(intersections[itDir], itDir)) {
-      Nint++;
-      IntPoints.push_back(intersections[itDir]);
-      IntInfos.push_back(itDir);
-    }
-  });
-
-  if (DEBUG) {
-    cout << "Interaction: ";
-    for (auto itInfo : IntInfos)
-      cout << (int)itInfo << " ";
-    cout << endl;
-    for (auto itPoint : IntPoints)
-      itPoint.Dump();
-    cout << endl;
-  }
-
-  if (Nint != 2) {
-    if (Nint > 0) {
-      // COUT(WARNING) << "N. of intersection are: " << Nint << "instead of 2, can be due to a numerical approximation
-      // (~ 1/10^6 events)" << ENDL;
-    }
-    _trackInfoCalo->Reset();
-    return false; // no hit in the calo surfaces
-  }
-
-  // check where is the first hit using the distance between the startingPoint and the hit surfaces.
-  float distFirst = _PntDistance(IntPoints[0], startingPoint);
-  float distSecond = _PntDistance(IntPoints[1], startingPoint);
-  Point tmpIntPoint;
-  RefFrame::Direction tmpIntInfo;
-  if (distFirst > distSecond) { // the first point is not the entrance point.
-    tmpIntPoint = IntPoints[0];
-    IntPoints[0] = IntPoints[1];
-    IntPoints[1] = tmpIntPoint;
-    tmpIntInfo = IntInfos[0];
-    IntInfos[0] = IntInfos[1];
-    IntInfos[1] = tmpIntInfo;
-  }
-
-  float trackLengthCm = _PntDistance(IntPoints[0], IntPoints[1]);
-  _trackInfoCalo->entrance = IntPoints[0];
-  _trackInfoCalo->exit = IntPoints[1];
-  _trackInfoCalo->entrancePlane = IntInfos[0];
-  _trackInfoCalo->exitPlane = IntInfos[1];
-  _trackInfoCalo->trackLengthCaloCm = trackLengthCm;
-  _trackInfoCalo->trackLengthLYSOCm = trackLengthCm * _meanVolumeActiveFraction;
-  _trackInfoCalo->trackLengthCaloX0 = _trackInfoCalo->trackLengthLYSOCm / _LYSO_X0;
-  _trackInfoCalo->trackLengthLYSOX0 = _trackInfoCalo->trackLengthCaloX0;
-
-  return true;
-}
-
-}
-*/
- // namespace Herd
