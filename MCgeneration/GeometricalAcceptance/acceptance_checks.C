@@ -1,6 +1,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TMath.h"
+#include "TF1.h"
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TH3F.h"
@@ -270,6 +271,9 @@ int verify_calo_fidvol(){
   TH2F *heneleak_x0_fv = new TH2F("heneleak_x0_fv","Energy resolution;MC Momentum (GV); CALO Edep / MC Momentum",nenebins, enebins, nleakbins, leakbins);
 
   TH3F *heneleakhits = new TH3F("heneleakhits","heneleakhits",nenebins, enebins, nleakbins, leakbins, ncalohitsbins, calohitsbins);
+
+  TH2F *hcalohits = new TH2F("hcalohits",";MC Momentum (GV);CALO hits",nenebins, enebins,ncalohitsbins, calohitsbins);
+  TH2F *hcalohits_eneleak = new TH2F("hcalohits_eneleak","1 -(CALO Edep / MC Momentum) > 0.9;MC Momentum (GV);CALO hits",nenebins, enebins,ncalohitsbins, calohitsbins);
   
   //---------LOOP on events
   for(int ientry=0; ientry<nentries; ientry++){
@@ -296,6 +300,11 @@ int verify_calo_fidvol(){
     if( !(mcTracklengthcalox0>10 && calofidvolpass) ) continue;
     heneleakhits->Fill(mcMom,1-calototedep/mcMom,calonhits);
 
+    hcalohits->Fill(mcMom,calonhits);
+    if( (1-calototedep/mcMom)>0.9 ){
+      hcalohits_eneleak->Fill(mcMom,calonhits);
+    }
+    
   }
 
   TCanvas *ccalotrackx0 = new TCanvas("ccalotrackx0","ccalotrackx0");
@@ -370,8 +379,16 @@ int verify_calo_fidvol(){
     h->SetTitle( Form("[%.1f - %.1f] GV (MC)", enebins[binstart-1], enebins[binstart+3]) );
   }
 
-
-
+  TCanvas *ccalohits = new TCanvas("ccalohits","ccalohits");
+  ccalohits->Divide(2,1);
+  ccalohits->cd(1)->SetTicks(); ccalohits->cd(1)->SetLogx(); ccalohits->cd(1)->SetLogy(); ccalohits->cd(1)->SetLogz();
+  hcalohits->Draw("COLZ");   hcalohits->SetStats(0);
+  ccalohits->cd(2)->SetTicks(); ccalohits->cd(2)->SetLogx(); ccalohits->cd(2)->SetLogy(); ccalohits->cd(2)->SetLogz();
+  hcalohits_eneleak->Draw("COLZ"); hcalohits_eneleak->SetStats(0);
+  TF1 *fcut = new TF1("ff","pow(10,([0]*log10(x)+[1]))",10,10000); ff->SetParameter(0, (1+log10(2))/3. ); ff->SetParameter(1, 2 - (1+log10(2))/3. );
+  fcut->SetLineColor(kBlue+1);
+  fcut->Draw("same");
+  
   return 0;
 
 }
