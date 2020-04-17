@@ -93,6 +93,12 @@ private:
   int calonhits;
   float calototedep;
 
+  bool bookCaloAxis;
+  float caloaxiscog[3];
+  float caloaxisdir[3];
+  float caloaxiseigval[3];
+  float caloaxiseigvec[3][3];
+
   // Flag for optional output objects
   //bool _isPSDBooked;
   //std::string _psdStoreName; // Name of the data store where the PSD data object is located

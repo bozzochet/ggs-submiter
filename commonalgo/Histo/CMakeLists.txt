@@ -8,11 +8,8 @@ include_directories(${ROOT_INCLUDE_DIRS})
 
 
 add_library(CommonAlgo  SHARED 
-			GeomAcceptance/MCtruthProcess.cpp
-                        GeomAcceptance/CaloGeomFidVolume.cpp
-                        TreePersistence/TreePersistence.cpp
-			Calo/CaloGlob.cpp
-                        Calo/CaloAxis.cpp
-                        Histo/EneHisto.cpp
+			EneHisto.cpp
            )
+
 target_link_libraries(CommonAlgo EACore EAData EAAlgorithm EAUtils EAAnalysis HerdDataObjects ${ROOT_LIBRARIES})
+

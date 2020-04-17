@@ -60,7 +60,9 @@ set(MY_PUBLIC_HEADERS
   commonalgo/TreePersistence/TreePersistence.h
   commonalgo/GeomAcceptance/CaloGeomFidVolume.h
   commonalgo/Calo/CaloGlob.h
+  commonalgo/Calo/CaloAxis.h
   commonalgo/Histo/EneHisto.h
+
 )
 
 set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")

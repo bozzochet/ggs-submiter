@@ -3,6 +3,8 @@
 #include "../GeomAcceptance/MCtruthProcess.h"
 #include "../GeomAcceptance/CaloGeomFidVolume.h"
 #include "../Calo/CaloGlob.h"
+#include "../Calo/CaloAxis.h"
+
 
 
 // HerdSoftware headers
@@ -17,6 +19,8 @@
 // C/C++ headers
 #include <numeric>
 
+
+
 RegisterPersistence(TreePersistence);
 RegisterAlgorithm(TreePersistenceHelper);
 
@@ -25,12 +29,15 @@ TreePersistence::TreePersistence(const std::string &name, const std::string &out
     : PersistenceService{name, output},
     bookMCtruthProcess{false},
     bookCaloGeomFidVolume{false}, 
-    bookCaloGlob{false}
+    bookCaloGlob{false},
+    bookCaloAxis{false}
     {
   //DefineParameter("psdHitThreshold", _psdHitThreshold);
   DefineParameter("BookMCtruthProcess",bookMCtruthProcess);
   DefineParameter("BookCaloGeomFidVolume",bookCaloGeomFidVolume);
   DefineParameter("BookCaloGlob",bookCaloGlob);
+  DefineParameter("BookCaloAxis",bookCaloAxis);
+  
 
 }
 
@@ -91,6 +98,13 @@ if(bookCaloGlob){
   _outputTree->Branch("calonhits",     &(calonhits),    "calonhits/I");
   _outputTree->Branch("calototedep",   &(calototedep),  "calototedep/F");
 }
+
+if(bookCaloAxis){
+  _outputTree->Branch("caloaxiscog",     &(caloaxiscog[0]),    "caloaxiscog[3]/F");
+  _outputTree->Branch("caloaxisdir",     &(caloaxisdir[0]),    "caloaxisdir[3]/F");
+  _outputTree->Branch("caloaxiseigval",  &(caloaxiseigval[0]), "caloaxiseigval[3]/F");
+  _outputTree->Branch("caloaxiseigvec",  &(caloaxiseigvec[0]), "caloaxiseigvec[3][3]/F");
+}
  
   return true;
 }
@@ -133,10 +147,6 @@ bool TreePersistence::BeginningOfEvent() {
   // Handle default objects
   if (!_evStore) { _evStore = GetDataStoreManager()->GetEventDataStore("evStore");
   if (!_evStore) {COUT(ERROR) << "EventStore::\"evStore\"::NotFound." << ENDL; return false; } }
-
-  //if( bookMCtruthProcess )    mcTruthProcessStore->Reset();
-  //if( bookCaloGeomFidVolume ) caloGeomFidVolumeStore->Reset();
-  //if(  bookCaloGlob)          caloGeomFidVolumeStore->Reset();
   
   return true;
 }
@@ -220,6 +230,25 @@ if( bookCaloGeomFidVolume )
       calototedep = caloGlobStore->calototedep;
       //
       caloGlobStore->Reset();
+     }
+  }
+
+  if(bookCaloAxis){
+    auto caloAxisStore = _evStore->GetObject<Herd::CaloAxisStore>("CaloAxisStore");
+    if(caloAxisStore)
+    {
+      for(int i=0; i<3; i++){
+        caloaxiscog[i] = caloAxisStore->caloaxiscog[i];
+        caloaxisdir[i] = caloAxisStore->caloaxisdir[i];
+        caloaxiseigval[i] = caloAxisStore->caloaxiseigval[i];
+
+          for(int j=0; j<3; j++)
+           {
+          caloaxiseigvec[i][j] = caloAxisStore->caloaxiseigvec[i][j];
+       }
+     }
+      //
+      caloAxisStore->Reset();
      }
   }
 
