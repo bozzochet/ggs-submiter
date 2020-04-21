@@ -110,14 +110,11 @@ bool CaloAxis::BuildAxis(CaloHits calohits){
 
   //Calculate the sum of weigths
   double sumw=0; for(int i=0; i<n; i++) { sumw += x[i][3]; }
-  //printf("sumw: %f\n", sumw);
 
   //Calculate the centroid of the energy deposit
   std::vector<double> cog; for(int j=0; j<3; j++){ cog.push_back(0); }
   for(int i=0; i<n; i++) { for(int j=0; j<3; j++) { cog[j] += (1/sumw) * x[i][3] * x[i][j]; } }// printf("%f %f\n", x[i][j], cog[j]);} 
-  
-  //printf("COG: %f %f %f\n", cog[0], cog[1], cog[2]);
-  
+    
   //Reposition the hit point to the energy centroid
   for(int j=0; j<n; j++) { for(int i=0; i<3; i++) x[j][i] -= cog[i]; }
 
@@ -173,8 +170,6 @@ printf("%f %f\n", Xt[2][40], X[40][2]);
   double eigval[3];   for(int i=0; i<3; i++){ eigval[i] = eigvaluesvec[i]; }
   std::vector<std::pair<double,TVectorD>> eigvec = { {eigval[0],eigvec0}, {eigval[1],eigvec1}, {eigval[2],eigvec2} };
   std::sort(eigvec.begin(),eigvec.end(), []( const std::pair<double,TVectorD>x, std::pair<double,TVectorD>y) {return x.first>y.first;});
-  // for(int i=0; i<3; i++) printf("[%d] %f\t {%f,%f,%f}\n", i, eigvec.at(i).first, eigvec.at(i).second[0], eigvec.at(i).second[1], eigvec.at(i).second[2]);
-  // printf("\n\n\n");
    
   //Store values to containers
   ShowerCOG[RefFrame::Coo::X] = cog[0];
@@ -189,7 +184,7 @@ printf("%f %f\n", Xt[2][40], X[40][2]);
   for(int i=0; i<3; i++) ShowerEigenvalues.push_back( eigvec.at(i).first );
   for(int i=0; i<3; i++) { 
     Vec3D v(eigvec.at(i).second[0],eigvec.at(i).second[1],eigvec.at(i).second[2]);
-    ShowerEigenvectors.push_back(v); }//ShowerEigenvectors.push_back( std::make_shared<Vec3D> (eigvec.at(i).second[0],eigvec.at(i).second[1],eigvec.at(i).second[2]) );
+    ShowerEigenvectors.push_back(v); }
   
   x.clear();
   return true;

@@ -73,7 +73,19 @@ private:
   //TrackInfoForCalo *_trackInfoCalo; ///< The TrackInfoForCalo object to fill with the computed information.
   DirectionsArray<Plane> _Planes; ///< The calo surface for each directions.
 
+  double mXNEGYNEG;
+  double qXNEGYNEG;
+  double mXPOSYNEG;
+  double qXPOSYNEG;
+  double mXNEGYPOS;
+  double qXNEGYPOS;
+  double mXPOSYPOS;
+  double qXPOSYPOS;
+  
+
   bool filterenable;
+  bool checkext;
+  bool checkint;
 
   const float _XSideBig;    // cm
   const float _XSideSmall;  // cm
@@ -84,7 +96,12 @@ private:
   const float _phiXY;
   float cubeside; //cm
   float alpha;    //fraction of cube size to be contained in the fiducuial volume
+  float shrink;   //cubeside*alpha
 
+  std::array<Point,8> poct;
+
+  bool CheckExt();
+  bool CheckInt();
   void FillCoo(const Herd::Point p, float coo[2][3], int index);
 
   // const float _meanActiveFractionZview; // 21*3/73.2; old parameter, not used now
