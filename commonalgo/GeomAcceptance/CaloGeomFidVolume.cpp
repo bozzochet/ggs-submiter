@@ -65,86 +65,106 @@ auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
   shrink = 0; if(checkint) shrink=alpha*cubeside;
 
    // Top and bottom planes                                                                                                                                                                                                                  
-  _Planes[RefFrame::Direction::Zpos] = Plane(Point(0., 0., _ZCaloCenter + _ZCaloHeight / 2. - shrink), M_PI, 0);
-  _Planes[RefFrame::Direction::Zneg] = Plane(Point(0., 0., _ZCaloCenter - _ZCaloHeight / 2. + shrink), 0,    0);
+  plane[RefFrame::Direction::Zpos] = Plane(Point(0., 0., _ZCaloCenter + _ZCaloHeight / 2. - shrink), M_PI, 0);
+  plane[RefFrame::Direction::Zneg] = Plane(Point(0., 0., _ZCaloCenter - _ZCaloHeight / 2. + shrink), 0,    0);
 
   // planes parallel to X and Y axes                                                                                                                                                                                                        
-  _Planes[RefFrame::Direction::Xneg] = Plane(Point(-_XSideBig / 2. + shrink, 0., _ZCaloCenter), M_PI / 2., M_PI);
-  _Planes[RefFrame::Direction::Xpos] = Plane(Point(+_XSideBig / 2. - shrink, 0., _ZCaloCenter), M_PI / 2., 0);
-  _Planes[RefFrame::Direction::Yneg] = Plane(Point(0., -_YSideBig / 2. + shrink, _ZCaloCenter), M_PI / 2., M_PI * 3. / 2.);
-  _Planes[RefFrame::Direction::Ypos] = Plane(Point(0., +_YSideBig / 2. - shrink, _ZCaloCenter), M_PI / 2., M_PI / 2.);
+  plane[RefFrame::Direction::Xneg] = Plane(Point(-_XSideBig / 2. + shrink, 0., _ZCaloCenter), M_PI / 2., M_PI);
+  plane[RefFrame::Direction::Xpos] = Plane(Point(+_XSideBig / 2. - shrink, 0., _ZCaloCenter), M_PI / 2., 0);
+  plane[RefFrame::Direction::Yneg] = Plane(Point(0., -_YSideBig / 2. + shrink, _ZCaloCenter), M_PI / 2., M_PI * 3. / 2.);
+  plane[RefFrame::Direction::Ypos] = Plane(Point(0., +_YSideBig / 2. - shrink, _ZCaloCenter), M_PI / 2., M_PI / 2.);
 
   // inclined planes                                                                                                                                                                                                                        
-  _Planes[RefFrame::Direction::XnegYneg] =
+  /*plane[RefFrame::Direction::XnegYneg] =
       Plane(Point((-_XSideBig / 2 - _XSideSmall / 2.) / 2. + shrink, (-_YSideBig / 2 - _YSideSmall / 2.) / 2., _ZCaloCenter),
             M_PI / 2., M_PI + _phiXY);
-  _Planes[RefFrame::Direction::XposYneg] =
+  plane[RefFrame::Direction::XposYneg] =
       Plane(Point((_XSideBig / 2 + _XSideSmall / 2.) / 2. - shrink, (-_YSideBig / 2 - _YSideSmall / 2.) / 2., _ZCaloCenter),
             M_PI / 2., 2 * M_PI - _phiXY);
-  _Planes[RefFrame::Direction::XnegYpos] =
+  plane[RefFrame::Direction::XnegYpos] =
       Plane(Point((-_XSideBig / 2 - _XSideSmall / 2.) / 2. + shrink, (_YSideBig / 2 + _YSideSmall / 2.) / 2., _ZCaloCenter),
             M_PI / 2., M_PI - _phiXY);
-  _Planes[RefFrame::Direction::XposYpos] =
+  plane[RefFrame::Direction::XposYpos] =
       Plane(Point((_XSideBig / 2 + _XSideSmall / 2.) / 2. - shrink, (_YSideBig / 2 + _YSideSmall / 2.) / 2., _ZCaloCenter),
             M_PI / 2., _phiXY);
-
-    poct[0] = _Planes[RefFrame::Direction::Ypos].Intersection(Line(Point(+_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
-    COUT(INFO)<<"poct0::"<<poct[0][RefFrame::Coo::X]<<"::"<<poct[0][RefFrame::Coo::Y]<<"::"<<poct[0][RefFrame::Coo::Z]<<ENDL;
-    poct[1] = _Planes[RefFrame::Direction::Xpos].Intersection(Line(Point(0,_YSideSmall/2.,0),M_PI/2,0));
-    COUT(INFO)<<"poct1::"<<poct[1][RefFrame::Coo::X]<<"::"<<poct[1][RefFrame::Coo::Y]<<"::"<<poct[1][RefFrame::Coo::Z]<<ENDL;
-    double phiXposYpos = atan2( poct[0][RefFrame::Coo::Y]-poct[1][RefFrame::Coo::Y], poct[0][RefFrame::Coo::X]-poct[1][RefFrame::Coo::X]);
-    COUT(INFO)<<"phiXposYpos::"<<phiXposYpos<<ENDL;
-    _Planes[RefFrame::Direction::XposYpos] = Plane((poct[1]+poct[0])/2, M_PI/2, phiXposYpos+M_PI/2);
-    Point poct00 = _Planes[RefFrame::Direction::XposYpos].Intersection(Line(Point(+_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
-    COUT(INFO)<<"poct00::"<<poct00[RefFrame::Coo::X]<<"::"<<poct00[RefFrame::Coo::Y]<<"::"<<poct00[RefFrame::Coo::Z]<<ENDL;
-    Point poct10 = _Planes[RefFrame::Direction::XposYpos].Intersection(Line(Point(0,_YSideSmall/2.,0),M_PI/2,0));
-    COUT(INFO)<<"poct10::"<<poct10[RefFrame::Coo::X]<<"::"<<poct10[RefFrame::Coo::Y]<<"::"<<poct10[RefFrame::Coo::Z]<<ENDL;
+*/
+    pxy[0] = plane[RefFrame::Direction::Ypos].Intersection(Line(Point(+_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
+   //COUT(INFO)<<"pxy0::"<<pxy[0][RefFrame::Coo::X]<<"::"<<pxy[0][RefFrame::Coo::Y]<<"::"<<pxy[0][RefFrame::Coo::Z]<<ENDL;
+    pxy[1] = plane[RefFrame::Direction::Xpos].Intersection(Line(Point(0,_YSideSmall/2.,0),M_PI/2,0));
+    //COUT(INFO)<<"pxy1::"<<pxy[1][RefFrame::Coo::X]<<"::"<<pxy[1][RefFrame::Coo::Y]<<"::"<<pxy[1][RefFrame::Coo::Z]<<ENDL;
+    double phiXposYpos = atan2( pxy[0][RefFrame::Coo::Y]-pxy[1][RefFrame::Coo::Y], pxy[0][RefFrame::Coo::X]-pxy[1][RefFrame::Coo::X]);
+    //COUT(INFO)<<"phiXposYpos::"<<phiXposYpos<<ENDL;
+    plane[RefFrame::Direction::XposYpos] = Plane((pxy[1]+pxy[0])/2, M_PI/2, phiXposYpos+M_PI/2);
+    //Point pxy00 = plane[RefFrame::Direction::XposYpos].Intersection(Line(Point(+_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
+    //COUT(INFO)<<"pxy00::"<<pxy00[RefFrame::Coo::X]<<"::"<<pxy00[RefFrame::Coo::Y]<<"::"<<pxy00[RefFrame::Coo::Z]<<ENDL;
+    //Point pxy10 = plane[RefFrame::Direction::XposYpos].Intersection(Line(Point(0,_YSideSmall/2.,0),M_PI/2,0));
+    //COUT(INFO)<<"pxy10::"<<pxy10[RefFrame::Coo::X]<<"::"<<pxy10[RefFrame::Coo::Y]<<"::"<<pxy10[RefFrame::Coo::Z]<<ENDL;
     
-    poct[2] = _Planes[RefFrame::Direction::Xpos].Intersection(Line(Point(0,-_YSideSmall/2.,0),M_PI/2,0));
-    COUT(INFO)<<"poct2::"<<poct[2][RefFrame::Coo::X]<<"::"<<poct[2][RefFrame::Coo::Y]<<"::"<<poct[2][RefFrame::Coo::Z]<<ENDL;
-    poct[3] = _Planes[RefFrame::Direction::Yneg].Intersection(Line(Point(+_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
-    COUT(INFO)<<"poct3::"<<poct[3][RefFrame::Coo::X]<<"::"<<poct[3][RefFrame::Coo::Y]<<"::"<<poct[3][RefFrame::Coo::Z]<<ENDL;
-    double phiXposYneg = atan2( poct[3][RefFrame::Coo::Y]-poct[2][RefFrame::Coo::Y], poct[3][RefFrame::Coo::X]-poct[2][RefFrame::Coo::X]);
-    COUT(INFO)<<"phiXposYneg::"<<phiXposYneg<<ENDL;
-    _Planes[RefFrame::Direction::XposYneg] = Plane((poct[3]+poct[2])/2, M_PI/2, phiXposYneg+M_PI/2);
-    Point poct20 = _Planes[RefFrame::Direction::XposYneg].Intersection(Line(Point(0,-_YSideSmall/2.,0),M_PI/2,0));
-    COUT(INFO)<<"poct20::"<<poct20[RefFrame::Coo::X]<<"::"<<poct20[RefFrame::Coo::Y]<<"::"<<poct20[RefFrame::Coo::Z]<<ENDL;
-    Point poct30 = _Planes[RefFrame::Direction::XposYneg].Intersection(Line(Point(+_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
-    COUT(INFO)<<"poct30::"<<poct30[RefFrame::Coo::X]<<"::"<<poct30[RefFrame::Coo::Y]<<"::"<<poct30[RefFrame::Coo::Z]<<ENDL;
+    pxy[2] = plane[RefFrame::Direction::Xpos].Intersection(Line(Point(0,-_YSideSmall/2.,0),M_PI/2,0));
+    //COUT(INFO)<<"pxy2::"<<pxy[2][RefFrame::Coo::X]<<"::"<<pxy[2][RefFrame::Coo::Y]<<"::"<<pxy[2][RefFrame::Coo::Z]<<ENDL;
+    pxy[3] = plane[RefFrame::Direction::Yneg].Intersection(Line(Point(+_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
+    //COUT(INFO)<<"pxy3::"<<pxy[3][RefFrame::Coo::X]<<"::"<<pxy[3][RefFrame::Coo::Y]<<"::"<<pxy[3][RefFrame::Coo::Z]<<ENDL;
+    double phiXposYneg = atan2( pxy[3][RefFrame::Coo::Y]-pxy[2][RefFrame::Coo::Y], pxy[3][RefFrame::Coo::X]-pxy[2][RefFrame::Coo::X]);
+    //COUT(INFO)<<"phiXposYneg::"<<phiXposYneg<<ENDL;
+    plane[RefFrame::Direction::XposYneg] = Plane((pxy[3]+pxy[2])/2, M_PI/2, phiXposYneg+M_PI/2);
+    //Point pxy20 = plane[RefFrame::Direction::XposYneg].Intersection(Line(Point(0,-_YSideSmall/2.,0),M_PI/2,0));
+    //COUT(INFO)<<"pxy20::"<<pxy20[RefFrame::Coo::X]<<"::"<<pxy20[RefFrame::Coo::Y]<<"::"<<pxy20[RefFrame::Coo::Z]<<ENDL;
+    //Point pxy30 = plane[RefFrame::Direction::XposYneg].Intersection(Line(Point(+_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
+    //COUT(INFO)<<"pxy30::"<<pxy30[RefFrame::Coo::X]<<"::"<<pxy30[RefFrame::Coo::Y]<<"::"<<pxy30[RefFrame::Coo::Z]<<ENDL;
 
-    poct[4] = _Planes[RefFrame::Direction::Yneg].Intersection(Line(Point(-_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
-    COUT(INFO)<<"poct4::"<<poct[4][RefFrame::Coo::X]<<"::"<<poct[4][RefFrame::Coo::Y]<<"::"<<poct[4][RefFrame::Coo::Z]<<ENDL;
-    poct[5] = _Planes[RefFrame::Direction::Xneg].Intersection(Line(Point(0,-_YSideSmall/2.,0),M_PI/2,0));
-    COUT(INFO)<<"poct5::"<<poct[5][RefFrame::Coo::X]<<"::"<<poct[5][RefFrame::Coo::Y]<<"::"<<poct[5][RefFrame::Coo::Z]<<ENDL;
-    double phiXnegYneg = atan2( poct[5][RefFrame::Coo::Y]-poct[4][RefFrame::Coo::Y], poct[5][RefFrame::Coo::X]-poct[4][RefFrame::Coo::X]);
-    COUT(INFO)<<"phiXnegYneg::"<<phiXnegYneg<<ENDL;
-    _Planes[RefFrame::Direction::XnegYneg] = Plane((poct[5]+poct[4])/2, M_PI/2, phiXnegYneg+M_PI/2);
-    Point poct40 = _Planes[RefFrame::Direction::XnegYneg].Intersection(Line(Point(-_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
-    COUT(INFO)<<"poct40::"<<poct40[RefFrame::Coo::X]<<"::"<<poct40[RefFrame::Coo::Y]<<"::"<<poct40[RefFrame::Coo::Z]<<ENDL;
-    Point poct50 = _Planes[RefFrame::Direction::XnegYneg].Intersection(Line(Point(0,-_YSideSmall/2.,0),M_PI/2,0));
-    COUT(INFO)<<"poct50::"<<poct50[RefFrame::Coo::X]<<"::"<<poct50[RefFrame::Coo::Y]<<"::"<<poct50[RefFrame::Coo::Z]<<ENDL;
+    pxy[4] = plane[RefFrame::Direction::Yneg].Intersection(Line(Point(-_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
+    //COUT(INFO)<<"pxy4::"<<pxy[4][RefFrame::Coo::X]<<"::"<<pxy[4][RefFrame::Coo::Y]<<"::"<<pxy[4][RefFrame::Coo::Z]<<ENDL;
+    pxy[5] = plane[RefFrame::Direction::Xneg].Intersection(Line(Point(0,-_YSideSmall/2.,0),M_PI/2,0));
+    //COUT(INFO)<<"pxy5::"<<pxy[5][RefFrame::Coo::X]<<"::"<<pxy[5][RefFrame::Coo::Y]<<"::"<<pxy[5][RefFrame::Coo::Z]<<ENDL;
+    double phiXnegYneg = atan2( pxy[5][RefFrame::Coo::Y]-pxy[4][RefFrame::Coo::Y], pxy[5][RefFrame::Coo::X]-pxy[4][RefFrame::Coo::X]);
+    //COUT(INFO)<<"phiXnegYneg::"<<phiXnegYneg<<ENDL;
+    plane[RefFrame::Direction::XnegYneg] = Plane((pxy[5]+pxy[4])/2, M_PI/2, phiXnegYneg+M_PI/2);
+    //Point pxy40 = plane[RefFrame::Direction::XnegYneg].Intersection(Line(Point(-_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
+    //COUT(INFO)<<"pxy40::"<<pxy40[RefFrame::Coo::X]<<"::"<<pxy40[RefFrame::Coo::Y]<<"::"<<pxy40[RefFrame::Coo::Z]<<ENDL;
+    //Point pxy50 = plane[RefFrame::Direction::XnegYneg].Intersection(Line(Point(0,-_YSideSmall/2.,0),M_PI/2,0));
+    //COUT(INFO)<<"pxy50::"<<pxy50[RefFrame::Coo::X]<<"::"<<pxy50[RefFrame::Coo::Y]<<"::"<<pxy50[RefFrame::Coo::Z]<<ENDL;
 
-    poct[6] = _Planes[RefFrame::Direction::Xneg].Intersection(Line(Point(0,+_YSideSmall/2.,0),M_PI/2,0));
-    COUT(INFO)<<"poct6::"<<poct[6][RefFrame::Coo::X]<<"::"<<poct[6][RefFrame::Coo::Y]<<"::"<<poct[6][RefFrame::Coo::Z]<<ENDL;
-    poct[7] = _Planes[RefFrame::Direction::Ypos].Intersection(Line(Point(-_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
-    COUT(INFO)<<"poct7::"<<poct[7][RefFrame::Coo::X]<<"::"<<poct[7][RefFrame::Coo::Y]<<"::"<<poct[7][RefFrame::Coo::Z]<<ENDL;
-    double phiXnegYpos = atan2( poct[7][RefFrame::Coo::Y]-poct[6][RefFrame::Coo::Y], poct[7][RefFrame::Coo::X]-poct[6][RefFrame::Coo::X]);
-    COUT(INFO)<<"phiXnegYpos::"<<phiXnegYpos<<ENDL;
-    _Planes[RefFrame::Direction::XnegYpos] = Plane((poct[7]+poct[6])/2, M_PI/2, phiXnegYpos+M_PI/2);
-    Point poct60 = _Planes[RefFrame::Direction::XnegYpos].Intersection(Line(Point(0,+_YSideSmall/2.,0),M_PI/2,0));
-    COUT(INFO)<<"poct60::"<<poct60[RefFrame::Coo::X]<<"::"<<poct60[RefFrame::Coo::Y]<<"::"<<poct60[RefFrame::Coo::Z]<<ENDL;
-    Point poct70 = _Planes[RefFrame::Direction::XnegYpos].Intersection(Line(Point(-_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
-    COUT(INFO)<<"poct70::"<<poct70[RefFrame::Coo::X]<<"::"<<poct70[RefFrame::Coo::Y]<<"::"<<poct70[RefFrame::Coo::Z]<<ENDL;
+    pxy[6] = plane[RefFrame::Direction::Xneg].Intersection(Line(Point(0,+_YSideSmall/2.,0),M_PI/2,0));
+    //COUT(INFO)<<"pxy6::"<<pxy[6][RefFrame::Coo::X]<<"::"<<pxy[6][RefFrame::Coo::Y]<<"::"<<pxy[6][RefFrame::Coo::Z]<<ENDL;
+    pxy[7] = plane[RefFrame::Direction::Ypos].Intersection(Line(Point(-_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
+    //COUT(INFO)<<"pxy7::"<<pxy[7][RefFrame::Coo::X]<<"::"<<pxy[7][RefFrame::Coo::Y]<<"::"<<pxy[7][RefFrame::Coo::Z]<<ENDL;
+    double phiXnegYpos = atan2( pxy[7][RefFrame::Coo::Y]-pxy[6][RefFrame::Coo::Y], pxy[7][RefFrame::Coo::X]-pxy[6][RefFrame::Coo::X]);
+    //COUT(INFO)<<"phiXnegYpos::"<<phiXnegYpos<<ENDL;
+    plane[RefFrame::Direction::XnegYpos] = Plane((pxy[7]+pxy[6])/2, M_PI/2, phiXnegYpos+M_PI/2);
+    //Point pxy60 = plane[RefFrame::Direction::XnegYpos].Intersection(Line(Point(0,+_YSideSmall/2.,0),M_PI/2,0));
+    //COUT(INFO)<<"pxy60::"<<pxy60[RefFrame::Coo::X]<<"::"<<pxy60[RefFrame::Coo::Y]<<"::"<<pxy60[RefFrame::Coo::Z]<<ENDL;
+    //Point pxy70 = plane[RefFrame::Direction::XnegYpos].Intersection(Line(Point(-_XSideSmall/2.,0,0),M_PI/2,M_PI/2));
+    //COUT(INFO)<<"pxy70::"<<pxy70[RefFrame::Coo::X]<<"::"<<pxy70[RefFrame::Coo::Y]<<"::"<<pxy70[RefFrame::Coo::Z]<<ENDL;
 
-   mXNEGYNEG = tan(_Planes[RefFrame::Direction::XnegYneg].Azimuth() + M_PI / 2.);
-   qXNEGYNEG = _Planes[RefFrame::Direction::XnegYneg].Origin()[RefFrame::Coo::Y] - mXNEGYNEG * _Planes[RefFrame::Direction::XnegYneg].Origin()[RefFrame::Coo::X];
-   mXPOSYNEG = tan(_Planes[RefFrame::Direction::XposYneg].Azimuth() + M_PI / 2.);
-   qXPOSYNEG = _Planes[RefFrame::Direction::XposYneg].Origin()[RefFrame::Coo::Y] - mXPOSYNEG * _Planes[RefFrame::Direction::XposYneg].Origin()[RefFrame::Coo::X];
-   mXNEGYPOS = tan(_Planes[RefFrame::Direction::XnegYpos].Azimuth() + M_PI / 2.);
-   qXNEGYPOS = _Planes[RefFrame::Direction::XnegYpos].Origin()[RefFrame::Coo::Y] - mXNEGYPOS * _Planes[RefFrame::Direction::XnegYpos].Origin()[RefFrame::Coo::X];
-   mXPOSYPOS = tan(_Planes[RefFrame::Direction::XposYpos].Azimuth() + M_PI / 2.);
-   qXPOSYPOS = _Planes[RefFrame::Direction::XposYpos].Origin()[RefFrame::Coo::Y] - mXPOSYPOS * _Planes[RefFrame::Direction::XposYpos].Origin()[RefFrame::Coo::X];
-   COUT(INFO)<<"mXnegYneg::"<<mXNEGYNEG<<ENDL;
+    pz[0] = plane[RefFrame::Direction::Zpos].Intersection( Line(Point(0,0,0),0,0));
+    //COUT(INFO)<<"pz[0]::"<<pz[0][RefFrame::Coo::X]<<"::"<<pz[0][RefFrame::Coo::Y]<<"::"<<pz[0][RefFrame::Coo::Z]<<ENDL;
+    pz[1] = plane[RefFrame::Direction::Zneg].Intersection( Line(Point(0,0,0),0,0));
+    //COUT(INFO)<<"pZneg::"<<pz[1][RefFrame::Coo::X]<<"::"<<pz[1][RefFrame::Coo::Y]<<"::"<<pz[1][RefFrame::Coo::Z]<<ENDL;
+
+    for (auto idir : RefFrame::Directions) { m[idir]=0; q[idir]=0; }
+    m[RefFrame::Direction::XnegYneg] = tan(plane[RefFrame::Direction::XnegYneg].Azimuth() + M_PI / 2.);
+    q[RefFrame::Direction::XnegYneg] = plane[RefFrame::Direction::XnegYneg].Origin()[RefFrame::Coo::Y] - m[RefFrame::Direction::XnegYneg] * plane[RefFrame::Direction::XnegYneg].Origin()[RefFrame::Coo::X];
+    m[RefFrame::Direction::XposYneg] = tan(plane[RefFrame::Direction::XposYneg].Azimuth() + M_PI / 2.);
+    q[RefFrame::Direction::XposYneg] = plane[RefFrame::Direction::XposYneg].Origin()[RefFrame::Coo::Y] - m[RefFrame::Direction::XposYneg] * plane[RefFrame::Direction::XposYneg].Origin()[RefFrame::Coo::X];
+    m[RefFrame::Direction::XnegYpos] = tan(plane[RefFrame::Direction::XnegYpos].Azimuth() + M_PI / 2.);
+    q[RefFrame::Direction::XnegYpos] = plane[RefFrame::Direction::XnegYpos].Origin()[RefFrame::Coo::Y] - m[RefFrame::Direction::XnegYpos] * plane[RefFrame::Direction::XnegYpos].Origin()[RefFrame::Coo::X];
+    m[RefFrame::Direction::XposYpos] = tan(plane[RefFrame::Direction::XposYpos].Azimuth() + M_PI / 2.);
+    q[RefFrame::Direction::XposYpos] = plane[RefFrame::Direction::XposYpos].Origin()[RefFrame::Coo::Y] - m[RefFrame::Direction::XposYpos] * plane[RefFrame::Direction::XposYpos].Origin()[RefFrame::Coo::X];
+   
+   
+   
+   
+   mXNEGYNEG = tan(plane[RefFrame::Direction::XnegYneg].Azimuth() + M_PI / 2.);
+   qXNEGYNEG = plane[RefFrame::Direction::XnegYneg].Origin()[RefFrame::Coo::Y] - mXNEGYNEG * plane[RefFrame::Direction::XnegYneg].Origin()[RefFrame::Coo::X];
+   mXPOSYNEG = tan(plane[RefFrame::Direction::XposYneg].Azimuth() + M_PI / 2.);
+   qXPOSYNEG = plane[RefFrame::Direction::XposYneg].Origin()[RefFrame::Coo::Y] - mXPOSYNEG * plane[RefFrame::Direction::XposYneg].Origin()[RefFrame::Coo::X];
+   mXNEGYPOS = tan(plane[RefFrame::Direction::XnegYpos].Azimuth() + M_PI / 2.);
+   qXNEGYPOS = plane[RefFrame::Direction::XnegYpos].Origin()[RefFrame::Coo::Y] - mXNEGYPOS * plane[RefFrame::Direction::XnegYpos].Origin()[RefFrame::Coo::X];
+   mXPOSYPOS = tan(plane[RefFrame::Direction::XposYpos].Azimuth() + M_PI / 2.);
+   qXPOSYPOS = plane[RefFrame::Direction::XposYpos].Origin()[RefFrame::Coo::Y] - mXPOSYPOS * plane[RefFrame::Direction::XposYpos].Origin()[RefFrame::Coo::X];
+  
+
+  /* COUT(INFO)<<"mXnegYneg::"<<mXNEGYNEG<<ENDL;
    COUT(INFO)<<"qXnegYneg::"<<qXNEGYNEG<<ENDL;
    COUT(INFO)<<"mXposYneg::"<<mXPOSYNEG<<ENDL;
    COUT(INFO)<<"qXposYneg::"<<qXPOSYNEG<<ENDL;
@@ -152,6 +172,7 @@ auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
    COUT(INFO)<<"qXnegYpos::"<<qXNEGYPOS<<ENDL;
    COUT(INFO)<<"mXposYpos::"<<mXPOSYPOS<<ENDL;
    COUT(INFO)<<"qXposYpos::"<<qXPOSYPOS<<ENDL;
+*/
 
   return true;
 }
@@ -187,20 +208,20 @@ bool CaloGeomFidVolumeAlgo::CheckExt() {
   Plane PlaneY14(Point(0., +_YSideSmall/2.,  _ZCaloCenter), M_PI / 2., M_PI / 2.);       //verify these angles...
 
   //Get Intersection with planes
-  Point intXneg = _Planes[RefFrame::Direction::Xneg].Intersection(track);
-  Point intXpos = _Planes[RefFrame::Direction::Xpos].Intersection(track);
+  Point intXneg = plane[RefFrame::Direction::Xneg].Intersection(track);
+  Point intXpos = plane[RefFrame::Direction::Xpos].Intersection(track);
   Point intX6   = PlaneX6. Intersection(track);
   Point intX14  = PlaneX14.Intersection(track);
-  Point intYneg = _Planes[RefFrame::Direction::Yneg].Intersection(track);
-  Point intYpos = _Planes[RefFrame::Direction::Ypos].Intersection(track);
+  Point intYneg = plane[RefFrame::Direction::Yneg].Intersection(track);
+  Point intYpos = plane[RefFrame::Direction::Ypos].Intersection(track);
   Point intY6   = PlaneY6. Intersection(track);
   Point intY14  = PlaneY14.Intersection(track);
-  Point intXnegYneg = _Planes[RefFrame::Direction::XnegYneg].Intersection(track);
-  Point intXnegYpos = _Planes[RefFrame::Direction::XnegYpos].Intersection(track);
-  Point intXposYneg = _Planes[RefFrame::Direction::XposYneg].Intersection(track);
-  Point intXposYpos = _Planes[RefFrame::Direction::XposYpos].Intersection(track);
-  Point intZneg = _Planes[RefFrame::Direction::Zneg].Intersection(track);
-  Point intZpos = _Planes[RefFrame::Direction::Zpos].Intersection(track);
+  Point intXnegYneg = plane[RefFrame::Direction::XnegYneg].Intersection(track);
+  Point intXnegYpos = plane[RefFrame::Direction::XnegYpos].Intersection(track);
+  Point intXposYneg = plane[RefFrame::Direction::XposYneg].Intersection(track);
+  Point intXposYpos = plane[RefFrame::Direction::XposYpos].Intersection(track);
+  Point intZneg = plane[RefFrame::Direction::Zneg].Intersection(track);
+  Point intZpos = plane[RefFrame::Direction::Zpos].Intersection(track);
   
   _processstore->calofidvolpass=true;
   _processstore->calofidvolalpha=alpha;
@@ -597,113 +618,141 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   Line track(Pos, Mom);
 
   //Get Intersection with planes
-  Point intXneg = _Planes[RefFrame::Direction::Xneg].Intersection(track);
-  Point intXpos = _Planes[RefFrame::Direction::Xpos].Intersection(track);
-  Point intYneg = _Planes[RefFrame::Direction::Yneg].Intersection(track);
-  Point intYpos = _Planes[RefFrame::Direction::Ypos].Intersection(track);
-  Point intXnegYneg = _Planes[RefFrame::Direction::XnegYneg].Intersection(track);
-  Point intXnegYpos = _Planes[RefFrame::Direction::XnegYpos].Intersection(track);
-  Point intXposYneg = _Planes[RefFrame::Direction::XposYneg].Intersection(track);
-  Point intXposYpos = _Planes[RefFrame::Direction::XposYpos].Intersection(track);
-  Point intZneg = _Planes[RefFrame::Direction::Zneg].Intersection(track);
-  Point intZpos = _Planes[RefFrame::Direction::Zpos].Intersection(track);
+  Point intXneg = plane[RefFrame::Direction::Xneg].Intersection(track);
+  Point intXpos = plane[RefFrame::Direction::Xpos].Intersection(track);
+  Point intYneg = plane[RefFrame::Direction::Yneg].Intersection(track);
+  Point intYpos = plane[RefFrame::Direction::Ypos].Intersection(track);
+  Point intXnegYneg = plane[RefFrame::Direction::XnegYneg].Intersection(track);
+  Point intXnegYpos = plane[RefFrame::Direction::XnegYpos].Intersection(track);
+  Point intXposYneg = plane[RefFrame::Direction::XposYneg].Intersection(track);
+  Point intXposYpos = plane[RefFrame::Direction::XposYpos].Intersection(track);
+  Point intZneg = plane[RefFrame::Direction::Zneg].Intersection(track);
+  Point intZpos = plane[RefFrame::Direction::Zpos].Intersection(track);
   
   _processstore->calofidvolpass=true;
   _processstore->calofidvolalpha=alpha;
 
   int nint=0;
   //LATERAL CAP CHECK: XPOS
-  if( intXpos[RefFrame::Coo::Y] < poct[1][RefFrame::Coo::Y]        &&   
-      intXpos[RefFrame::Coo::Y] > poct[2][RefFrame::Coo::Y]        &&   
-      intXpos[RefFrame::Coo::Z] > -_ZCaloHeight + alpha*cubeside   &&   
-      intXpos[RefFrame::Coo::Z] < 0 - alpha*cubeside                ) { nint++;       COUT(INFO)<<"XPOS"<<ENDL;
+  //COUT(INFO)<<intXpos[RefFrame::Coo::X]<<" "<<intXpos[RefFrame::Coo::Y]<<" "<<intXpos[RefFrame::Coo::Z]<<ENDL;
+  FillCoo(intXpos,_processstore->calofidvolxposEntry,0);
+  if( intXpos[RefFrame::Coo::Y] < pxy[1][RefFrame::Coo::Y]        &&   
+      intXpos[RefFrame::Coo::Y] > pxy[2][RefFrame::Coo::Y]        &&   
+      intXpos[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]          &&   
+      intXpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XPOS"<<ENDL;
 }//FillCoo(intXpos,_processstore->calofidvolxposEntry,nintXpos-1); }
 
   //LATERAL CAP CHECK: XNEG
-  if( intXneg[RefFrame::Coo::Y] < poct[6][RefFrame::Coo::Y]        &&   
-      intXneg[RefFrame::Coo::Y] > poct[5][RefFrame::Coo::Y]        &&   
-      intXneg[RefFrame::Coo::Z] > -_ZCaloHeight + alpha*cubeside   &&   
-      intXneg[RefFrame::Coo::Z] < 0 - alpha*cubeside                ) { nint++;       COUT(INFO)<<"XNEG"<<ENDL;
+//COUT(INFO)<<intXneg[RefFrame::Coo::X]<<" "<<intXneg[RefFrame::Coo::Y]<<" "<<intXneg[RefFrame::Coo::Z]<<ENDL;
+  FillCoo(intXneg,_processstore->calofidvolxnegEntry,0);
+  if( intXneg[RefFrame::Coo::Y] < pxy[6][RefFrame::Coo::Y]        &&   
+      intXneg[RefFrame::Coo::Y] > pxy[5][RefFrame::Coo::Y]        &&   
+      intXneg[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]          &&   
+      intXneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XNEG"<<ENDL;
 }//FillCoo(intXneg,_processstore->calofidvolxnegEntry,nintXneg-1); }
 
 //LATERAL CAP CHECK: YPOS
-  if( intYpos[RefFrame::Coo::X] < poct[0][RefFrame::Coo::X]        &&   
-      intYpos[RefFrame::Coo::X] > poct[7][RefFrame::Coo::X]        &&   
-      intYpos[RefFrame::Coo::Z] > -_ZCaloHeight + alpha*cubeside   &&   
-      intYpos[RefFrame::Coo::Z] < 0 - alpha*cubeside                )  { nint++;       COUT(INFO)<<"YPOS"<<ENDL;
+//COUT(INFO)<<intYpos[RefFrame::Coo::X]<<" "<<intYpos[RefFrame::Coo::Y]<<" "<<intYpos[RefFrame::Coo::Z]<<ENDL;
+  FillCoo(intYpos,_processstore->calofidvolyposEntry,0);
+  if( intYpos[RefFrame::Coo::X] < pxy[0][RefFrame::Coo::X]        &&   
+      intYpos[RefFrame::Coo::X] > pxy[7][RefFrame::Coo::X]        &&   
+      intYpos[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]          &&   
+      intYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            )  { nint++;       //COUT(INFO)<<"YPOS"<<ENDL;
 }//FillCoo(intYpos,_processstore->calofidvolyposEntry,nintYpos-1); }
   
 //LATERAL CAP CHECK: YNEG
-  if( intYneg[RefFrame::Coo::X] < poct[3][RefFrame::Coo::X]        &&   
-      intYneg[RefFrame::Coo::X] > poct[4][RefFrame::Coo::X]        &&   
-      intYneg[RefFrame::Coo::Z] > -_ZCaloHeight + alpha*cubeside   &&   
-      intYneg[RefFrame::Coo::Z] < 0. - alpha*cubeside               ) { nint++;       COUT(INFO)<<"YNEG"<<ENDL;
+//COUT(INFO)<<intYneg[RefFrame::Coo::X]<<" "<<intYneg[RefFrame::Coo::Y]<<" "<<intYneg[RefFrame::Coo::Z]<<ENDL;
+  FillCoo(intYneg,_processstore->calofidvolynegEntry,0);
+  if( intYneg[RefFrame::Coo::X] < pxy[3][RefFrame::Coo::X]        &&   
+      intYneg[RefFrame::Coo::X] > pxy[4][RefFrame::Coo::X]        &&   
+      intYneg[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]          &&   
+      intYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"YNEG"<<ENDL;
 }//FillCoo(intYneg,_processstore->calofidvolynegEntry,nintYneg-1); }
 
 //TOP CAP CHECK: ZPOS
   // Assume an octagon
-  if( intZpos[RefFrame::Coo::X] < poct[1][RefFrame::Coo::X]         && 
-      intZpos[RefFrame::Coo::X] > poct[6][RefFrame::Coo::X]         &&  
-      intZpos[RefFrame::Coo::Y] > poct[0][RefFrame::Coo::Y]         && 
-      intZpos[RefFrame::Coo::Y] < poct[7][RefFrame::Coo::Y]         &&  
-      intZpos[RefFrame::Coo::Y] < mXNEGYPOS * intZpos[RefFrame::Coo::X] + qXNEGYPOS  &&
-      intZpos[RefFrame::Coo::Y] < mXPOSYPOS * intZpos[RefFrame::Coo::X] + qXPOSYPOS  &&
-      intZpos[RefFrame::Coo::Y] > mXPOSYNEG * intZpos[RefFrame::Coo::X] + qXPOSYNEG  &&
-      intZpos[RefFrame::Coo::Y] > mXNEGYNEG * intZpos[RefFrame::Coo::X] + qXNEGYNEG     ) { nint++;       COUT(INFO)<<"ZPOS"<<ENDL;
+  //COUT(INFO)<<intZpos[RefFrame::Coo::X]<<" "<<intZpos[RefFrame::Coo::Y]<<" "<<intZpos[RefFrame::Coo::Z]<<ENDL;
+  FillCoo(intZpos,_processstore->calofidvolzposEntry,0);
+  if( intZpos[RefFrame::Coo::X] < pxy[1][RefFrame::Coo::X]         && 
+      intZpos[RefFrame::Coo::X] > pxy[6][RefFrame::Coo::X]         &&  
+      intZpos[RefFrame::Coo::Y] > pxy[4][RefFrame::Coo::Y]         && 
+      intZpos[RefFrame::Coo::Y] < pxy[7][RefFrame::Coo::Y]         &&  
+      //intZpos[RefFrame::Coo::Y] < mXNEGYPOS * intZpos[RefFrame::Coo::X] + qXNEGYPOS  &&
+      //intZpos[RefFrame::Coo::Y] < mXPOSYPOS * intZpos[RefFrame::Coo::X] + qXPOSYPOS  &&
+      //intZpos[RefFrame::Coo::Y] > mXPOSYNEG * intZpos[RefFrame::Coo::X] + qXPOSYNEG  &&
+      //intZpos[RefFrame::Coo::Y] > mXNEGYNEG * intZpos[RefFrame::Coo::X] + qXNEGYNEG     )
+      intZpos[RefFrame::Coo::Y] < m[RefFrame::Direction::XnegYpos] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYpos]  &&
+      intZpos[RefFrame::Coo::Y] < m[RefFrame::Direction::XposYpos] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XposYpos]  &&
+      intZpos[RefFrame::Coo::Y] > m[RefFrame::Direction::XposYneg] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XposYneg]  &&
+      intZpos[RefFrame::Coo::Y] > m[RefFrame::Direction::XnegYneg] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYneg]     )
+       { nint++;      // COUT(INFO)<<"ZPOS"<<ENDL;
 }// FillCoo(intZpos,_processstore->calofidvolzposEntry,nintZpos-1); }    
   //BOTTOM CAP CHECK: ZNEG
   // Assume an octagon
-  if( intZneg[RefFrame::Coo::X] < poct[1][RefFrame::Coo::X]         &&   
-      intZneg[RefFrame::Coo::X] > poct[6][RefFrame::Coo::X]         && 
-      intZneg[RefFrame::Coo::Y] > poct[0][RefFrame::Coo::Y]         && 
-      intZneg[RefFrame::Coo::Y] < poct[7][RefFrame::Coo::Y]         &&  
-      intZneg[RefFrame::Coo::Y] < mXNEGYPOS * intZneg[RefFrame::Coo::X] + qXNEGYPOS  &&
-      intZneg[RefFrame::Coo::Y] < mXPOSYPOS * intZneg[RefFrame::Coo::X] + qXPOSYPOS  &&
-      intZneg[RefFrame::Coo::Y] > mXPOSYNEG * intZneg[RefFrame::Coo::X] + qXPOSYNEG  &&
-      intZneg[RefFrame::Coo::Y] > mXNEGYNEG * intZneg[RefFrame::Coo::X] + qXNEGYNEG     ) { nint++;       COUT(INFO)<<"ZNEG"<<ENDL;
+  //COUT(INFO)<<intZneg[RefFrame::Coo::X]<<" "<<intZneg[RefFrame::Coo::Y]<<" "<<intZneg[RefFrame::Coo::Z]<<ENDL;
+  FillCoo(intZneg,_processstore->calofidvolznegEntry,0);
+  if( intZneg[RefFrame::Coo::X] < pxy[1][RefFrame::Coo::X]         &&   
+      intZneg[RefFrame::Coo::X] > pxy[6][RefFrame::Coo::X]         && 
+      intZneg[RefFrame::Coo::Y] > pxy[4][RefFrame::Coo::Y]         && 
+      intZneg[RefFrame::Coo::Y] < pxy[7][RefFrame::Coo::Y]         &&  
+     // intZneg[RefFrame::Coo::Y] < mXNEGYPOS * intZneg[RefFrame::Coo::X] + qXNEGYPOS  &&
+     // intZneg[RefFrame::Coo::Y] < mXPOSYPOS * intZneg[RefFrame::Coo::X] + qXPOSYPOS  &&
+     // intZneg[RefFrame::Coo::Y] > mXPOSYNEG * intZneg[RefFrame::Coo::X] + qXPOSYNEG  &&
+     // intZneg[RefFrame::Coo::Y] > mXNEGYNEG * intZneg[RefFrame::Coo::X] + qXNEGYNEG     ) { nint++;       //COUT(INFO)<<"ZNEG"<<ENDL;
+      intZneg[RefFrame::Coo::Y] < m[RefFrame::Direction::XnegYpos] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYpos]  &&
+      intZneg[RefFrame::Coo::Y] < m[RefFrame::Direction::XposYpos] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XposYpos]  &&
+      intZneg[RefFrame::Coo::Y] > m[RefFrame::Direction::XposYneg] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XposYneg]  &&
+      intZneg[RefFrame::Coo::Y] > m[RefFrame::Direction::XnegYneg] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYneg]     ) { nint++;       //COUT(INFO)<<"ZNEG"<<ENDL;
 }// FillCoo(intZneg,_processstore->calofidvolznegEntry,nintZneg-1); }      
     
 //CORNER CAP CHECK: XNEGYNEG
-  if( intXnegYneg[RefFrame::Coo::X] > poct[5][RefFrame::Coo::X]         &&   
-      intXnegYneg[RefFrame::Coo::X] < poct[4][RefFrame::Coo::X]         &&   
-      intXnegYneg[RefFrame::Coo::Z] > -_ZCaloHeight   + alpha*cubeside  &&   
-      intXnegYneg[RefFrame::Coo::Z] < 0.              - alpha*cubeside   ) { nint++;      COUT(INFO)<<"XNEG-YNEG"<<ENDL;
+//  COUT(INFO)<<intXnegYneg[RefFrame::Coo::X]<<" "<<intXnegYneg[RefFrame::Coo::Y]<<" "<<intXnegYneg[RefFrame::Coo::Z]<<ENDL;
+  FillCoo(intXnegYneg,_processstore->calofidvolxnegynegEntry,0);
+  if( intXnegYneg[RefFrame::Coo::X] > pxy[5][RefFrame::Coo::X]         &&   
+      intXnegYneg[RefFrame::Coo::X] < pxy[4][RefFrame::Coo::X]         &&   
+      intXnegYneg[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]           &&   
+      intXnegYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;      //COUT(INFO)<<"XNEG-YNEG"<<ENDL;
 }// FillCoo(intXnegYneg,_processstore->calofidvolxnegynegEntry,nintXnegYneg-1); }   
  
 //CORNER CAP CHECK: XPOSYNEG
-  if( intXposYneg[RefFrame::Coo::X] > poct[3][RefFrame::Coo::X]         &&   
-      intXposYneg[RefFrame::Coo::X] < poct[2][RefFrame::Coo::X]         &&   
-      intXposYneg[RefFrame::Coo::Z] > -_ZCaloHeight   + alpha*cubeside  &&   
-      intXposYneg[RefFrame::Coo::Z] < 0.              - alpha*cubeside   ) { nint++;       COUT(INFO)<<"XPOS-YNEG"<<ENDL;
+  FillCoo(intXposYneg,_processstore->calofidvolxposynegEntry,0);
+  if( intXposYneg[RefFrame::Coo::X] > pxy[3][RefFrame::Coo::X]         &&   
+      intXposYneg[RefFrame::Coo::X] < pxy[2][RefFrame::Coo::X]         &&   
+      intXposYneg[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]           &&   
+      intXposYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XPOS-YNEG"<<ENDL;
 }// FillCoo(intXposYneg,_processstore->calofidvolxposynegEntry,nintXposYneg-1); } 
  
 //CORNER CAP CHECK: XNEGYPOS
-  if( intXnegYpos[RefFrame::Coo::X] > poct[6][RefFrame::Coo::X]         &&   
-      intXnegYpos[RefFrame::Coo::X] < poct[7][RefFrame::Coo::X]         &&   
-      intXnegYpos[RefFrame::Coo::Z] > -_ZCaloHeight   + alpha*cubeside  &&   
-      intXnegYpos[RefFrame::Coo::Z] < 0.              - alpha*cubeside   ) { nint++;       COUT(INFO)<<"XNEG-YPOS"<<ENDL;
+  FillCoo(intXnegYpos,_processstore->calofidvolxnegyposEntry,0);
+  if( intXnegYpos[RefFrame::Coo::X] > pxy[6][RefFrame::Coo::X]         &&   
+      intXnegYpos[RefFrame::Coo::X] < pxy[7][RefFrame::Coo::X]         &&   
+      intXnegYpos[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]           &&   
+      intXnegYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XNEG-YPOS"<<ENDL;
 }// FillCoo(intXnegYpos,_processstore->calofidvolxnegyposEntry,nintXnegYpos-1); } 
 
 //CORNER CAP CHECK: XPOSYPOS
-  if( intXposYpos[RefFrame::Coo::X] > poct[0][RefFrame::Coo::X]         &&   
-      intXposYpos[RefFrame::Coo::X] < poct[1][RefFrame::Coo::X]         &&   
-      intXposYpos[RefFrame::Coo::Z] > -_ZCaloHeight   + alpha*cubeside  &&   
-      intXposYpos[RefFrame::Coo::Z] < 0.              - alpha*cubeside   ) { nint++;       COUT(INFO)<<"XPOS-YPOS"<<ENDL;
+//COUT(INFO)<<intXposYpos[RefFrame::Coo::X]<<" "<<intXposYpos[RefFrame::Coo::Y]<<" "<<intXposYpos[RefFrame::Coo::Z]<<ENDL;
+  FillCoo(intXposYpos,_processstore->calofidvolxposyposEntry,0);
+  if( intXposYpos[RefFrame::Coo::X] > pxy[0][RefFrame::Coo::X]         &&   
+      intXposYpos[RefFrame::Coo::X] < pxy[1][RefFrame::Coo::X]         &&   
+      intXposYpos[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]           &&   
+      intXposYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XPOS-YPOS"<<ENDL;
 }// FillCoo(intXposYpos,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
  
-    COUT(INFO)<<nint<<ENDL;
+    //COUT(INFO)<<nint<<ENDL;
 
  if( nint > 2) { return false; }
 
+  if(nint ==1) { COUT(INFO)<<"nint 1"<<ENDL;}
   if( nint == 2) {
     //_processstore->calofidvolxposypos=1; _processstore->calofidvolpass=false;
     SetFilterResult(FilterResult::ACCEPT);
-    _processstore->calofidvolpass=false;
+    _processstore->calofidvolpass=true;
     }
   else
     {
     SetFilterResult(FilterResult::REJECT);
-    _processstore->calofidvolpass=true;
+    _processstore->calofidvolpass=false;
 }
 
   return true;

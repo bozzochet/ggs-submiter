@@ -71,8 +71,11 @@ private:
 
   observer_ptr<EventDataStore> _evStore; ///< Pointer to the event data store.
   //TrackInfoForCalo *_trackInfoCalo; ///< The TrackInfoForCalo object to fill with the computed information.
-  DirectionsArray<Plane> _Planes; ///< The calo surface for each directions.
+  DirectionsArray<Plane> plane; ///< The calo surface for each directions.
+  DirectionsArray<float> m;         
+  DirectionsArray<float> q;
 
+  
   double mXNEGYNEG;
   double qXNEGYNEG;
   double mXPOSYNEG;
@@ -98,19 +101,15 @@ private:
   float alpha;    //fraction of cube size to be contained in the fiducuial volume
   float shrink;   //cubeside*alpha
 
-  std::array<Point,8> poct;
+  std::array<Point,8> pxy;
+  std::array<Point,2> pz;
 
   bool CheckExt();
   bool CheckInt();
   void FillCoo(const Herd::Point p, float coo[2][3], int index);
 
-  // const float _meanActiveFractionZview; // 21*3/73.2; old parameter, not used now
-  // const float _meanActiveFractionXview; // 21*3/79;
-  // const float _meanActiveFractionYview; // 21*3/73.2;
-  //const float _meanVolumeActiveFraction; // (7497*3*3*3)  / ( 33,4×33,2×73,2 + 4×( (79−33,4)×(73,2−33,2)×73,2 )÷2 ) =
-                                         // 0,581323659
-  //const float _LYSO_X0;                 // cm
-};                                      // namespace Herd
+ 
+};                                    
 
 } // namespace Herd
 
