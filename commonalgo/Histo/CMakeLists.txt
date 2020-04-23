@@ -9,6 +9,7 @@ include_directories(${ROOT_INCLUDE_DIRS})
 
 add_library(CommonAlgo  SHARED 
 			EneHisto.cpp
+            MCGenSpectrum.cpp
            )
 
 target_link_libraries(CommonAlgo EACore EAData EAAlgorithm EAUtils EAAnalysis HerdDataObjects ${ROOT_LIBRARIES})

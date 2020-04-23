@@ -9,6 +9,9 @@
 
 #include "dataobjects/CaloGeoParams.h"
 
+//ROOT headers
+#include "TH1F.h"
+
 using namespace EA;
 
 namespace Herd{
@@ -36,11 +39,13 @@ private:
   bool DummyCaloCluster();
   bool BuildAxis(CaloHits);
 
+  float edepthreshold;
 
   //Store pointer
   std::shared_ptr<CaloAxisStore> _processstore;
   CaloHits calohits;
 
+  std::shared_ptr<TH1F> hhitedep;
 
   // Utility variables
   observer_ptr<EventDataStore> _evStore; // Pointer to the event data store
@@ -68,7 +73,6 @@ private:
   // Created global objects
  
 
-  // Utility variables
 };
 
 #endif /* CALOAXIS_H_ */

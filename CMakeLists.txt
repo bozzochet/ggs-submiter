@@ -62,6 +62,7 @@ set(MY_PUBLIC_HEADERS
   commonalgo/Calo/CaloGlob.h
   commonalgo/Calo/CaloAxis.h
   commonalgo/Histo/EneHisto.h
+  commonalgo/Histo/MCGenSpectrum.h
 
 )
 

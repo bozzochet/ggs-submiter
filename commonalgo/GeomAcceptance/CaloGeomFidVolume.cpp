@@ -639,7 +639,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   if( intXpos[RefFrame::Coo::Y] < pxy[1][RefFrame::Coo::Y]        &&   
       intXpos[RefFrame::Coo::Y] > pxy[2][RefFrame::Coo::Y]        &&   
       intXpos[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]          &&   
-      intXpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XPOS"<<ENDL;
+      intXpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++; _processstore->calofidvolxpos=1;      //COUT(INFO)<<"XPOS"<<ENDL;
 }//FillCoo(intXpos,_processstore->calofidvolxposEntry,nintXpos-1); }
 
   //LATERAL CAP CHECK: XNEG
@@ -648,7 +648,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   if( intXneg[RefFrame::Coo::Y] < pxy[6][RefFrame::Coo::Y]        &&   
       intXneg[RefFrame::Coo::Y] > pxy[5][RefFrame::Coo::Y]        &&   
       intXneg[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]          &&   
-      intXneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XNEG"<<ENDL;
+      intXneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++; _processstore->calofidvolxneg=1;      //COUT(INFO)<<"XNEG"<<ENDL;
 }//FillCoo(intXneg,_processstore->calofidvolxnegEntry,nintXneg-1); }
 
 //LATERAL CAP CHECK: YPOS
@@ -657,7 +657,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   if( intYpos[RefFrame::Coo::X] < pxy[0][RefFrame::Coo::X]        &&   
       intYpos[RefFrame::Coo::X] > pxy[7][RefFrame::Coo::X]        &&   
       intYpos[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]          &&   
-      intYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            )  { nint++;       //COUT(INFO)<<"YPOS"<<ENDL;
+      intYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            )  { nint++; _processstore->calofidvolypos=1;      //COUT(INFO)<<"YPOS"<<ENDL;
 }//FillCoo(intYpos,_processstore->calofidvolyposEntry,nintYpos-1); }
   
 //LATERAL CAP CHECK: YNEG
@@ -666,7 +666,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   if( intYneg[RefFrame::Coo::X] < pxy[3][RefFrame::Coo::X]        &&   
       intYneg[RefFrame::Coo::X] > pxy[4][RefFrame::Coo::X]        &&   
       intYneg[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]          &&   
-      intYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"YNEG"<<ENDL;
+      intYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++; _processstore->calofidvolyneg=1;      //COUT(INFO)<<"YNEG"<<ENDL;
 }//FillCoo(intYneg,_processstore->calofidvolynegEntry,nintYneg-1); }
 
 //TOP CAP CHECK: ZPOS
@@ -684,8 +684,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
       intZpos[RefFrame::Coo::Y] < m[RefFrame::Direction::XnegYpos] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYpos]  &&
       intZpos[RefFrame::Coo::Y] < m[RefFrame::Direction::XposYpos] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XposYpos]  &&
       intZpos[RefFrame::Coo::Y] > m[RefFrame::Direction::XposYneg] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XposYneg]  &&
-      intZpos[RefFrame::Coo::Y] > m[RefFrame::Direction::XnegYneg] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYneg]     )
-       { nint++;      // COUT(INFO)<<"ZPOS"<<ENDL;
+      intZpos[RefFrame::Coo::Y] > m[RefFrame::Direction::XnegYneg] * intZpos[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYneg]     ) { nint++; _processstore->calofidvolzpos=1;     // COUT(INFO)<<"ZPOS"<<ENDL;
 }// FillCoo(intZpos,_processstore->calofidvolzposEntry,nintZpos-1); }    
   //BOTTOM CAP CHECK: ZNEG
   // Assume an octagon
@@ -702,7 +701,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
       intZneg[RefFrame::Coo::Y] < m[RefFrame::Direction::XnegYpos] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYpos]  &&
       intZneg[RefFrame::Coo::Y] < m[RefFrame::Direction::XposYpos] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XposYpos]  &&
       intZneg[RefFrame::Coo::Y] > m[RefFrame::Direction::XposYneg] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XposYneg]  &&
-      intZneg[RefFrame::Coo::Y] > m[RefFrame::Direction::XnegYneg] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYneg]     ) { nint++;       //COUT(INFO)<<"ZNEG"<<ENDL;
+      intZneg[RefFrame::Coo::Y] > m[RefFrame::Direction::XnegYneg] * intZneg[RefFrame::Coo::X] + q[RefFrame::Direction::XnegYneg]     ) { nint++;  _processstore->calofidvolzneg=1;     //COUT(INFO)<<"ZNEG"<<ENDL;
 }// FillCoo(intZneg,_processstore->calofidvolznegEntry,nintZneg-1); }      
     
 //CORNER CAP CHECK: XNEGYNEG
@@ -711,7 +710,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   if( intXnegYneg[RefFrame::Coo::X] > pxy[5][RefFrame::Coo::X]         &&   
       intXnegYneg[RefFrame::Coo::X] < pxy[4][RefFrame::Coo::X]         &&   
       intXnegYneg[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]           &&   
-      intXnegYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;      //COUT(INFO)<<"XNEG-YNEG"<<ENDL;
+      intXnegYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++; _processstore->calofidvolxnegyneg=1;    //COUT(INFO)<<"XNEG-YNEG"<<ENDL;
 }// FillCoo(intXnegYneg,_processstore->calofidvolxnegynegEntry,nintXnegYneg-1); }   
  
 //CORNER CAP CHECK: XPOSYNEG
@@ -719,7 +718,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   if( intXposYneg[RefFrame::Coo::X] > pxy[3][RefFrame::Coo::X]         &&   
       intXposYneg[RefFrame::Coo::X] < pxy[2][RefFrame::Coo::X]         &&   
       intXposYneg[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]           &&   
-      intXposYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XPOS-YNEG"<<ENDL;
+      intXposYneg[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++; _processstore->calofidvolxposyneg=1;     //COUT(INFO)<<"XPOS-YNEG"<<ENDL;
 }// FillCoo(intXposYneg,_processstore->calofidvolxposynegEntry,nintXposYneg-1); } 
  
 //CORNER CAP CHECK: XNEGYPOS
@@ -727,7 +726,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   if( intXnegYpos[RefFrame::Coo::X] > pxy[6][RefFrame::Coo::X]         &&   
       intXnegYpos[RefFrame::Coo::X] < pxy[7][RefFrame::Coo::X]         &&   
       intXnegYpos[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]           &&   
-      intXnegYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XNEG-YPOS"<<ENDL;
+      intXnegYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++; _processstore->calofidvolxnegypos=1;     //COUT(INFO)<<"XNEG-YPOS"<<ENDL;
 }// FillCoo(intXnegYpos,_processstore->calofidvolxnegyposEntry,nintXnegYpos-1); } 
 
 //CORNER CAP CHECK: XPOSYPOS
@@ -736,7 +735,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   if( intXposYpos[RefFrame::Coo::X] > pxy[0][RefFrame::Coo::X]         &&   
       intXposYpos[RefFrame::Coo::X] < pxy[1][RefFrame::Coo::X]         &&   
       intXposYpos[RefFrame::Coo::Z] > pz[1][RefFrame::Coo::Z]           &&   
-      intXposYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++;       //COUT(INFO)<<"XPOS-YPOS"<<ENDL;
+      intXposYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++; _processstore->calofidvolxposypos=1;      //COUT(INFO)<<"XPOS-YPOS"<<ENDL;
 }// FillCoo(intXposYpos,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
  
     //COUT(INFO)<<nint<<ENDL;
