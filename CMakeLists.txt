@@ -61,6 +61,8 @@ set(MY_PUBLIC_HEADERS
   commonalgo/GeomAcceptance/CaloGeomFidVolume.h
   commonalgo/Calo/CaloGlob.h
   commonalgo/Calo/CaloAxis.h
+  commonalgo/Calo/CaloAxisInfo.h
+  commonalgo/Calo/CaloTest.h
   commonalgo/Histo/EneHisto.h
   commonalgo/Histo/MCGenSpectrum.h
 

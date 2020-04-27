@@ -6,7 +6,7 @@
 // HerdSoftware headers                                                                                                                                                         
 #include "dataobjects/CaloClusters.h"
 #include "dataobjects/CaloHits.h"
-
+#include "CaloAxisInfo.h"
 #include "dataobjects/CaloGeoParams.h"
 
 //ROOT headers
@@ -28,23 +28,26 @@ public:
 
   bool Finalize();
 
+/*
   Point ShowerCOG;
   Point ShowerDir;
   std::vector<double> ShowerEigenvalues;
   std::vector<Vec3D> ShowerEigenvectors;
-  
+  */
 
 private:
   bool filterenable;
+  bool process_clusters;
   bool DummyCaloCluster();
   bool BuildAxis(CaloHits);
+  bool BuildAxis(CaloClusters);
 
   float edepthreshold;
 
   //Store pointer
   std::shared_ptr<CaloAxisStore> _processstore;
   CaloHits calohits;
-
+  std::vector<CaloAxisInfo> caloaxisinfos;
   std::shared_ptr<TH1F> hhitedep;
 
   // Utility variables

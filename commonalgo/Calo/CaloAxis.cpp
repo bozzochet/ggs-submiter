@@ -18,9 +18,11 @@ RegisterAlgorithm(CaloAxisStore);
 
 CaloAxis::CaloAxis(const std::string &name) :
   Algorithm{name},
-  filterenable{true}
+  filterenable{true},
+  process_clusters{true}
    {
     DefineParameter("filterenable",  filterenable); 
+    DefineParameter("process_clusters", process_clusters);
     DefineParameter("edepthreshold", edepthreshold);
   }
 
@@ -51,25 +53,31 @@ bool CaloAxis::Process() {
   SetFilterResult(FilterResult::ACCEPT);
 
   //Set vector sizes
-  ShowerEigenvalues.clear();
-  ShowerEigenvectors.clear();
+  caloaxisinfos.clear();
+  //ShowerEigenvalues.clear();
+  //ShowerEigenvectors.clear();
 
-  auto calohits = _evStore->GetObject<CaloHits>("caloHitsMC");
-  BuildAxis( *calohits );
-  //for(int i=0; i<3; i++) printf("[%d] %f {%f %f %f}\n",i, ShowerEigenvalues[i], ShowerEigenvectors.at(i)[RefFrame::Coo::X],ShowerEigenvectors.at(i)[RefFrame::Coo::Y],ShowerEigenvectors.at(i)[RefFrame::Coo::Z]);
-
-  _processstore->caloaxiscog[0] = (float)ShowerCOG[RefFrame::Coo::X];
-  _processstore->caloaxiscog[1] = (float)ShowerCOG[RefFrame::Coo::Y];
-  _processstore->caloaxiscog[2] = (float)ShowerCOG[RefFrame::Coo::Z];
-  _processstore->caloaxisdir[0] = (float)ShowerDir[RefFrame::Coo::X];
-  _processstore->caloaxisdir[1] = (float)ShowerDir[RefFrame::Coo::Y];
-  _processstore->caloaxisdir[2] = (float)ShowerDir[RefFrame::Coo::Z];
+  if( process_clusters ){
+    auto caloclusters = _evStore->GetObject<CaloClusters>("caloClusters");
+    if (!_globStore) {COUT(ERROR) << "Global data store not found." << ENDL; return false;}
+    BuildAxis( *caloclusters );
+  }
+  else{
+    auto calohits = _evStore->GetObject<CaloHits>("caloHitsMC");
+    BuildAxis( *calohits );
+  }
+  _processstore->caloaxiscog[0] = (float)caloaxisinfos.at(0).ShowerCOG[RefFrame::Coo::X];
+  _processstore->caloaxiscog[1] = (float)caloaxisinfos.at(0).ShowerCOG[RefFrame::Coo::Y];
+  _processstore->caloaxiscog[2] = (float)caloaxisinfos.at(0).ShowerCOG[RefFrame::Coo::Z];
+  _processstore->caloaxisdir[0] = (float)caloaxisinfos.at(0).ShowerDir[RefFrame::Coo::X];
+  _processstore->caloaxisdir[1] = (float)caloaxisinfos.at(0).ShowerDir[RefFrame::Coo::Y];
+  _processstore->caloaxisdir[2] = (float)caloaxisinfos.at(0).ShowerDir[RefFrame::Coo::Z];
   for(int i=0; i<3; i++)
     {
-     _processstore->caloaxiseigval[i]    = (float)ShowerEigenvalues[i];
-     _processstore->caloaxiseigvec[i][0] = (float)ShowerEigenvectors[i][RefFrame::Coo::X];
-     _processstore->caloaxiseigvec[i][1] = (float)ShowerEigenvectors[i][RefFrame::Coo::Y];
-     _processstore->caloaxiseigvec[i][2] = (float)ShowerEigenvectors[i][RefFrame::Coo::Z];
+     _processstore->caloaxiseigval[i]    = (float)caloaxisinfos.at(0).ShowerEigenvalues[i];
+     _processstore->caloaxiseigvec[i][0] = (float)caloaxisinfos.at(0).ShowerEigenvectors[i][RefFrame::Coo::X];
+     _processstore->caloaxiseigvec[i][1] = (float)caloaxisinfos.at(0).ShowerEigenvectors[i][RefFrame::Coo::Y];
+     _processstore->caloaxiseigvec[i][2] = (float)caloaxisinfos.at(0).ShowerEigenvectors[i][RefFrame::Coo::Z];
     }
   return true;
 }
@@ -79,13 +87,22 @@ bool CaloAxis::DummyCaloCluster(){
   return true;     
 }
 
+bool CaloAxis::BuildAxis(CaloClusters caloclusters){
+
+  for( auto const& calohits: caloclusters){
+    BuildAxis(calohits);
+  }
+
+  return true;
+}
+
 bool CaloAxis::BuildAxis(CaloHits calohits){
   const std::string routineName("CaloAxis::BuildAxis");
 
   auto caloGeoParams = _globStore->GetObject<CaloGeoParams>("caloGeoParams");
 
-  //std::vector<std::vector<double>> x;
   std::vector<std::array<double,4>> x;
+  CaloAxisInfo caloaxisinfo;
 
 
   //Loop on hits, select hits with edep>threshold and create a vector containing coordinates [0,1,2] and weigths [3]
@@ -115,14 +132,8 @@ bool CaloAxis::BuildAxis(CaloHits calohits){
   }  
   //Here we assume that calo hits are uncorrelated, so the covariance matrix is diagonal
 
-  //Calculate the sum of weigths
-  //double sumw=0; for(int i=0; i<n; i++) { sumw += x[i][3]; }
-
-  //renormalize the weigths such that sum(weigths)=1
-  //for(int i=0; i<n; i++) sumw /= x[i][3];
-
   //Calculate the centroid of the energy deposit
-  std::array<double,3> cog = {0,0,0}; //for(int j=0; j<3; j++){ cog.push_back(0); }
+  std::array<double,3> cog = {0,0,0}; 
   for(int i=0; i<n; i++) { for(int j=0; j<3; j++) { cog[j] += (1/sumw) * x[i][3] * x[i][j]; } }// printf("%f %f\n", x[i][j], cog[j]);} 
     
   //Reposition the hit point to the energy centroid
@@ -202,21 +213,23 @@ printf("%f %f\n", Xt[2][40], X[40][2]);
   */
 
   //Store values to containers
-  ShowerCOG[RefFrame::Coo::X] = cog[0];
-  ShowerCOG[RefFrame::Coo::Y] = cog[1];
-  ShowerCOG[RefFrame::Coo::Z] = cog[2];
+  caloaxisinfo.ShowerCOG[RefFrame::Coo::X] = cog[0];
+  caloaxisinfo.ShowerCOG[RefFrame::Coo::Y] = cog[1];
+  caloaxisinfo.ShowerCOG[RefFrame::Coo::Z] = cog[2];
 
   double mag=0; for(int i=0; i<3; i++) mag+= pow(eigvec.at(0).second[i],2); mag=sqrt(mag); 
-  ShowerDir[RefFrame::Coo::X] = eigvec.at(0).second[0]/mag;
-  ShowerDir[RefFrame::Coo::Y] = eigvec.at(0).second[1]/mag;
-  ShowerDir[RefFrame::Coo::Z] = eigvec.at(0).second[2]/mag;
+  caloaxisinfo.ShowerDir[RefFrame::Coo::X] = eigvec.at(0).second[0]/mag;
+  caloaxisinfo.ShowerDir[RefFrame::Coo::Y] = eigvec.at(0).second[1]/mag;
+  caloaxisinfo.ShowerDir[RefFrame::Coo::Z] = eigvec.at(0).second[2]/mag;
 
-  for(int i=0; i<3; i++) ShowerEigenvalues.push_back( eigvec.at(i).first );
+  for(int i=0; i<3; i++) caloaxisinfo.ShowerEigenvalues.push_back( eigvec.at(i).first );
   for(int i=0; i<3; i++) { 
     Vec3D v(eigvec.at(i).second[0],eigvec.at(i).second[1],eigvec.at(i).second[2]);
-    ShowerEigenvectors.push_back(v); }
+    caloaxisinfo.ShowerEigenvectors.push_back(v); }
   
+  caloaxisinfos.push_back(std::move(caloaxisinfo));
   x.clear();
+
   return true;
 }
 

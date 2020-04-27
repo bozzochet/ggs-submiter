@@ -97,6 +97,8 @@ bool TreePersistence::Connect() {
 if(bookCaloGlob){
   _outputTree->Branch("calonhits",     &(calonhits),    "calonhits/I");
   _outputTree->Branch("calototedep",   &(calototedep),  "calototedep/F");
+  _outputTree->Branch("calonclusters", &(calonclusters),"calonclusters/I");
+
 }
 
 if(bookCaloAxis){
@@ -228,6 +230,7 @@ if( bookCaloGeomFidVolume )
     {
       calonhits = caloGlobStore->calonhits;
       calototedep = caloGlobStore->calototedep;
+      calonclusters = caloGlobStore->calonclusters;
       //
       caloGlobStore->Reset();
      }

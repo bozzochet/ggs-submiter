@@ -13,6 +13,8 @@ add_library(CommonAlgo  SHARED
                         TreePersistence/TreePersistence.cpp
 			Calo/CaloGlob.cpp
                         Calo/CaloAxis.cpp
+                        Calo/CaloAxisInfo.cpp
+                        Calo/CaloTest.cpp
                         Histo/EneHisto.cpp
                         Histo/MCGenSpectrum.cpp
            )

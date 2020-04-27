@@ -47,7 +47,8 @@ public:
 
   int calonhits;
   float calototedep;
-
+  int calonclusters;
+  
 private:
   // Algorithm parameters
   // Created global objects

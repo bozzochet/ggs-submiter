@@ -92,7 +92,8 @@ private:
   bool bookCaloGlob;
   int calonhits;
   float calototedep;
-
+  int calonclusters;
+  
   bool bookCaloAxis;
   float caloaxiscog[3];
   float caloaxisdir[3];

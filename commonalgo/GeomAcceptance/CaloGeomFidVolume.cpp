@@ -617,6 +617,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   const Point &Pos    = mcTruth->primaries[0].initialPosition;
   Line track(Pos, Mom);
 
+  
   //Get Intersection with planes
   Point intXneg = plane[RefFrame::Direction::Xneg].Intersection(track);
   Point intXpos = plane[RefFrame::Direction::Xpos].Intersection(track);
@@ -738,12 +739,13 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
       intXposYpos[RefFrame::Coo::Z] < pz[0][RefFrame::Coo::Z]            ) { nint++; _processstore->calofidvolxposypos=1;      //COUT(INFO)<<"XPOS-YPOS"<<ENDL;
 }// FillCoo(intXposYpos,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
  
-    //COUT(INFO)<<nint<<ENDL;
-
- if( nint > 2) { return false; }
+     
+ if( nint > 2) {
+   COUT(INFO)<<GetEventLoopProxy()->GetCurrentEvent()<<"::Intersections_Found::"<<nint<<"  --- Maybe_A_Corner?"<<ENDL;
+  }
 
   if(nint ==1) { COUT(INFO)<<"nint 1"<<ENDL;}
-  if( nint == 2) {
+  if( nint > 1) {
     //_processstore->calofidvolxposypos=1; _processstore->calofidvolpass=false;
     SetFilterResult(FilterResult::ACCEPT);
     _processstore->calofidvolpass=true;
