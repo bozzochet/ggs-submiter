@@ -56,16 +56,16 @@ bool CaloGlob::Process() {
   if (!caloHits) { COUT(DEBUG) << "CaloHitsMC not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
   auto caloGeoParams = globStore->GetObject<Herd::CaloGeoParams>("caloGeoParams");
   if (!caloGeoParams) { COUT(DEBUG) << "caloGeoParams not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
-  auto caloClusters = _evStore->GetObject<Herd::CaloClusters>("caloClusters");
-  if (!caloClusters) { COUT(DEBUG) << "caloClusters not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
+  //auto caloClusters = _evStore->GetObject<Herd::CaloClusters>("caloClusters");
+  //if (!caloClusters) { COUT(DEBUG) << "caloClusters not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
 
 
   float calototedep = std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
   int calonhits =     std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; });
   _processstore->calonhits = calonhits;
   _processstore->calototedep = calototedep;
-  COUT(INFO)<<caloClusters->size()<<ENDL;
-  if( caloClusters ) _processstore->calonclusters = (int)caloClusters->size();
+  //COUT(INFO)<<caloClusters->size()<<ENDL;
+  //if( caloClusters ) _processstore->calonclusters = (int)caloClusters->size();
 
   if(calohitscutmc){
     auto mcTruth = _evStore->GetObject<Herd::MCTruth>("mcTruth");

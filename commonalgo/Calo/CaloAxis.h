@@ -67,7 +67,8 @@ public:
 
   bool Reset();
 
- float caloaxiscog[3];
+  unsigned short caloaxishits;
+  float caloaxiscog[3];
   float caloaxisdir[3];
   float caloaxiseigval[3];
   float caloaxiseigvec[3][3];

@@ -82,6 +82,8 @@ EventLoop #0 1000
 
 	Algo CaloAxis caloAxis
 	     Set edepthreshold 0.020 #GeV        
+	     Set process_clusters false
+
         Algo TreePersistenceHelper treePersistenceHelper
  	     Set FillTreeThisEvent true
 	

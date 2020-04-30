@@ -95,6 +95,7 @@ private:
   int calonclusters;
   
   bool bookCaloAxis;
+  unsigned short caloaxishits;
   float caloaxiscog[3];
   float caloaxisdir[3];
   float caloaxiseigval[3];

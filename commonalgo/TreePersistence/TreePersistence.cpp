@@ -102,6 +102,7 @@ if(bookCaloGlob){
 }
 
 if(bookCaloAxis){
+  _outputTree->Branch("caloaxishits",    &(caloaxishits),      "caloaxishits/s");
   _outputTree->Branch("caloaxiscog",     &(caloaxiscog[0]),    "caloaxiscog[3]/F");
   _outputTree->Branch("caloaxisdir",     &(caloaxisdir[0]),    "caloaxisdir[3]/F");
   _outputTree->Branch("caloaxiseigval",  &(caloaxiseigval[0]), "caloaxiseigval[3]/F");
@@ -240,6 +241,7 @@ if( bookCaloGeomFidVolume )
     auto caloAxisStore = _evStore->GetObject<Herd::CaloAxisStore>("CaloAxisStore");
     if(caloAxisStore)
     {
+      caloaxishits = caloAxisStore->caloaxishits;
       for(int i=0; i<3; i++){
         caloaxiscog[i] = caloAxisStore->caloaxiscog[i];
         caloaxisdir[i] = caloAxisStore->caloaxisdir[i];

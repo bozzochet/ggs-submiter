@@ -65,6 +65,7 @@ set(MY_PUBLIC_HEADERS
   commonalgo/Calo/CaloTest.h
   commonalgo/Histo/EneHisto.h
   commonalgo/Histo/MCGenSpectrum.h
+  commonalgo/Histo/CaloClusteringHisto.h
 
 )
 

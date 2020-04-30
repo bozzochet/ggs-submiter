@@ -3,8 +3,8 @@
 USER=`whoami`
 
 #NAME="protons_10GeV_10000GeV_E-1"
-#NAME="electrons_1000GeV_10000GeV_E-1"
-NAME="electrons_sphere_10GeV_1000GeV_E-1"
+NAME="electrons_1000GeV_10000GeV_E-1"
+#NAME="electrons_sphere_10GeV_1000GeV_E-1"
 WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Particles/
 SUBMITDIR=${WORKDIR}/submit/htc
 
@@ -34,8 +34,8 @@ rm -fv ${LOGFILE}
 GEOMETRY=${HERDINSTALL}/plugin/libHerdMCParametricGeo.so
 GEODATACARD=${WORKDIR}/geometry.mac
 #DATACARD=${WORKDIR}/protons.mac
-#DATACARD=${WORKDIR}/electrons_1000GeV_10000GeV.mac
-DATACARD=${WORKDIR}/electrons.mac
+DATACARD=${WORKDIR}/electrons_1000GeV_10000GeV.mac
+#DATACARD=${WORKDIR}/electrons.mac
 OUTPUT=${OUTDIR}/${NAME}_${ii}_${SEED1}_${SEED2}.root
 
 cp -v ${JOBTEMPLATE}                        ${JOB}

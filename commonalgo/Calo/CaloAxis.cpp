@@ -66,6 +66,8 @@ bool CaloAxis::Process() {
     auto calohits = _evStore->GetObject<CaloHits>("caloHitsMC");
     BuildAxis( *calohits );
   }
+
+  _processstore->caloaxishits   = (unsigned int)caloaxisinfos.at(0).ShowerHits;
   _processstore->caloaxiscog[0] = (float)caloaxisinfos.at(0).ShowerCOG[RefFrame::Coo::X];
   _processstore->caloaxiscog[1] = (float)caloaxisinfos.at(0).ShowerCOG[RefFrame::Coo::Y];
   _processstore->caloaxiscog[2] = (float)caloaxisinfos.at(0).ShowerCOG[RefFrame::Coo::Z];
@@ -115,18 +117,17 @@ bool CaloAxis::BuildAxis(CaloHits calohits){
   for (auto &hit : calohits) {
     
     if(hit.EDep() > edepthreshold){
-      std::array<double,4> x_i;
+      //std::array<double,4> x_i;
       Point pos = caloGeoParams->Position(hit.VolumeID());
-      x_i[0] = (pos[RefFrame::Coo::X]);
-      x_i[1] = (pos[RefFrame::Coo::Y]);
-      x_i[2] = (pos[RefFrame::Coo::Z]);
-      x_i[3] = (hit.EDep());
+      //x_i[0] = (pos[RefFrame::Coo::X]);
+      //x_i[1] = (pos[RefFrame::Coo::Y]);
+      //x_i[2] = (pos[RefFrame::Coo::Z]);
+      //x_i[3] = (hit.EDep());
       hhitedep->Fill( log10(hit.EDep()));
 
-      //if( hit.EDep()>pow(10,-3) && hit.EDep()<pow(10,-2.99)) COUT(INFO)<<hit.EDep()<<" "<<x_i[0]<<" "<<x_i[1]<<" "<<x_i[2]<<ENDL;
-
-      x.push_back(x_i);
-      sumw += x_i[3];
+      //x.push_back(x_i);
+      x.push_back(std::array<double,4>{pos[RefFrame::Coo::X],pos[RefFrame::Coo::Y],pos[RefFrame::Coo::Z],hit.EDep()});
+      sumw += hit.EDep();
       n++;
     }
   }  
@@ -213,6 +214,8 @@ printf("%f %f\n", Xt[2][40], X[40][2]);
   */
 
   //Store values to containers
+  caloaxisinfo.ShowerHits = (unsigned int)n;
+
   caloaxisinfo.ShowerCOG[RefFrame::Coo::X] = cog[0];
   caloaxisinfo.ShowerCOG[RefFrame::Coo::Y] = cog[1];
   caloaxisinfo.ShowerCOG[RefFrame::Coo::Z] = cog[2];
@@ -268,16 +271,17 @@ CaloAxisStore::CaloAxisStore(const std::string &name) :
 bool CaloAxisStore::Reset() {
   const std::string routineName("CaloAxisStore::Finalize");
 
-for(int i=0; i<3; i++){
-  caloaxiscog[i] = -999.;
-  caloaxisdir[i] = -999.;
-  caloaxiseigval[i] = -999.;
+  caloaxishits=0;
+  for(int i=0; i<3; i++){
+    caloaxiscog[i] = -999.;
+    caloaxisdir[i] = -999.;
+    caloaxiseigval[i] = -999.;
 
-  for(int j=0; j<3; j++)
-    {
-    caloaxiseigvec[i][j] = -999.;
+    for(int j=0; j<3; j++)
+      {
+      caloaxiseigvec[i][j] = -999.;
+      }
     }
-  }
 
   return true;
 }

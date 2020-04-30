@@ -25,7 +25,8 @@ namespace Herd {
  *
  */
 struct CaloAxisInfo {
-
+  
+  unsigned short ShowerHits;                           ///Number of hits used for shower axis reconstruction
   Point ShowerCOG;                          ///Shower Center of Gravity
   Point ShowerDir;                          ///Shower axis Directions
   std::vector<double> ShowerEigenvalues;    ///Eigenvalues of Shower Covariance matrix

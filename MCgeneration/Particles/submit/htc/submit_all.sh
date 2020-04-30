@@ -1,6 +1,6 @@
 #!/bin/bash
 
-N=50
+N=150
 i=0
 
 while [ ${i} -lt ${N} ]

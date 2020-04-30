@@ -11,6 +11,7 @@ namespace Herd {
 
 void CaloAxisInfo::Reset() {
   
+  ShowerHits = 0;
   ShowerCOG = Point();        
   ShowerDir = Point();            
   ShowerEigenvalues.clear();  
