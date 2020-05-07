@@ -12,12 +12,12 @@
   TFile *fx0[nx0];
   TFile *fth[nth];
   for(int ix0=0; ix0<nx0; ix0++){
-    fx0[ix0] = TFile::Open( Form("fout.x0_%02d.root",x0[ix0]) );
-    //fx0[ix0] = TFile::Open( Form("fout.prox0_%02d.root",x0[ix0]) );
+    //fx0[ix0] = TFile::Open( Form("fout.x0_%02d.root",x0[ix0]) );
+    fx0[ix0] = TFile::Open( Form("fout.pro.x0_%02d.root",x0[ix0]) );
   }
   for(int ith=0; ith<nth; ith++){
-    //fth[ith] = TFile::Open( Form("fout.pro.edepthreshold_%.3f.root",th[ith]) );
-    fth[ith] = TFile::Open( Form("fout.edepthreshold_%.3f.root",th[ith]) );
+    fth[ith] = TFile::Open( Form("fout.pro.edepthreshold_%.3f.root",th[ith]) );
+    //fth[ith] = TFile::Open( Form("fout.edepthreshold_%.3f.root",th[ith]) );
   }
   
   TH1F *hdiffx0[nx0][nene];
@@ -65,10 +65,10 @@
   }
 
   TCanvas *cangresx0 = new TCanvas("cangresx0","cangresx0"); cangresx0->cd(1)->SetLogx();  cangresx0->cd(1)->SetTicks();
-  TH2F *h2 = new TH2F("h2",";Energy (GeV) [MC];Ang. Resolution (deg)",100,10,10000,100,0,10); h2->SetStats(0); h2->Draw("");
+  TH2F *h2 = new TH2F("h2",";Energy (GeV) [MC];Ang. Resolution (deg)",100,10,10000,100,0,30); h2->SetStats(0); h2->Draw("");
   for(int ix0=0; ix0<nx0; ix0++){
     gdiff68x0[ix0]->Draw("P"); gdiff68x0[ix0]->SetLineColor( icolor[ix0*2] ); gdiff68x0[ix0]->SetMarkerColor( icolor[ix0*2] );
-    gdiff95x0[ix0]->Draw("P"); gdiff95x0[ix0]->SetLineColor( icolor[ix0*2] ); gdiff95x0[ix0]->SetMarkerColor( icolor[ix0*2] ); gdiff95x0[ix0]->SetMarkerStyle( 21 );
+    //gdiff95x0[ix0]->Draw("P"); gdiff95x0[ix0]->SetLineColor( icolor[ix0*2] ); gdiff95x0[ix0]->SetMarkerColor( icolor[ix0*2] ); gdiff95x0[ix0]->SetMarkerStyle( 21 );
   }
   
   TCanvas *cangresth = new TCanvas("cangresth","cangresth"); cangresth->cd(1)->SetLogx();  cangresth->cd(1)->SetTicks();

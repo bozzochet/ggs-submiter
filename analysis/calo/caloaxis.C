@@ -44,7 +44,10 @@ short calofidvolxposypos;
 
 int calonhits;      
 float calototedep;
+short calonmiphitsontrack;
+float calomiptrack;
 
+unsigned short caloaxishits;
 float caloaxiscog[3];
 float caloaxisdir[3];
 float caloaxiseigval[3];
@@ -150,12 +153,14 @@ int caloaxis( const char* filename, int save=1, const double x0=30 ){
   t->SetBranchAddress("calofidvolxnegypos",&calofidvolxnegypos);
   t->SetBranchAddress("calofidvolxposypos",&calofidvolxposypos);
 
-  t->SetBranchAddress("calonhits",&calonhits);
-  t->SetBranchAddress("calototedep",&calototedep);
-
-  t->SetBranchAddress("caloaxiscog",&caloaxiscog);
-  t->SetBranchAddress("caloaxisdir",&caloaxisdir);
-  t->SetBranchAddress("caloaxisdir",&caloaxisdir);;
+  t->SetBranchAddress("calonhits",           &calonhits);
+  t->SetBranchAddress("calototedep",         &calototedep);
+  t->SetBranchAddress("calonmiphitsontrack", &calonmiphitsontrack);
+  t->SetBranchAddress("calomiptrack",        &calomiptrack);
+  
+  t->SetBranchAddress("caloaxishits",   &caloaxishits);
+  t->SetBranchAddress("caloaxiscog",    &caloaxiscog);
+  t->SetBranchAddress("caloaxisdir",    &caloaxisdir);;
   t->SetBranchAddress("caloaxiseigval", &caloaxiseigval);
   t->SetBranchAddress("caloaxiseigvec", &caloaxiseigvec);
 
@@ -196,6 +201,7 @@ int caloaxis( const char* filename, int save=1, const double x0=30 ){
 
 int verify_calo_axis(const double x0){
 
+  
   int nentries=(int)t->GetEntries();
   int ngen=0;
   int nmctrackincalo=0;
@@ -206,8 +212,9 @@ int verify_calo_axis(const double x0){
   Double_t *thetabins = GenerateBinning(nthetabins,0,+TMath::Pi());
   int nphibins = 200;
   Double_t *phibins = GenerateBinning(nphibins,-TMath::Pi(),+TMath::Pi());
-  int ndiffbins = 200;
-  Double_t *diffbins = GenerateBinning(ndiffbins,0,+0.25 * TMath::RadToDeg());
+  int ndiffbins = 400;
+  //Double_t *diffbins = GenerateBinning(ndiffbins,0,30);
+  Double_t *diffbins = GenerateBinning(ndiffbins,0,20);
   int ndirbins = 100;
   Double_t *dirbins = GenerateBinning(ndirbins,-1,+1);
   int nfacebins = 10;
@@ -218,6 +225,16 @@ int verify_calo_axis(const double x0){
   Double_t *zbins = GenerateBinning(nzbins,-80,+5);
   int ncalotothitsbins=100;
   Double_t *calotothitsbins = GenerateLogBinning(ncalotothitsbins,20,8000);
+  int ncalohitfracbins=100;
+  Double_t *calohitfracbins = GenerateBinning(ncalohitfracbins,0,0.5);
+  int nmiphits=30;
+  Double_t *miphitsbins = GenerateBinning(nmiphits,-0.5,29.5);
+  int nmiptrackbins=100;
+  Double_t *miptrackbins = GenerateBinning(nmiptrackbins,0,50);
+  int ncaloaxiseigvalbins=200;
+  Double_t *caloaxiseigvalbins = GenerateLogBinning(ncaloaxiseigvalbins,0.1,1000);
+  int ncaloaxiseigvalratiobins=200;
+  Double_t *caloaxiseigvalratiobins = GenerateBinning(ncaloaxiseigvalbins,0,1);
   
   TH2F *hthetaall = new TH2F("hthetaall","hthetaall;Theta [MC];Theta [CALO]", nthetabins, thetabins, nphibins, phibins);
   TH2F *hphiall   = new TH2F("hphiall",  "hphiall;Phi [MC];Phi [CALO]", nthetabins, thetabins, nphibins, phibins);
@@ -235,7 +252,12 @@ int verify_calo_axis(const double x0){
   TH3F *hphidiff      = new TH3F("hphidiff",  "hphidiff;Phi [MC];Phi [CALO]",nenebins, enebins, nphibins, phibins, ndiffbins, diffbins);
   TH3F *hdirdiff[3]; for(int i=0; i<3; i++) hdirdiff[i] = new TH3F( Form("hdirdiff_%d",i), Form("Dir[%d];Theta [MC];Theta [CALO]",i), nenebins, enebins, ndirbins, dirbins, ndiffbins, diffbins);
   TH3F *hcalotothitsdiff    = new TH3F("hcalotothitsdiff","hcalotothitsdiff;Calotothits [MC];Calotothits [CALO]",nenebins, enebins, ncalotothitsbins, calotothitsbins, ndiffbins, diffbins);
-    
+  TH3F *hcalohitfracdiff    = new TH3F("hcalohitfracdiff","hcalohitfracdiff;Calohitfrac [MC];Calohitfrac [CALO]",nenebins, enebins, ncalohitfracbins, calohitfracbins, ndiffbins, diffbins);
+
+  TH3F *hcalomipdiff    = new TH3F("hcalomipdiff","hcalomipdiff",nenebins, enebins, ndiffbins, diffbins, nmiphits, miphitsbins);
+  TH3F *hcalomiptrackdiff    = new TH3F("hcalomiptrackdiff","hcalomiptrackdiff",nenebins, enebins, ndiffbins, diffbins, nmiptrackbins, miptrackbins);
+
+
   TH3F *hcogxy    = new TH3F("hcogxy","hcogxy;",nenebins, enebins, nxybins, xybins, nxybins, xybins);
   TH3F *hcogxz    = new TH3F("hcogxz","hcogxz;",nenebins, enebins, nxybins, xybins, nzbins, zbins);
   TH3F *hcogyz    = new TH3F("hcogyz","hcogyz;",nenebins, enebins, nxybins, xybins, nzbins, zbins);
@@ -243,6 +265,12 @@ int verify_calo_axis(const double x0){
   TH2F *hdiff     = new TH2F("hdiff", "hdiff", nenebins, enebins, ndiffbins, diffbins);
   TH2F *hdiffface     = new TH2F("hdiffface", "hdiffface", nfacebins, facebins, ndiffbins, diffbins);
 
+  TH2F *hcaloaxiseigval_0 = new TH2F("hcaloaxiseigval_0", "hcaloaxiseigval_0",nenebins, enebins, ncaloaxiseigvalbins, caloaxiseigvalbins);
+  TH2F *hcaloaxiseigval_1 = new TH2F("hcaloaxiseigval_1", "hcaloaxiseigval_1",nenebins, enebins, ncaloaxiseigvalbins, caloaxiseigvalbins);
+  TH2F *hcaloaxiseigval_2 = new TH2F("hcaloaxiseigval_2", "hcaloaxiseigval_2",nenebins, enebins, ncaloaxiseigvalbins, caloaxiseigvalbins);
+  TH2F *hcaloaxiseigval_1_0 = new TH2F("hcaloaxiseigval_1_0", "hcaloaxiseigval_1_0",nenebins, enebins, ncaloaxiseigvalratiobins, caloaxiseigvalratiobins);
+  TH2F *hcaloaxiseigval_2_1 = new TH2F("hcaloaxiseigval_2_1", "hcaloaxiseigval_2_1",nenebins, enebins, ncaloaxiseigvalratiobins, caloaxiseigvalratiobins);
+  TH2F *hcaloaxiseigval_2_0 = new TH2F("hcaloaxiseigval_2_0", "hcaloaxiseigval_2_0",nenebins, enebins, ncaloaxiseigvalratiobins, caloaxiseigvalratiobins);
 
   
   // ---------LOOP on events
@@ -259,11 +287,11 @@ int verify_calo_axis(const double x0){
     //if(mcTrackcaloentryplane != 0) continue; //Not entry from Zneg
     if(!calofidvolpass) continue;
     if(mcTracklengthcalox0<0) continue;
-    if(x0>=100){
-      if (mcTracklengthcalox0<50) continue; }
-    else{
-      if(mcTracklengthcalox0<x0-10 || mcTracklengthcalox0>=x0) continue; }
-    //if(mcTracklengthcalox0<x0) continue;
+    // if(x0>=100){
+    //   if (mcTracklengthcalox0<50) continue; }
+    // else{
+    //   if(mcTracklengthcalox0<x0-10 || mcTracklengthcalox0>=x0) continue; }
+    if(mcTracklengthcalox0<x0) continue;
     double calohitscut = fcalohitscut->Eval(mcMom);
     if( calonhits<calohitscut ) continue;
 
@@ -309,6 +337,7 @@ int verify_calo_axis(const double x0){
     hcogyz->Fill( mcMom, caloaxiscog[1], caloaxiscog[2] );
 
     hcalotothitsdiff->Fill( mcMom, calonhits, angdiff );
+    hcalohitfracdiff->Fill(mcMom, (double)caloaxishits/calonhits, angdiff);
     
     for(int idir=0; idir<3; idir++) hdir[idir]->Fill(mcMom, mcDir[idir], caloaxisdir[idir]);
     htheta->Fill( mcMom, mcTheta, theta );
@@ -319,7 +348,8 @@ int verify_calo_axis(const double x0){
     hthetadiff->Fill( mcMom, mcTheta, angdiff );
     hphidiff->Fill( mcMom, mcPhi, angdiff);
 
-    
+    hcalomipdiff->Fill(mcMom, angdiff, calonmiphitsontrack);
+    hcalomiptrackdiff->Fill(mcMom, angdiff, calomiptrack);
     
     if( mcMom>50 && mcMom<100){
     for(int idir=0; idir<3; idir++) hdirface[idir]->Fill(mcTrackcaloentryplane, mcDir[idir], caloaxisdir[idir]);
@@ -327,6 +357,14 @@ int verify_calo_axis(const double x0){
     hphiface->Fill( mcTrackcaloentryplane, mcPhi, phi);
     hdiffface->Fill( mcTrackcaloentryplane, angdiff);
     }
+
+    hcaloaxiseigval_0->Fill(calototedep,caloaxiseigval[0]);
+    hcaloaxiseigval_1->Fill(calototedep,caloaxiseigval[1]);
+    hcaloaxiseigval_2->Fill(calototedep,caloaxiseigval[2]);
+    hcaloaxiseigval_1_0->Fill(calototedep,caloaxiseigval[1]/caloaxiseigval[0]);
+    hcaloaxiseigval_2_1->Fill(calototedep,caloaxiseigval[2]/caloaxiseigval[1]);
+    hcaloaxiseigval_2_0->Fill(calototedep,caloaxiseigval[2]/caloaxiseigval[0]);
+    
   }
   
   TCanvas *cthetaall = new TCanvas("cthetaall","cthetaall"); cthetaall->cd(1)->SetTicks(); cthetaall->cd(1)->SetLogz(); arrCanvas->Add(cthetaall);
@@ -495,7 +533,7 @@ int verify_calo_axis(const double x0){
   TCanvas *cdiff = new TCanvas("cdiff","cdiff"); arrCanvas->Add(cdiff);
   cdiff->Divide(3,3);
   for(int ii=0; ii<9; ii++){
-    cdiff->cd(ii+1)->SetLogy(); cdiff->cd(ii+1)->SetTicks();
+    cdiff->cd(ii+1)->SetTicks(); //cdiff->cd(ii+1)->SetLogy();
     int binstart = ii*4+1; int binstop  = ii*4+4;
     TH1 *h = (TH1*)hdiff->ProjectionY( Form("hdiff_%d", ii), binstart, binstop );
     h->Draw(""); h->SetStats(0);
@@ -549,6 +587,42 @@ int verify_calo_axis(const double x0){
     hcalotothitsdiff->GetXaxis()->SetRange(binstart,binstop); TH2 *h = (TH2*)hcalotothitsdiff->Project3D( "zy" ); h->SetName( Form("hcalotothitsdiff_zy_%d",ii) );
     h->Draw("COLZ"); h->SetStats(0);
     h->GetXaxis()->SetTitle("CALO hits");
+    h->GetYaxis()->SetTitle("Angle [MC - CALO]");
+    h->SetTitle( Form("[%.1f - %.1f] GV (MC)", enebins[binstart-1], enebins[binstart+3]) );
+  }
+
+   TCanvas *ccalohitfracdiff = new TCanvas("ccalohitfracdiff","ccalohitfracdiff"); arrCanvas->Add(ccalohitfracdiff);
+   ccalohitfracdiff->Divide(3,3);
+   for(int ii=0; ii<9; ii++){
+    ccalohitfracdiff->cd(ii+1)->SetLogz(); ccalohitfracdiff->cd(ii+1)->SetTicks();
+    int binstart = ii*4+1; int binstop  = ii*4+4;
+    hcalohitfracdiff->GetXaxis()->SetRange(binstart,binstop); TH2 *h = (TH2*)hcalohitfracdiff->Project3D( "zy" ); h->SetName( Form("hcalohitfracdiff_zy_%d",ii) );
+    h->Draw("COLZ"); h->SetStats(0);
+    h->GetXaxis()->SetTitle("CALO axis hit (fraction)");
+    h->GetYaxis()->SetTitle("Angle [MC - CALO]");
+    h->SetTitle( Form("[%.1f - %.1f] GV (MC)", enebins[binstart-1], enebins[binstart+3]) );
+  }
+
+   TCanvas *ccalomipdiff = new TCanvas("ccalomipdiff","ccalomipdiff"); arrCanvas->Add(ccalomipdiff);
+   ccalomipdiff->Divide(3,3);
+   for(int ii=0; ii<9; ii++){
+    ccalomipdiff->cd(ii+1)->SetLogz(); ccalomipdiff->cd(ii+1)->SetTicks();
+    int binstart = ii*4+1; int binstop  = ii*4+4;
+    hcalomipdiff->GetXaxis()->SetRange(binstart,binstop); TH2 *h = (TH2*)hcalomipdiff->Project3D( "yz" ); h->SetName( Form("hcalomipdiff_zy_%d",ii) );
+    h->Draw("COLZ"); h->SetStats(0);
+    h->GetXaxis()->SetTitle("MIP hits");
+    h->GetYaxis()->SetTitle("Angle [MC - CALO]");
+    h->SetTitle( Form("[%.1f - %.1f] GV (MC)", enebins[binstart-1], enebins[binstart+3]) );
+  }
+
+   TCanvas *ccalomiptrackdiff = new TCanvas("ccalomiptrackdiff","ccalomiptrackdiff"); arrCanvas->Add(ccalomiptrackdiff);
+   ccalomiptrackdiff->Divide(3,3);
+   for(int ii=0; ii<9; ii++){
+    ccalomiptrackdiff->cd(ii+1)->SetLogz(); ccalomiptrackdiff->cd(ii+1)->SetTicks();
+    int binstart = ii*4+1; int binstop  = ii*4+4;
+    hcalomiptrackdiff->GetXaxis()->SetRange(binstart,binstop); TH2 *h = (TH2*)hcalomiptrackdiff->Project3D( "yz" ); h->SetName( Form("hcalomiptrackdiff_zy_%d",ii) );
+    h->Draw("COLZ"); h->SetStats(0);
+    h->GetXaxis()->SetTitle("MIP track (cm)");
     h->GetYaxis()->SetTitle("Angle [MC - CALO]");
     h->SetTitle( Form("[%.1f - %.1f] GV (MC)", enebins[binstart-1], enebins[binstart+3]) );
   }
