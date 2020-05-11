@@ -15,8 +15,6 @@ pwd
 
 DATACARD=_DATACARD_
 
-cp -v ${DATACARD} ${OUTDIR}.datacard
-
 # Launch the simulation
 EXEC="EventAnalysis -c $DATACARD"
 
@@ -25,7 +23,7 @@ echo ${CMD}
 ${CMD}
 
 ls -altrh
-cp -v local.root _OUTROOT_
+mv -v local.root _OUTROOT_
 
 cd $HOME
 pwd
