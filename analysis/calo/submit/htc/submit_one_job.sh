@@ -9,13 +9,14 @@ OPTS=$3
 WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/analysis/calo
 SUBMITDIR=${WORKDIR}/submit/htc
 
-BASENAME=`basename $LISTFILE .dig.list.txt`
-echo $BASENAME
+FULLBASENAME=`basename $LISTFILE .list.txt`
+echo $FULLBASENAME
+BASENAME=${FULLBASENAME%??????} #remove last 6 trailing characters
 
 JOBTEMPLATE=${SUBMITDIR}/job.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
 DATACARD=${SUBMITDIR}/analysis.$BASENAME.eaconf
-LIST=${SUBMITDIR}/lists/${LISTFILE}
+LIST=${LISTFILE}
 
 if [ ! -f $JOBTEMPLATE ]; then echo "$JOBTEMPLATE not found"; exit; fi
 if [ ! -f $SUBTEMPLATE ]; then echo "$SUBTEMPLATE not found"; exit; fi
@@ -40,7 +41,7 @@ OUTFILE=${LOGDIR}/${JOBNAME}.out
 rm -fv ${ERRFILE}
 rm -fv ${LOGFILE}
 
-cp -v ${DATACARS} ${SUBMITDIR}/output/${BASENAME}/
+cp -v ${DATACARD} ${SUBMITDIR}/output/${BASENAME}/
 
 cp -v ${JOBTEMPLATE}                        ${JOB}
 sed -i "s%_DATACARD_%${DATACARD}%g"         ${JOB}

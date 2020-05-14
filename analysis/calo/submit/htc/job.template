@@ -15,10 +15,10 @@ pwd
 
 OUTDIR=_OUTDIR_
 DATACARD=_DATACARD_
-cp -v ${DATACARD} ${OUTDIR}.datacard
+cp -v ${DATACARD} ${OUTDIR}/_NAME_.datacard
 
 # Launch the simulation
-EXEC="EventAnalysis -c $DATACARD -v debug info -d rootProvider,_INFILE_ _OPTS_"
+EXEC="EventAnalysis -c $DATACARD -v info -d rootProvider,_INFILE_ _OPTS_"
 
 CMD="time ${EXEC}"
 echo ${CMD}
