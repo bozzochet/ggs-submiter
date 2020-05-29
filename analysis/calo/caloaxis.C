@@ -1,5 +1,6 @@
 #include "TFile.h"
 #include "TTree.h"
+#include "TChain.h"
 #include "TMath.h"
 #include "TF1.h"
 #include "TH1F.h"
@@ -14,7 +15,7 @@
 #include "TLine.h"
 #include "TObjArray.h"
 
-TTree *t;
+TChain *t;
 int mcNdiscarded;           
 float mcDir[3];             
 float mcCoo[3];             
@@ -49,6 +50,9 @@ float calomiptrack;
 
 unsigned short caloaxishits;
 float caloaxiscog[3];
+float caloaxissigma[3];
+float caloaxisskew[3];
+float caloaxiskurt[3];
 float caloaxisdir[3];
 float caloaxiseigval[3];
 float caloaxiseigvec[3][3];
@@ -119,12 +123,14 @@ TH2F* NormalizeX(TH2F* hh){    // Get pointer to TH2F normalized in X slices
 
 
 
-int caloaxis( const char* filename, int save=1, const double x0=30 ){
+int caloaxis( const char* chainname, int save=1, const double x0=30 ){
 
   //TFile *f = TFile::Open("tree.electrons.root");
   //TFile *f = TFile::Open("electrons_sphere_10GeV_10000GeV_E-1.dig.tree.root");
-  TFile *f = TFile::Open( filename );
-  t = (TTree*)f->Get("tree");
+  // TFile *f = TFile::Open( filename );
+  // t = (TTree*)f->Get("tree");
+  t = new TChain("tree");
+  t->Add( Form("%s*.root", chainname) );
   
   t->SetBranchAddress("mcNdiscarded",&mcNdiscarded);
   t->SetBranchAddress("mcDir",&mcDir[0]);
@@ -160,6 +166,9 @@ int caloaxis( const char* filename, int save=1, const double x0=30 ){
   
   t->SetBranchAddress("caloaxishits",   &caloaxishits);
   t->SetBranchAddress("caloaxiscog",    &caloaxiscog);
+  t->SetBranchAddress("caloaxissigma",  &caloaxissigma);
+  t->SetBranchAddress("caloaxisskew",   &caloaxisskew);
+  t->SetBranchAddress("caloaxiskurt",   &caloaxiskurt);
   t->SetBranchAddress("caloaxisdir",    &caloaxisdir);;
   t->SetBranchAddress("caloaxiseigval", &caloaxiseigval);
   t->SetBranchAddress("caloaxiseigvec", &caloaxiseigvec);
@@ -231,13 +240,19 @@ int verify_calo_axis(const double x0){
   Double_t *miphitsbins = GenerateBinning(nmiphits,-0.5,29.5);
   int nmiptrackbins=100;
   Double_t *miptrackbins = GenerateBinning(nmiptrackbins,0,50);
-  int ncaloaxiseigvalbins=200;
-  Double_t *caloaxiseigvalbins = GenerateLogBinning(ncaloaxiseigvalbins,0.1,1000);
+  int ncaloaxiseigvalbins=2000;
+  Double_t *caloaxiseigvalbins = GenerateBinning(ncaloaxiseigvalbins,0,40);
   int ncaloaxiseigvalratiobins=200;
   Double_t *caloaxiseigvalratiobins = GenerateBinning(ncaloaxiseigvalbins,0,1);
+  int ncaloaxissigmabins=2000;
+  Double_t *caloaxissigmabins = GenerateBinning(ncaloaxissigmabins,0,20);
+  int ncaloaxisskewbins=2000;
+  Double_t *caloaxisskewbins = GenerateBinning(ncaloaxisskewbins,-40,40);
+  int ncaloaxiskurtbins=2000;
+  Double_t *caloaxiskurtbins = GenerateBinning(ncaloaxiskurtbins,0,80);
   
-  TH2F *hthetaall = new TH2F("hthetaall","hthetaall;Theta [MC];Theta [CALO]", nthetabins, thetabins, nphibins, phibins);
-  TH2F *hphiall   = new TH2F("hphiall",  "hphiall;Phi [MC];Phi [CALO]", nthetabins, thetabins, nphibins, phibins);
+  TH2F *hthetaall = new TH2F("hthetaall","hthetaall;Theta [MC];Theta [CALO]", nthetabins, thetabins, nthetabins, thetabins);
+  TH2F *hphiall   = new TH2F("hphiall",  "hphiall;Phi [MC];Phi [CALO]", nphibins, phibins, nphibins, phibins);
   TH1F *hdiffall  = new TH1F("hdiffall", "hdiffall;Angle([MC]-[CALO])", ndiffbins, diffbins);
 
   TH3F *htheta    = new TH3F("htheta","htheta;Theta [MC];Theta [CALO]",nenebins, enebins, nthetabins, thetabins, nthetabins, thetabins);
@@ -268,10 +283,22 @@ int verify_calo_axis(const double x0){
   TH2F *hcaloaxiseigval_0 = new TH2F("hcaloaxiseigval_0", "hcaloaxiseigval_0",nenebins, enebins, ncaloaxiseigvalbins, caloaxiseigvalbins);
   TH2F *hcaloaxiseigval_1 = new TH2F("hcaloaxiseigval_1", "hcaloaxiseigval_1",nenebins, enebins, ncaloaxiseigvalbins, caloaxiseigvalbins);
   TH2F *hcaloaxiseigval_2 = new TH2F("hcaloaxiseigval_2", "hcaloaxiseigval_2",nenebins, enebins, ncaloaxiseigvalbins, caloaxiseigvalbins);
+  TH2F *hcaloaxiseigval_12 = new TH2F("hcaloaxiseigval_12", "hcaloaxiseigval_12",nenebins, enebins, ncaloaxiseigvalbins, caloaxiseigvalbins);
   TH2F *hcaloaxiseigval_1_0 = new TH2F("hcaloaxiseigval_1_0", "hcaloaxiseigval_1_0",nenebins, enebins, ncaloaxiseigvalratiobins, caloaxiseigvalratiobins);
   TH2F *hcaloaxiseigval_2_1 = new TH2F("hcaloaxiseigval_2_1", "hcaloaxiseigval_2_1",nenebins, enebins, ncaloaxiseigvalratiobins, caloaxiseigvalratiobins);
   TH2F *hcaloaxiseigval_2_0 = new TH2F("hcaloaxiseigval_2_0", "hcaloaxiseigval_2_0",nenebins, enebins, ncaloaxiseigvalratiobins, caloaxiseigvalratiobins);
+  
+  TH2F *hcaloaxissigma_0 = new TH2F("hcaloaxissigma_0", "hcaloaxissigma_0",nenebins, enebins, ncaloaxissigmabins, caloaxissigmabins);
+  TH2F *hcaloaxissigma_1 = new TH2F("hcaloaxissigma_1", "hcaloaxissigma_1",nenebins, enebins, ncaloaxissigmabins, caloaxissigmabins);
+  TH2F *hcaloaxissigma_2 = new TH2F("hcaloaxissigma_2", "hcaloaxissigma_2",nenebins, enebins, ncaloaxissigmabins, caloaxissigmabins);
 
+  TH2F *hcaloaxisskew_0 = new TH2F("hcaloaxisskew_0", "hcaloaxisskew_0",nenebins, enebins, ncaloaxisskewbins, caloaxisskewbins);
+  TH2F *hcaloaxisskew_1 = new TH2F("hcaloaxisskew_1", "hcaloaxisskew_1",nenebins, enebins, ncaloaxisskewbins, caloaxisskewbins);
+  TH2F *hcaloaxisskew_2 = new TH2F("hcaloaxisskew_2", "hcaloaxisskew_2",nenebins, enebins, ncaloaxisskewbins, caloaxisskewbins);
+
+  TH2F *hcaloaxiskurt_0 = new TH2F("hcaloaxiskurt_0", "hcaloaxiskurt_0",nenebins, enebins, ncaloaxiskurtbins, caloaxiskurtbins);
+  TH2F *hcaloaxiskurt_1 = new TH2F("hcaloaxiskurt_1", "hcaloaxiskurt_1",nenebins, enebins, ncaloaxiskurtbins, caloaxiskurtbins);
+  TH2F *hcaloaxiskurt_2 = new TH2F("hcaloaxiskurt_2", "hcaloaxiskurt_2",nenebins, enebins, ncaloaxiskurtbins, caloaxiskurtbins);
   
   // ---------LOOP on events
   // nentries=10000;
@@ -311,6 +338,11 @@ int verify_calo_axis(const double x0){
     // caloaxisdir[1] *=-1;
     // }
 
+    // if( caloaxisskew[0]<0 ){
+    //   caloaxisdir[0] *=-1;
+    //   caloaxisdir[1] *=-1;
+    //   caloaxisdir[2] *=-1;
+    // }
     
     TVector3 mcvec(mcDir[0],mcDir[1],mcDir[2]);
     TVector3 calovec(caloaxisdir[0],caloaxisdir[1],caloaxisdir[2]);
@@ -358,13 +390,25 @@ int verify_calo_axis(const double x0){
     hdiffface->Fill( mcTrackcaloentryplane, angdiff);
     }
 
-    hcaloaxiseigval_0->Fill(calototedep,caloaxiseigval[0]);
-    hcaloaxiseigval_1->Fill(calototedep,caloaxiseigval[1]);
-    hcaloaxiseigval_2->Fill(calototedep,caloaxiseigval[2]);
-    hcaloaxiseigval_1_0->Fill(calototedep,caloaxiseigval[1]/caloaxiseigval[0]);
-    hcaloaxiseigval_2_1->Fill(calototedep,caloaxiseigval[2]/caloaxiseigval[1]);
-    hcaloaxiseigval_2_0->Fill(calototedep,caloaxiseigval[2]/caloaxiseigval[0]);
-    
+    hcaloaxiseigval_0->Fill(calototedep,sqrt(caloaxiseigval[0]));
+    hcaloaxiseigval_1->Fill(calototedep,sqrt(caloaxiseigval[1]));
+    hcaloaxiseigval_2->Fill(calototedep,sqrt(caloaxiseigval[2]));
+    hcaloaxiseigval_12->Fill(calototedep,( sqrt(caloaxiseigval[1]) + sqrt(caloaxiseigval[2]) )/2);
+    hcaloaxiseigval_1_0->Fill(calototedep,sqrt(caloaxiseigval[1]/caloaxiseigval[0]));
+    hcaloaxiseigval_2_1->Fill(calototedep,sqrt(caloaxiseigval[2]/caloaxiseigval[1]));
+    hcaloaxiseigval_2_0->Fill(calototedep,sqrt(caloaxiseigval[2]/caloaxiseigval[0]));
+
+    hcaloaxissigma_0->Fill(calototedep,caloaxissigma[0]);
+    hcaloaxissigma_1->Fill(calototedep,caloaxissigma[1]);
+    hcaloaxissigma_2->Fill(calototedep,caloaxissigma[2]);
+
+    hcaloaxisskew_0->Fill(calototedep,caloaxisskew[0]);
+    hcaloaxisskew_1->Fill(calototedep,caloaxisskew[1]);
+    hcaloaxisskew_2->Fill(calototedep,caloaxisskew[2]);
+
+    hcaloaxiskurt_0->Fill(calototedep,caloaxiskurt[0]);
+    hcaloaxiskurt_1->Fill(calototedep,caloaxiskurt[1]);
+    hcaloaxiskurt_2->Fill(calototedep,caloaxiskurt[2]);
   }
   
   TCanvas *cthetaall = new TCanvas("cthetaall","cthetaall"); cthetaall->cd(1)->SetTicks(); cthetaall->cd(1)->SetLogz(); arrCanvas->Add(cthetaall);
