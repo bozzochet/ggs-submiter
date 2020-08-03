@@ -16,6 +16,7 @@
 #include "persistence/PersistenceService.h"
 #include "algorithm/Algorithm.h"
 
+#include <vector>
 
 using namespace EA;
 
@@ -60,10 +61,13 @@ private:
   int mcStkintersections;
   float mcTracklengthcalox0;
   float mcTracklengthlysox0;
+  float mcTracklenghtexactlysocm;
+  float mcTracklenghtlysoafii;
   float mcTrackcaloentry[3];
   float mcTrackcaloexit[3];
   int mcTrackcaloentryplane;
   int mcTrackcaloexitplane;
+
 
   bool bookCaloGeomFidVolume;
   float calofidvolalpha;
@@ -93,13 +97,32 @@ private:
   int calonhits;
   float calototedep;
   int calonclusters;
-  
+  short calonmiphitsontrack;
+  float calomiptrack;
+
   bool bookCaloAxis;
   unsigned short caloaxishits;
   float caloaxiscog[3];
+  float caloaxissigma[3];
+  float caloaxisskew[3];
+  float caloaxiskurt[3];
   float caloaxisdir[3];
   float caloaxiseigval[3];
   float caloaxiseigvec[3][3];
+
+/*
+  std::vector< std::array<float, 4> > calohits;
+  std::vector< std::array<float, 4> > calopcahits;
+*/
+std::vector<float> calohitsX;
+std::vector<float> calohitsY;
+std::vector<float> calohitsZ;
+std::vector<float> calohitsE;
+std::vector<float> calohitsPL;
+std::vector<float> calopcahits0;
+std::vector<float> calopcahits1;
+std::vector<float> calopcahits2;
+
 
   // Flag for optional output objects
   //bool _isPSDBooked;

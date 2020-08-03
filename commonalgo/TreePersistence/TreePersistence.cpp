@@ -3,7 +3,7 @@
 #include "../GeomAcceptance/MCtruthProcess.h"
 #include "../GeomAcceptance/CaloGeomFidVolume.h"
 #include "../Calo/CaloGlob.h"
-#include "../Calo/CaloAxis.h"
+#include "../Calo/CaloAxisProcess.h"
 
 
 
@@ -15,6 +15,7 @@
 // Root headers
 #include "TFile.h"
 #include "TTree.h"
+#include <Compression.h>
 
 // C/C++ headers
 #include <numeric>
@@ -45,7 +46,8 @@ bool TreePersistence::Connect() {
   const std::string routineName("TreePersistence::Connect");
 
   // Create the output file
-  _outputFile = std::unique_ptr<TFile>{TFile::Open(GetOutput().data(), "RECREATE")};
+  int complevel = ROOT::CompressionSettings(ROOT::kLZMA, 2);
+  _outputFile = std::unique_ptr<TFile>{TFile::Open(GetOutput().data(), "RECREATE", "outputfile", complevel)};
   if (_outputFile->IsZombie()) { COUT(ERROR) << "Can't open output file " << GetOutput() << ENDL; return false; }
   COUT(INFO) << "CreatingOutoutFile::" << _outputFile->GetName() << ENDL;
 
@@ -67,6 +69,9 @@ bool TreePersistence::Connect() {
   _outputTree->Branch("mcTrackcaloexit",       &(mcTrackcaloexit[0]),    "mcTrackcaloexit[3]/F");
   _outputTree->Branch("mcTrackcaloentryplane", &(mcTrackcaloentryplane), "mcTrackcaloentryplane/I");
   _outputTree->Branch("mcTrackcaloexitplane",  &(mcTrackcaloexitplane),  "mcTrackcaloexitplane/I");
+  _outputTree->Branch("mcTracklenghtexactlysocm",  &(mcTracklenghtexactlysocm),  "mcTracklenghtexactlysocm/F");
+  _outputTree->Branch("mcTracklenghtlysoafii",  &(mcTracklenghtlysoafii),  "mcTracklenghtlysoafii/F");
+
   }
 
   if(bookCaloGeomFidVolume){
@@ -95,20 +100,46 @@ bool TreePersistence::Connect() {
   }
 
 if(bookCaloGlob){
-  _outputTree->Branch("calonhits",     &(calonhits),    "calonhits/I");
-  _outputTree->Branch("calototedep",   &(calototedep),  "calototedep/F");
-  _outputTree->Branch("calonclusters", &(calonclusters),"calonclusters/I");
+  _outputTree->Branch("calonhits",           &(calonhits),          "calonhits/I");
+  _outputTree->Branch("calototedep",         &(calototedep),         "calototedep/F");
+  _outputTree->Branch("calonclusters",       &(calonclusters),       "calonclusters/I");
+  _outputTree->Branch("calonmiphitsontrack", &(calonmiphitsontrack), "calonmiphitsontrack/S");
+  _outputTree->Branch("calomiptrack",        &(calomiptrack),        "calomiptrack/F");
+
 
 }
 
 if(bookCaloAxis){
   _outputTree->Branch("caloaxishits",    &(caloaxishits),      "caloaxishits/s");
   _outputTree->Branch("caloaxiscog",     &(caloaxiscog[0]),    "caloaxiscog[3]/F");
+  _outputTree->Branch("caloaxissigma",   &(caloaxissigma[0]),  "caloaxissigma[3]/F");
+  _outputTree->Branch("caloaxisskew",    &(caloaxisskew[0]),   "caloaxisskew[3]/F");
+  _outputTree->Branch("caloaxiskurt",    &(caloaxiskurt[0]),   "caloaxiskurt[3]/F");
   _outputTree->Branch("caloaxisdir",     &(caloaxisdir[0]),    "caloaxisdir[3]/F");
   _outputTree->Branch("caloaxiseigval",  &(caloaxiseigval[0]), "caloaxiseigval[3]/F");
   _outputTree->Branch("caloaxiseigvec",  &(caloaxiseigvec[0]), "caloaxiseigvec[3][3]/F");
+
+
+/*  _outputTree->Branch("calohits",        "std::vector< std::array<float, 4> >",      &calohits);
+  _outputTree->Branch("calopcahits",     "std::vector< std::array<float, 4> >",      &calopcahits);
+*/
+  _outputTree->Branch("calohitsX",  &calohitsX);
+  _outputTree->Branch("calohitsY",  &calohitsY);
+  _outputTree->Branch("calohitsZ",  &calohitsZ);
+  _outputTree->Branch("calohitsE",  &calohitsE);
+  _outputTree->Branch("calohitsPL",  &calohitsPL);
+  _outputTree->Branch("calopcahits0",  &calopcahits0);
+  _outputTree->Branch("calopcahits1",  &calopcahits1);
+  _outputTree->Branch("calopcahits2",  &calopcahits2);
 }
  
+  TObjArray *obj = _outputTree->GetListOfBranches();
+  for (int ii = 0; ii < obj->GetEntries(); ii++)
+  {
+    TBranch *branch = (TBranch *)(obj->At(ii));
+    branch->SetCompressionLevel(6);
+  }
+
   return true;
 }
 
@@ -127,18 +158,6 @@ bool TreePersistence::BookEventObject(const std::string &objName, const std::str
   // Don't create the branch here. The tree is created in Connect, which is executed later, so at this point the tree
   // is still not available.
  
-  /*
-  if (objName == "psdHitsCollMC") {
-    _psdStoreName = objStore;
-    _isPSDBooked = true;
-  
-     } else {
-    // The only manageable optional object is psdHitsCollMC, so raise an error if a different object is given.
-    COUT(ERROR) << "Unknown object: " << objName << ENDL;
-    return false;
-  }
-  */
-
 
 
   return true;
@@ -150,7 +169,7 @@ bool TreePersistence::BeginningOfEvent() {
   // Handle default objects
   if (!_evStore) { _evStore = GetDataStoreManager()->GetEventDataStore("evStore");
   if (!_evStore) {COUT(ERROR) << "EventStore::\"evStore\"::NotFound." << ENDL; return false; } }
-  
+
   return true;
 }
       
@@ -178,6 +197,8 @@ bool TreePersistence::EndOfEvent() {
       mcStkintersections = mcTruthProcessStore->mcStkintersections;
       mcTracklengthcalox0 = mcTruthProcessStore->mcTracklengthcalox0;
       mcTracklengthlysox0 = mcTruthProcessStore->mcTracklengthlysox0;
+      mcTracklenghtlysoafii = mcTruthProcessStore->mcTracklenghtlysoafii;
+      mcTracklenghtexactlysocm = mcTruthProcessStore->mcTracklenghtexactlysocm;
       mcTrackcaloentry[0] = mcTruthProcessStore->mcTrackcaloentry[0];
       mcTrackcaloentry[1] = mcTruthProcessStore->mcTrackcaloentry[1];
       mcTrackcaloentry[2] = mcTruthProcessStore->mcTrackcaloentry[2];
@@ -232,18 +253,35 @@ if( bookCaloGeomFidVolume )
       calonhits = caloGlobStore->calonhits;
       calototedep = caloGlobStore->calototedep;
       calonclusters = caloGlobStore->calonclusters;
+      calonmiphitsontrack = caloGlobStore->calonmiphitsontrack;
+      calomiptrack = caloGlobStore->calomiptrack;
+      
+        for(int ihit=0; ihit<(int)caloGlobStore->calohitsX.size(); ihit++){
+     calohitsX.push_back(caloGlobStore->calohitsX.at(ihit));
+     calohitsY.push_back(caloGlobStore->calohitsY.at(ihit));
+     calohitsZ.push_back(caloGlobStore->calohitsZ.at(ihit));
+     calohitsE.push_back(caloGlobStore->calohitsE.at(ihit));
+     calohitsPL.push_back(caloGlobStore->calohitsPL.at(ihit));
+     calopcahits0.push_back(caloGlobStore->calopcahits0.at(ihit));
+     calopcahits1.push_back(caloGlobStore->calopcahits1.at(ihit));
+     calopcahits2.push_back(caloGlobStore->calopcahits2.at(ihit));
+
+   }
       //
       caloGlobStore->Reset();
      }
   }
 
   if(bookCaloAxis){
-    auto caloAxisStore = _evStore->GetObject<Herd::CaloAxisStore>("CaloAxisStore");
+    auto caloAxisStore = _evStore->GetObject<Herd::CaloAxisProcessStore>("CaloAxisProcessStore");
     if(caloAxisStore)
     {
       caloaxishits = caloAxisStore->caloaxishits;
       for(int i=0; i<3; i++){
         caloaxiscog[i] = caloAxisStore->caloaxiscog[i];
+        caloaxissigma[i] = caloAxisStore->caloaxissigma[i];
+        caloaxisskew[i] = caloAxisStore->caloaxisskew[i];
+        caloaxiskurt[i] = caloAxisStore->caloaxiskurt[i];
         caloaxisdir[i] = caloAxisStore->caloaxisdir[i];
         caloaxiseigval[i] = caloAxisStore->caloaxiseigval[i];
 
@@ -252,6 +290,10 @@ if( bookCaloGeomFidVolume )
           caloaxiseigvec[i][j] = caloAxisStore->caloaxiseigvec[i][j];
        }
      }
+  
+
+ 
+
       //
       caloAxisStore->Reset();
      }
@@ -261,6 +303,16 @@ auto fillthisevent = _evStore->GetObject<bool>("FillTreeThisEvent");
 if(fillthisevent){
   _outputTree->Fill();
 }
+
+calohitsX.clear();
+     calohitsY.clear();
+     calohitsZ.clear();
+     calohitsE.clear();
+     calohitsPL.clear();
+     calopcahits0.clear();
+     calopcahits1.clear();
+     calopcahits2.clear();
+
 
 return true;
 }

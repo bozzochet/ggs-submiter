@@ -19,7 +19,10 @@ public:
 
 private:
 
-  std::vector<float> axispar;
+  //std::vector<float> axispar;
+  int naxisbins;
+  double axismin;
+  double axismax;
   double *axis;
   bool logaxis;
   std::string title;

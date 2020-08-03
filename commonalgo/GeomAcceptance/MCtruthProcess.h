@@ -81,6 +81,8 @@ public:
   int mcStkintersections;
   float mcTracklengthcalox0;
   float mcTracklengthlysox0;
+  float mcTracklenghtexactlysocm;
+  float mcTracklenghtlysoafii;
   float mcTrackcaloentry[3];
   float mcTrackcaloexit[3];
   int mcTrackcaloentryplane;

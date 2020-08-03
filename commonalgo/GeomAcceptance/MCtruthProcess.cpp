@@ -144,6 +144,8 @@ bool MCtruthProcess::Process() {
 
     _processstore->mcTracklengthcalox0 = calotrack->trackLengthCaloX0;
     _processstore->mcTracklengthlysox0 = calotrack->trackLengthLYSOX0;
+    _processstore->mcTracklenghtexactlysocm = calotrack->trackLengthExactLYSOCm;
+    _processstore->mcTracklenghtlysoafii = calotrack->trackLengthLYSOAfterInteractionCm;
 
     _processstore->mcTrackcaloentry[0] = calotrack->entrance[Herd::RefFrame::Coo::X];
     _processstore->mcTrackcaloentry[1] = calotrack->entrance[Herd::RefFrame::Coo::Y];
@@ -153,6 +155,7 @@ bool MCtruthProcess::Process() {
     _processstore->mcTrackcaloexit[2] = calotrack->exit[Herd::RefFrame::Coo::Z];
     _processstore->mcTrackcaloentryplane = static_cast<int>(entrydir);
     _processstore->mcTrackcaloexitplane = static_cast<int>(exitdir);
+
 	  }
 
   //Check MC track length
@@ -169,16 +172,16 @@ bool MCtruthProcess::Finalize() {
 
   globStore->AddObject(_hgencoo->GetName(), _hgencoo);
   globStore->AddObject(_hgencthetaphi->GetName(),_hgencthetaphi);
-  globStore->AddObject(_ggencoo->GetName(),_ggencoo);
-  globStore->AddObject(_gcaloentry->GetName(),_gcaloentry);
-  globStore->AddObject(_gcaloexit->GetName(),_gcaloexit);
+  //globStore->AddObject(_ggencoo->GetName(),_ggencoo);
+  //globStore->AddObject(_gcaloentry->GetName(),_gcaloentry);
+  //globStore->AddObject(_gcaloexit->GetName(),_gcaloexit);
   globStore->AddObject(_gdiscarded->GetName(),_gdiscarded);
-  globStore->AddObject(_hstkintersections->GetName(),_hstkintersections);
-  globStore->AddObject(_hshowerlengthall->GetName(), _hshowerlengthall);
-  globStore->AddObject(_hcaloentryexitdir->GetName(),_hcaloentryexitdir);
+  //globStore->AddObject(_hstkintersections->GetName(),_hstkintersections);
+  //globStore->AddObject(_hshowerlengthall->GetName(), _hshowerlengthall);
+  //globStore->AddObject(_hcaloentryexitdir->GetName(),_hcaloentryexitdir);
   for(int indir=0; indir < Herd::RefFrame::NDirections; indir++){
     for(int outdir=0; outdir < Herd::RefFrame::NDirections; outdir++){
-      globStore->AddObject(_hshowerlength[indir][outdir]->GetName(), _hshowerlength[indir][outdir]);
+      //globStore->AddObject(_hshowerlength[indir][outdir]->GetName(), _hshowerlength[indir][outdir]);
     }
   } 
 
@@ -235,6 +238,8 @@ bool MCtruthProcessStore::Reset() {
   mcStkintersections = -999.;
   mcTracklengthcalox0 = -999.;
   mcTracklengthlysox0 = -999.;
+  mcTracklenghtexactlysocm = -999.;
+  mcTracklenghtlysoafii = -999.;
 
   for(int idir=0; idir<3; idir++) mcTrackcaloentry[idir] = -999.;
   for(int idir=0; idir<3; idir++) mcTrackcaloexit[idir] = -999.;

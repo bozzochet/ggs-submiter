@@ -2,8 +2,8 @@
 
 #NAME="protons_10GeV_10000GeV_E-1"
 #LISTFILE=lists/protons_10GeV_10000GeV_E-1.list
-NAME="electrons_1000GeV_10000GeV_E-1"
-LISTFILE=lists/electrons_1000GeV_10000GeV_E-1.list
+NAME="protons_10GeV_1000GeV_E-1"
+LISTFILE=lists/${NAME}.list
 
 fperjob=5
 

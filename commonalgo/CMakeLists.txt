@@ -12,8 +12,8 @@ add_library(CommonAlgo  SHARED
                         GeomAcceptance/CaloGeomFidVolume.cpp
                         TreePersistence/TreePersistence.cpp
 			Calo/CaloGlob.cpp
-                        Calo/CaloAxis.cpp
-                        Calo/CaloAxisInfo.cpp
+                        Calo/CaloAxisProcess.cpp
+                        #Calo/CaloAxisInfo.cpp
                         Calo/CaloTest.cpp
                         Histo/EneHisto.cpp
                         Histo/MCGenSpectrum.cpp

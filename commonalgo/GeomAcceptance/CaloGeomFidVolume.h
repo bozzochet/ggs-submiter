@@ -16,6 +16,7 @@
 #include <array>
 
 using namespace EA;
+using namespace Herd;
 
 class CaloGeomFidVolumeStore;
 

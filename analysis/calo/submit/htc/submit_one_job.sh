@@ -15,7 +15,8 @@ BASENAME=${FULLBASENAME%??????} #remove last 6 trailing characters
 
 JOBTEMPLATE=${SUBMITDIR}/job.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
-DATACARD=${SUBMITDIR}/analysis.$BASENAME.eaconf
+#DATACARD=${SUBMITDIR}/analysis.$BASENAME.eaconf
+DATACARD=${SUBMITDIR}/analysis.generic.eaconf
 LIST=${LISTFILE}
 
 if [ ! -f $JOBTEMPLATE ]; then echo "$JOBTEMPLATE not found"; exit; fi

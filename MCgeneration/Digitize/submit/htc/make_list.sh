@@ -1,6 +1,7 @@
 DIR=${STORAGE}/HERD/analysis/herd-vv-svn/MCgeneration/Particles/submit/htc/output
 #NAME="protons_10GeV_10000GeV_E-1"
-NAME="electrons_1000GeV_10000GeV_E-1"
+#NAME="electrons_1000GeV_10000GeV_E-1"
+NAME="protons_10GeV_1000GeV_E-1"
 
 LISTNAME=${NAME}.list
 LISTFILE=lists/${LISTNAME}

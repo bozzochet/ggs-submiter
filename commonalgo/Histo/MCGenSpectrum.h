@@ -20,7 +20,10 @@ public:
 
 private:
 
-  std::vector<double> axispar;
+  //std::vector<double> axispar;
+   int naxisbins;
+  double axismin;
+  double axismax;
   double *axis;
   bool logaxis;
   std::string title;
@@ -30,7 +33,9 @@ private:
   
 
   int ngen;
-  std::vector<double> momrange;
+  //std::vector<double> momrange;
+  double minmom;
+  double maxmom;
   float index;
   
   std::shared_ptr<TH1F> histo; // Objects to be pushed on global store must be held by a shared_ptr
