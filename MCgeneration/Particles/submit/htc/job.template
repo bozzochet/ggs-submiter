@@ -1,9 +1,8 @@
 #!/bin/bash
 
-WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Particles/
-SUBMITDIR=${WORKDIR}/submit/htc
+SUBMITDIR=_SUBMITDIR_
 
-source /storage/gpfs_ams/ams/users/vvagelli/HERD/setherd.sh
+source _SETENV_
 cd ${SUBMITDIR}
 
 HOME=`pwd`
@@ -23,6 +22,13 @@ SEED2=_SEED2_
 
 cp -v ${DATACARD} ${OUTPUT}.datacard
 cp -v ${GEODATACARD} ${OUTPUT}.geo
+
+echo "ls -altrh /lib64"
+ls -altrh /lib64
+
+GGS=`which ${PENNY}`
+echo "ldd $GGS"
+ldd $GGS
 
 # Launch the simulation
 EXEC="$PENNY -d $DATACARD -g $GEOMETRY -gd $GEODATACARD -ro $OUTPUT --seed1 ${SEED1} --seed2 ${SEED2}"

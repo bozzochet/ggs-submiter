@@ -73,7 +73,7 @@ bool MCGenSpectrum::Process() {
 }
 
 bool MCGenSpectrum::Finalize() {
-  const std::string routineName("CaloEDepCut::Finalize");
+  const std::string routineName("MCGenSpectrum::Finalize");
 
   //index==-1
   printf("ngen::%d\n",ngen);

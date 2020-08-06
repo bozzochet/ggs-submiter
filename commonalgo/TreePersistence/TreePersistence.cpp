@@ -118,6 +118,9 @@ if(bookCaloAxis){
   _outputTree->Branch("caloaxisdir",     &(caloaxisdir[0]),    "caloaxisdir[3]/F");
   _outputTree->Branch("caloaxiseigval",  &(caloaxiseigval[0]), "caloaxiseigval[3]/F");
   _outputTree->Branch("caloaxiseigvec",  &(caloaxiseigvec[0]), "caloaxiseigvec[3][3]/F");
+  _outputTree->Branch("caloaxisentryhit",  &(caloaxisentryhit[0]), "caloaxisentryhit[3]/F");
+  _outputTree->Branch("caloaxisexithit",  &(caloaxisexithit[0]), "caloaxisexithit[3]/F");
+  _outputTree->Branch("caloaxispathlengthhit",  &(caloaxispathlengthhit), "caloaxispathlengthhit/F");
 
 
 /*  _outputTree->Branch("calohits",        "std::vector< std::array<float, 4> >",      &calohits);
@@ -277,6 +280,8 @@ if( bookCaloGeomFidVolume )
     if(caloAxisStore)
     {
       caloaxishits = caloAxisStore->caloaxishits;
+      caloaxispathlengthhit = caloAxisStore->caloaxispathlengthhit;
+
       for(int i=0; i<3; i++){
         caloaxiscog[i] = caloAxisStore->caloaxiscog[i];
         caloaxissigma[i] = caloAxisStore->caloaxissigma[i];
@@ -284,11 +289,13 @@ if( bookCaloGeomFidVolume )
         caloaxiskurt[i] = caloAxisStore->caloaxiskurt[i];
         caloaxisdir[i] = caloAxisStore->caloaxisdir[i];
         caloaxiseigval[i] = caloAxisStore->caloaxiseigval[i];
+	caloaxisentryhit[i] = caloAxisStore->caloaxisentryhit[i];
+	caloaxisexithit[i] = caloAxisStore->caloaxisexithit[i];
 
           for(int j=0; j<3; j++)
            {
           caloaxiseigvec[i][j] = caloAxisStore->caloaxiseigvec[i][j];
-       }
+	   }
      }
   
 

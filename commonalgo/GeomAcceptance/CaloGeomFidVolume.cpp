@@ -197,8 +197,8 @@ bool CaloGeomFidVolumeAlgo::CheckExt() {
 
   auto mcTruth = _evStore->GetObject<MCTruth>("mcTruth");
   if (!mcTruth) {COUT(ERROR) << "mcTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL;return false;}
-  const Momentum &Mom = mcTruth->primaries[0].initialMomentum;
-  const Point &Pos    = mcTruth->primaries[0].initialPosition;
+  const Momentum &Mom = mcTruth->primaries[0].GetInitialMomentum();
+  const Point &Pos    = mcTruth->primaries[0].GetInitialPosition();
   Line track(Pos, Mom);
 
   //Build additional planes
@@ -613,8 +613,8 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
 
   auto mcTruth = _evStore->GetObject<MCTruth>("mcTruth");
   if (!mcTruth) {COUT(ERROR) << "mcTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL;return false;}
-  const Momentum &Mom = mcTruth->primaries[0].initialMomentum;
-  const Point &Pos    = mcTruth->primaries[0].initialPosition;
+  const Momentum &Mom = mcTruth->primaries[0].GetInitialMomentum();
+  const Point &Pos    = mcTruth->primaries[0].GetInitialPosition();
   Line track(Pos, Mom);
 
   

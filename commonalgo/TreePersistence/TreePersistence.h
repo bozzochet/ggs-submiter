@@ -106,6 +106,9 @@ private:
   float caloaxissigma[3];
   float caloaxisskew[3];
   float caloaxiskurt[3];
+  float caloaxisentryhit[3];
+  float caloaxisexithit[3];
+  float caloaxispathlengthhit;
   float caloaxisdir[3];
   float caloaxiseigval[3];
   float caloaxiseigvec[3][3];

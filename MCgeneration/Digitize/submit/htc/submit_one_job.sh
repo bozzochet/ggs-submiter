@@ -2,7 +2,7 @@
 #
 USER=`whoami`
 
-WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Digitize
+WORKDIR=${STORAGE}/herd-vv-svn/MCgeneration/Digitize
 SUBMITDIR=${WORKDIR}/submit/htc
 
 argv=("$@")
@@ -11,6 +11,9 @@ argc=${#argv[@]}
 NAME=${argv[0]}    
 
 JOBTEMPLATE=${SUBMITDIR}/job.dig.template
+JOBTEMPLATEHEAD=${SUBMITDIR}/job.dig.head.template
+JOBTEMPLATEBODY=${SUBMITDIR}/job.dig.body.template
+JOBTEMPLATETAIL=${SUBMITDIR}/job.dig.tail.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
 DATACARDTEMPLATE=${SUBMITDIR}/digitize.eaconf.template
 
@@ -37,7 +40,8 @@ rm -fv ${LOGFILE}
 
 echo $INFILE
 
-head -n 15 ${JOBTEMPLATE} >> ${JOB}
+#head -n 15 ${JOBTEMPLATE} >> ${JOB}
+cat ${JOBTEMPLATEHEAD} >> ${JOB}
 
 for INFILE in "${argv[@]:1}"; do   #loop on array of arguments starting from second
 
@@ -46,21 +50,25 @@ BASENAME=`basename $INFILE ".root"`
 echo $BASENAME
 
 rm -fv job.temp
-head -n 27 ${JOBTEMPLATE} | tail -n 13 >> job.temp
+#head -n 27 ${JOBTEMPLATE} | tail -n 13 >> job.temp
+cat ${JOBTEMPLATEBODY} >> ${JOB}
 
 DATACARD=${JOBDIR}/${BASENAME}.eaconf
 cp -v ${DATACARDTEMPLATE}                   ${DATACARD}
 sed -i "s%_INFILE_%${INFILE}%g"             ${DATACARD}
 
 OUTROOT=${OUTDIR}/${BASENAME}.dig.root
-sed -i "s%_DATACARD_%${DATACARD}%g"         job.temp
-sed -i "s%_OUTROOT_%${OUTROOT}%g"           job.temp
+#sed -i "s%_DATACARD_%${DATACARD}%g"         job.temp
+#sed -i "s%_OUTROOT_%${OUTROOT}%g"           job.temp
+sed -i "s%_DATACARD_%${DATACARD}%g"         ${JOB}
+sed -i "s%_OUTROOT_%${OUTROOT}%g"           ${JOB}
 
-cat job.temp >> ${JOB}
+#cat job.temp >> ${JOB}
 
 done
 
-tail -n 6 ${JOBTEMPLATE} >> ${JOB}
+#tail -n 6 ${JOBTEMPLATE} >> ${JOB}
+cat ${JOBTEMPLATETAIL} >> ${JOB}
 chmod 777 ${JOB}
 
 cp -v ${SUBTEMPLATE}                        ${SUB}
@@ -71,5 +79,6 @@ sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
 CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB}"
 echo ${CMD}
+cat ${JOB}
 ${CMD}
 

@@ -1,11 +1,13 @@
 #!/bin/bash
 
-#NAME="protons_10GeV_10000GeV_E-1"
-#LISTFILE=lists/protons_10GeV_10000GeV_E-1.list
-NAME="protons_10GeV_1000GeV_E-1"
+NAME="electrons_10GeV_1000GeV_E-1"
 LISTFILE=lists/${NAME}.list
 
-fperjob=5
+
+
+LISTFILE=lists/${NAME}.list
+
+fperjob=1
 
 i=0
 flist=""
@@ -22,7 +24,9 @@ while read f; do
       echo $cmd
       $cmd
       flist=""
+      exit
   fi
+
 
 done < $LISTFILE
 

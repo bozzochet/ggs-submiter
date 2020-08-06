@@ -80,8 +80,8 @@ bool CaloGlob::Process() {
   //if (!caloClusters) { COUT(DEBUG) << "caloClusters not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
   auto mcTruth = _evStore->GetObject<Herd::MCTruth>("mcTruth");
   if (!mcTruth) {COUT(ERROR) << "mcTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL;return false;}
-  auto caloaxisinfos = _evStore->GetObject<CaloAxes>("caloAxes");
-  if (!caloaxisinfos) return true; //{COUT(ERROR) << "caloAxes not found" << ENDL; return false;}
+  auto caloaxes = _evStore->GetObject<CaloAxes>("caloAxes");
+  if (!caloaxes) return true; //{COUT(ERROR) << "caloAxes not found" << ENDL; return false;}
   
   float calototedep = std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
   int calonhits =     std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; });
@@ -90,8 +90,8 @@ bool CaloGlob::Process() {
   //COUT(INFO)<<caloClusters->size()<<ENDL;
   //if( caloClusters ) _processstore->calonclusters = (int)caloClusters->size();
 
-  const Momentum &mcMom = mcTruth->primaries[0].initialMomentum;
-  const Point &mcPos    = mcTruth->primaries[0].initialPosition;
+  const Momentum &mcMom = mcTruth->primaries[0].GetInitialMomentum();
+  const Point &mcPos    = mcTruth->primaries[0].GetInitialPosition();
   const Line mctrack(mcPos, mcMom);
   short nmiphitsontrack=0;
   double calomiptrack=0;
@@ -114,12 +114,12 @@ bool CaloGlob::Process() {
   _processstore->calomiptrack = calomiptrack;
 
 
- if(caloaxisinfos->size() != 0){
+ if(caloaxes->size() != 0){
   TMatrixD R(3,3); //rotation matrix
   for(int i=0; i<3; i++){
-      R[0][i] = caloaxisinfos->at(0).axisEigenvectors[i][RefFrame::Coo::X];
-      R[1][i] = caloaxisinfos->at(0).axisEigenvectors[i][RefFrame::Coo::Y];
-      R[2][i] = caloaxisinfos->at(0).axisEigenvectors[i][RefFrame::Coo::Z];
+      R[0][i] = caloaxes->at(0).GetEigenvectors()[i][RefFrame::Coo::X];
+      R[1][i] = caloaxes->at(0).GetEigenvectors()[i][RefFrame::Coo::Y];
+      R[2][i] = caloaxes->at(0).GetEigenvectors()[i][RefFrame::Coo::Z];
     }
   R.Invert();
   //printf("%f\t%f\t%f\n", R[0][0], R[0][1], R[0][2]);
@@ -127,9 +127,9 @@ bool CaloGlob::Process() {
   //printf("%f\t%f\t%f\n", R[2][0], R[2][1], R[2][2]);
 
   float cog[3];
-  cog[0] = caloaxisinfos->at(0).axisCOG[RefFrame::Coo::X];
-  cog[1] = caloaxisinfos->at(0).axisCOG[RefFrame::Coo::Y];
-  cog[2] = caloaxisinfos->at(0).axisCOG[RefFrame::Coo::Z];
+  cog[0] = caloaxes->at(0).GetCOG()[RefFrame::Coo::X];
+  cog[1] = caloaxes->at(0).GetCOG()[RefFrame::Coo::Y];
+  cog[2] = caloaxes->at(0).GetCOG()[RefFrame::Coo::Z];
   //printf("%f\t%f\t%f\n", cog[0], cog[1], cog[2]);
 
   for( auto const &hit : *caloHits){
@@ -165,7 +165,7 @@ _processstore->calopcahits0.push_back(_pcahit[0]);
 
   if(calohitscutmc){
    
-    float mcmom = std::sqrt(mcTruth->primaries.at(0).initialMomentum * mcTruth->primaries.at(0).initialMomentum);
+    float mcmom = std::sqrt(mcTruth->primaries.at(0).GetInitialMomentum() * mcTruth->primaries.at(0).GetInitialMomentum());
     if(calonhits < std::pow(10,(((1+log10(2))/3.))*std::log10(mcmom) + (2 - (1+std::log10(2))/3.)) ){ SetFilterResult(FilterResult::REJECT); }
   }
 
@@ -283,16 +283,14 @@ bool CaloGlobStore::Reset() {
   calonmiphitsontrack=0;
   calomiptrack=0;
 
-   calohitsX.clear();
+  calohitsX.clear();
   calohitsY.clear();
- calohitsZ.clear();
- calohitsE.clear();
- calohitsPL.clear();
- calopcahits0.clear();
- calopcahits1.clear();
- calopcahits2.clear();
-
-
+  calohitsZ.clear();
+  calohitsE.clear();
+  calohitsPL.clear();
+  calopcahits0.clear();
+  calopcahits1.clear();
+  calopcahits2.clear();
 
   return true;
 }

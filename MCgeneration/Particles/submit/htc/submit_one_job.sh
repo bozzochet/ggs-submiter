@@ -1,12 +1,12 @@
 #!/bin/sh
 #
 USER=`whoami`
-WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/MCgeneration/Particles/
+WORKDIR=/storage/gpfs_data/herd/vvagelliherd/herd-vv-svn/MCgeneration/Particles/
 
 #NAME="protons_10GeV_1000GeV_E-1"
 #NAME="protons_1TeV_100TeV_E-1"
-#NAME="electrons_10GeV_1000GeV_E-1"
-NAME="electrons_1TeV_100TeV_E-1"
+NAME="electrons_10GeV_1000GeV_E-1"
+#NAME="electrons_1TeV_100TeV_E-1"
 
 GEOMETRY=${HERDINSTALL}/plugin/libHerdMCParametricGeo.so
 
@@ -30,6 +30,11 @@ JOBDIR=${SUBMITDIR}/jobs/${NAME}
 if [ ! -d $OUTDIR ]; then mkdir -pv ${OUTDIR}; fi
 if [ ! -d $LOGDIR ]; then mkdir -pv ${LOGDIR}; fi
 if [ ! -d $JOBDIR ]; then mkdir -pv ${JOBDIR}; fi
+
+SETENV=${STORAGE}/setherd.sh
+if [ ! -f $SETENV ]; then echo "Cannot find ${SETENV}"; exit; fi
+
+
 
 ii=$1
 SEED1="$RANDOM"
@@ -55,6 +60,8 @@ sed -i "s%_OUTDIR_%${OUTDIR}%g"             ${JOB}
 sed -i "s%_OUTPUT_%${OUTPUT}%g"             ${JOB}
 sed -i "s%_SEED1_%${SEED1}%g"               ${JOB}
 sed -i "s%_SEED2_%${SEED2}%g"               ${JOB}
+sed -i "s%_SETENV_%${SETENV}%g"             ${JOB}
+sed -i "s%_SUBMITDIR_%${SUBMITDIR}%g"       ${JOB}
 chmod 777 ${JOB}
 
 cp -v ${SUBTEMPLATE}                        ${SUB}
