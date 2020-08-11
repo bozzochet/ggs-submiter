@@ -1,5 +1,5 @@
 #!/bin/bash
-LISTDIR="/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/analysis/calo/submit/htc/lists"
+LISTDIR=${STORAGE}/herd-vv-svn/analysis/calo/submit/htc/lists
 #for STREAM in "electrons_1000GeV_10000GeV_E-1" "electrons_10GeV_1000GeV_E-1" 
 #for STREAM in "electrons_1000GeV_10000GeV_E-1" "electrons_10GeV_1000GeV_E-1" "protons_10GeV_10000GeV_E-1"
 #for STREAM in "protons_10GeV_10000GeV_E-1"
@@ -11,18 +11,20 @@ OPTS=""
 #OPTS="${OPTS} --parameter histo*,naxisbins,100 --parameter histo*,axismin,10 --parameter histo*,axismax,100000"
 #OPTS="${OPTS} --parameter mcgenspectrum,naxisbin,150 --parameter mcgenspectrum,axismin,1 --parameter mcgenspectrum,axismax,100000 --parameter mcgenspectrum,minmom,10 -p mcgenspectrum,maxmom,1000"
 
-STREAM="electrons_1000GeV_10000GeV_E-1"
-OPTS="${OPTS} --parameter histo*,naxisbins,100 --parameter histo*,axismin,10 --parameter histo*,axismax,100000"
-OPTS="${OPTS} --parameter mcgenspectrum,naxisbin,150 --parameter mcgenspectrum,axismin,1 --parameter mcgenspectrum,axismax,100000 --parameter mcgenspectrum,minmom,1000 -p mcgenspectrum,maxmom,10000"
+#STREAM="electrons_1000GeV_10000GeV_E-1"
+#OPTS="${OPTS} --parameter histo*,naxisbins,100 --parameter histo*,axismin,10 --parameter histo*,axismax,100000"
+#OPTS="${OPTS} --parameter mcgenspectrum,naxisbin,150 --parameter mcgenspectrum,axismin,1 --parameter mcgenspectrum,axismax,100000 --parameter mcgenspectrum,minmom,1000 -p mcgenspectrum,maxmom,10000"
 
 #STREAM="protons_10GeV_10000GeV_E-1"
 #OPTS="${OPTS} --parameter histo*,naxisbins,100 --parameter histo*,axismin,10 --parameter histo*,axismax,100000"
 #OPTS="${OPTS} --parameter mcgenspectrum,naxisbin,150 --parameter mcgenspectrum,axismin,1 --parameter mcgenspectrum,axismax,100000 --parameter mcgenspectrum,minmom,10 -p mcgenspectrum,maxmom,10000"
 
+#STREAM="protons_10GeV"
+OPTS="${OPTS} --parameter histo*,naxisbins,100 --parameter histo*,axismin,10 --parameter histo*,axismax,100000"
+OPTS="${OPTS} --parameter mcgenspectrum,naxisbin,150 --parameter mcgenspectrum,axismin,1 --parameter mcgenspectrum,axismax,100000 --parameter mcgenspectrum,minmom,10 -p mcgenspectrum,maxmom,1000"
 
-
-#for STREAM in "electrons_10GeV_1000GeV_E-1"
-#do
+for STREAM in for STREAM in "protons_10GeV" "protons_50GeV" "protons_100GeV" "protons_500GeV" "protons_1TeV" "protons_10TeV" "protons_50TeV" "protons_10GeV_1000GeV_E-1" "electrons_10GeV_1000GeV_E-1"
+do
     for flist in `ls ${LISTDIR}/${STREAM}/*.list.txt`
     do
 	echo "LIST: $flist"
@@ -30,11 +32,12 @@ OPTS="${OPTS} --parameter mcgenspectrum,naxisbin,150 --parameter mcgenspectrum,a
 	for TH in  0.020
 	do
 	    BASENAME=`basename $flist .list.txt`
-	    NAME="$BASENAME.edepthreshold_$TH"
+	    #NAME="$BASENAME.edepthreshold_$TH"
+	    NAME="$BASENAME"
 	    LISTFILE=$flist
-	    OPTS="${OPTS} --parameter pcaCaloAxisTrackingAlgo,edepthreshold,$TH"
+	    OPTS="${OPTS} --parameter pcaCaloAxisTrackingAlgo,edepThreshold,$TH"
        	    echo "$NAME $LISTFILE $OPTS"
 	    ./submit_one_job.sh $NAME $LISTFILE "$OPTS"
 	done
     done
-#done
+done

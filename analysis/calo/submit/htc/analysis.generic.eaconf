@@ -1,6 +1,6 @@
 Plugin HerdDataProviders
 Plugin RootDataProvider
-Plugin HerdDataObjectsDict
+Plugin HerdDataObjects
 Plugin CommonAlgo
 Plugin RootPersistence
 Plugin HerdAlgorithms
@@ -19,7 +19,7 @@ Persistence TreePersistence treePersistence tree.root
    Set BookCaloGlob true
    Set BookCaloAxis true
 
-EventLoop 0 100000
+EventLoop # 0 100000
 
   #Compute the variables for Calo acceptance check
   Algo CaloTrackInfoAlgo caloTrackInfoAlgo
@@ -77,8 +77,8 @@ EventLoop 0 100000
         Sequence caloglob
 
        	 Algo PcaCaloAxisTrackingAlgo pcaCaloAxisTrackingAlgo
-              Set edepthreshold 0.020 #GeV ~ 1/3 MIP
-  	      Set processcalo true
+              Set edepThreshold 0.020 #GeV ~ 1/3 MIP
+  	      Set processCalo true
 
 	Algo CaloAxisProcess caloAxisProcess #needed to fill the caloaxis branches in tree
 

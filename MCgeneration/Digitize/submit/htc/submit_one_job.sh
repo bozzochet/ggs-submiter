@@ -15,8 +15,8 @@ JOBTEMPLATEHEAD=${SUBMITDIR}/job.dig.head.template
 JOBTEMPLATEBODY=${SUBMITDIR}/job.dig.body.template
 JOBTEMPLATETAIL=${SUBMITDIR}/job.dig.tail.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
-DATACARDTEMPLATE=${SUBMITDIR}/digitize.eaconf.template
-
+#DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_fit_psdbar.eaconf.template
+DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_stk_psdbar.eaconf.template
 OUTDIR=${SUBMITDIR}/output/${NAME}
 LOGDIR=${SUBMITDIR}/logs/${NAME}
 JOBDIR=${SUBMITDIR}/jobs/${NAME}
@@ -77,8 +77,8 @@ sed -i "s%_OUTPUT_%${OUTFILE}%g"            ${SUB}
 sed -i "s%_ERROR_%${ERRFILE}%g"             ${SUB}
 sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
-CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB}"
+CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name dig.${NAME}"
 echo ${CMD}
-cat ${JOB}
+#cat ${JOB}
 ${CMD}
 

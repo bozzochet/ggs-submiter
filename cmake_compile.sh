@@ -1,6 +1,6 @@
 PWD=`pwd`
-cd build
-make
+cd ${STORAGE}/herd-vv-svn/build
+make -j4
 make install
 cd ${PWD}
 

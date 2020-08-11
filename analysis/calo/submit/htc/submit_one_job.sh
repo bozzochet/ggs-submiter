@@ -6,7 +6,7 @@ NAME=$1
 LISTFILE=$2
 OPTS=$3
 
-WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/analysis/calo
+WORKDIR=${STORAGE}/herd-vv-svn/analysis/calo
 SUBMITDIR=${WORKDIR}/submit/htc
 
 FULLBASENAME=`basename $LISTFILE .list.txt`
@@ -59,7 +59,7 @@ sed -i "s%_OUTPUT_%${OUTFILE}%g"            ${SUB}
 sed -i "s%_ERROR_%${ERRFILE}%g"             ${SUB}
 sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
-CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB}"
+CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name tree.${BASENAME}"
 echo ${CMD}
 ${CMD}
 

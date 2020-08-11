@@ -1,9 +1,13 @@
 #!/bin/bash
 
-WORKDIR=/storage/gpfs_ams/ams/users/vvagelli/HERD/analysis/herd-vv-svn/analysis/calo/
+WORKDIR=/storage/gpfs_data/herd/vvagelliherd/herd-vv-svn/analysis/calo/
 SUBMITDIR=${WORKDIR}/submit/htc
 
-source /storage/gpfs_ams/ams/users/vvagelli/HERD/setherd.sh
+source /storage/gpfs_data/herd/vvagelliherd/setcommon.sh
+source /storage/gpfs_data/herd/vvagelliherd/setherd.sh
+
+env
+
 cd ${SUBMITDIR}
 
 HOME=`pwd`

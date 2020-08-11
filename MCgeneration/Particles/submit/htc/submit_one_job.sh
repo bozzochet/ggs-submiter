@@ -5,18 +5,18 @@ WORKDIR=/storage/gpfs_data/herd/vvagelliherd/herd-vv-svn/MCgeneration/Particles/
 
 #NAME="protons_10GeV_1000GeV_E-1"
 #NAME="protons_1TeV_100TeV_E-1"
-NAME="electrons_10GeV_1000GeV_E-1"
+#NAME="electrons_10GeV_1000GeV_E-1"
 #NAME="electrons_1TeV_100TeV_E-1"
+NAME="protons_1TeV"
 
 GEOMETRY=${HERDINSTALL}/plugin/libHerdMCParametricGeo.so
 
-GEODATACARD=${WORKDIR}/geometry.mac
+#GEODATACARD=${WORKDIR}/geometry.mac
+GEODATACARD=${WORKDIR}/datacards/geometry_calov2_fit_psdbar.mac
 #DATACARD=${WORKDIR}/protons.mac
 #DATACARD=${WORKDIR}/electrons_1000GeV_10000GeV.mac
 #DATACARD=${WORKDIR}/electrons.mac
-DATACARD=${WORKDIR}/${NAME}.mac
-
-
+DATACARD=${WORKDIR}/datacards/${NAME}.mac
 
 SUBMITDIR=${WORKDIR}/submit/htc
 

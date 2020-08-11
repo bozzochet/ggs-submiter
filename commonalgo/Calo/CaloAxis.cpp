@@ -45,6 +45,7 @@ bool CaloAxis::Initialize() {
 bool CaloAxis::Process() {
   const std::string routineName("CaloAxis::Process");
 
+
   //Add the ProcessStore object for this event to the event data store
   //_processstore->Reset();
   _evStore->AddObject("CaloAxisStore",_processstore);
