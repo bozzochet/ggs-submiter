@@ -249,7 +249,7 @@ int verify_calo_axis(const double x0){
   int ncaloaxisskewbins=2000;
   Double_t *caloaxisskewbins = GenerateBinning(ncaloaxisskewbins,-40,40);
   int ncaloaxiskurtbins=2000;
-  Double_t *caloaxiskurtbins = GenerateBinning(ncaloaxiskurtbins,0,80);
+  Double_t *caloaxiskurtbins = GenerateBinning(ncaloaxiskurtbins,-80,80);
   
   TH2F *hthetaall = new TH2F("hthetaall","hthetaall;Theta [MC];Theta [CALO]", nthetabins, thetabins, nthetabins, thetabins);
   TH2F *hphiall   = new TH2F("hphiall",  "hphiall;Phi [MC];Phi [CALO]", nphibins, phibins, nphibins, phibins);
@@ -301,7 +301,7 @@ int verify_calo_axis(const double x0){
   TH2F *hcaloaxiskurt_2 = new TH2F("hcaloaxiskurt_2", "hcaloaxiskurt_2",nenebins, enebins, ncaloaxiskurtbins, caloaxiskurtbins);
   
   // ---------LOOP on events
-  // nentries=10000;
+  nentries=200000;
   for(int ientry=0; ientry<nentries; ientry++){
     if(ientry%100000==0) printf("%d/%d\n",ientry,nentries);
     

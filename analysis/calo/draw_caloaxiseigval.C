@@ -5,8 +5,8 @@
 
 int draw_caloaxiseigval(){
 
-  TFile *fele = TFile::Open("fout.ele_10_10000.root");
-  TFile *fpro = TFile::Open("fout.pro_10_10000.root");
+  TFile *fele = TFile::Open("fout.ele_10_1000.root");
+  TFile *fpro = TFile::Open("fout.pro_10_1000.root");
 
   const char* eigvalaxisname[2] = {"#lambda_{0} (cm)","(#lambda_{1}+#lambda_{2})/2 (cm)"};
   const char* eigvalhname[2] = {"hcaloaxiseigval_0","hcaloaxiseigval_12"};
@@ -103,8 +103,8 @@ int draw_caloaxiseigval(){
 
 int draw_caloaxissigma(){
 
-  TFile *fele = TFile::Open("fout.ele_10_10000.root");
-  TFile *fpro = TFile::Open("fout.pro_10_10000.root");
+  TFile *fele = TFile::Open("fout.ele_10_1000.root");
+  TFile *fpro = TFile::Open("fout.pro_10_1000.root");
 
   const char* sigmaaxisname[3] = {"#sigma_{0} (cm)","#sigma_{1} (cm)", "#sigma_{2} (cm)"};
   const char* sigmahname[3] = {"hcaloaxissigma_0","hcaloaxissigma_1","hcaloaxissigma_2"};
@@ -183,8 +183,8 @@ int draw_caloaxissigma(){
 
 int draw_caloaxisskew(){
 
-  TFile *fele = TFile::Open("fout.ele_10_10000.root");
-  TFile *fpro = TFile::Open("fout.pro_10_10000.root");
+  TFile *fele = TFile::Open("fout.ele_10_1000.root");
+  TFile *fpro = TFile::Open("fout.pro_10_1000.root");
 
   const char* skewaxisname[3] = {"s_{0}","s_{1}", "s_{2}"};
   const char* skewhname[3] = {"hcaloaxisskew_0","hcaloaxisskew_1","hcaloaxisskew_2"};
@@ -261,8 +261,8 @@ int draw_caloaxisskew(){
 }
 int draw_caloaxiskurt(){
 
-  TFile *fele = TFile::Open("fout.ele_10_10000.root");
-  TFile *fpro = TFile::Open("fout.pro_10_10000.root");
+  TFile *fele = TFile::Open("fout.ele_10_1000.root");
+  TFile *fpro = TFile::Open("fout.pro_10_1000.root");
 
   const char* kurtaxisname[3] = {"k_{0}","k_{1}", "k_{2}"};
   const char* kurthname[3] = {"hcaloaxiskurt_0","hcaloaxiskurt_1","hcaloaxiskurt_2"};
