@@ -88,6 +88,8 @@ public:
   int mcTrackcaloentryplane;
   int mcTrackcaloexitplane;
 
+  float mcFirsthadint[3];
+  bool mcHashadint;
 private:
   
 };

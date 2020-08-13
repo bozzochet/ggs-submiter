@@ -67,7 +67,8 @@ private:
   float mcTrackcaloexit[3];
   int mcTrackcaloentryplane;
   int mcTrackcaloexitplane;
-
+  bool mcHashadint;
+  float mcFirsthadint[3];
 
   bool bookCaloGeomFidVolume;
   float calofidvolalpha;

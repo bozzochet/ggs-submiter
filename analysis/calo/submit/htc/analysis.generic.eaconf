@@ -27,8 +27,6 @@ EventLoop # 0 100000
   #Compute the variables for St acceptance check
   Algo StkIntersectionsAlgo stkTrackInfoAlgo
 
-  Sequence all
-
   Algo MCGenSpectrum mcgenspectrum
   Set minmom 10
   Set maxmom 1000  
@@ -40,8 +38,6 @@ EventLoop # 0 100000
   Set logaxis true
   Set title AllEvents
   Set var MCmom
-
-    Sequence mctrack 
 
     Algo MCtruthProcessStore MCtruthProcessStore
     Algo MCtruthProcess mctruthprocess
@@ -57,9 +53,7 @@ EventLoop # 0 100000
     Set title MCtrack
     Set var MCmom
 
-      Sequence calofidvolume
-
-      Algo CaloGeomFidVolumeStore caloGeomFidVolumeStore
+       Algo CaloGeomFidVolumeStore caloGeomFidVolumeStore
       Algo CaloGeomFidVolumeAlgo  caloGeomFidVolumeAlgo
         Set filterenable false
         Set alpha 1.0
@@ -74,8 +68,6 @@ EventLoop # 0 100000
         Set title CALO_fid_volume
         Set var MCmom
         
-        Sequence caloglob
-
        	 Algo PcaCaloAxisTrackingAlgo pcaCaloAxisTrackingAlgo
               Set edepThreshold 0.020 #GeV ~ 1/3 MIP
   	      Set processCalo true
@@ -103,8 +95,4 @@ EventLoop # 0 100000
  	     Set FillTreeThisEvent true
 	
     	    
-        EndSequence #caloglob
-      EndSequence #calofidvolume
-    EndSequence #mctrack
-  EndSequence #all
 

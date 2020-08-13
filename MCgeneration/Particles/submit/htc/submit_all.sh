@@ -1,7 +1,7 @@
 #!/bin/bash
 
-N=1
-i=0
+N=502
+i=500
 
 while [ ${i} -lt ${N} ]
 do

@@ -12,7 +12,7 @@ NAME="protons_1TeV"
 GEOMETRY=${HERDINSTALL}/plugin/libHerdMCParametricGeo.so
 
 #GEODATACARD=${WORKDIR}/geometry.mac
-GEODATACARD=${WORKDIR}/datacards/geometry_calov2_fit_psdbar.mac
+GEODATACARD=${WORKDIR}/datacards/geometry_calov2_stk_psdbar.mac
 #DATACARD=${WORKDIR}/protons.mac
 #DATACARD=${WORKDIR}/electrons_1000GeV_10000GeV.mac
 #DATACARD=${WORKDIR}/electrons.mac
@@ -31,8 +31,10 @@ if [ ! -d $OUTDIR ]; then mkdir -pv ${OUTDIR}; fi
 if [ ! -d $LOGDIR ]; then mkdir -pv ${LOGDIR}; fi
 if [ ! -d $JOBDIR ]; then mkdir -pv ${JOBDIR}; fi
 
-SETENV=${STORAGE}/setherd.sh
-if [ ! -f $SETENV ]; then echo "Cannot find ${SETENV}"; exit; fi
+SETENVCOMMON=${STORAGE}/setcommon.sh
+if [ ! -f $SETENVCOMMON ]; then echo "Cannot find ${SETENVCOMMON}"; exit; fi
+SETENVHERD=${STORAGE}/setherd.sh
+if [ ! -f $SETENVHERD ]; then echo "Cannot find ${SETENVHERD}"; exit; fi
 
 
 
@@ -60,7 +62,8 @@ sed -i "s%_OUTDIR_%${OUTDIR}%g"             ${JOB}
 sed -i "s%_OUTPUT_%${OUTPUT}%g"             ${JOB}
 sed -i "s%_SEED1_%${SEED1}%g"               ${JOB}
 sed -i "s%_SEED2_%${SEED2}%g"               ${JOB}
-sed -i "s%_SETENV_%${SETENV}%g"             ${JOB}
+sed -i "s%_SETENVCOMMON_%${SETENVCOMMON}%g" ${JOB}
+sed -i "s%_SETENVHERD_%${SETENVHERD}%g"     ${JOB}
 sed -i "s%_SUBMITDIR_%${SUBMITDIR}%g"       ${JOB}
 chmod 777 ${JOB}
 
@@ -70,7 +73,7 @@ sed -i "s%_OUTPUT_%${OUTFILE}%g"            ${SUB}
 sed -i "s%_ERROR_%${ERRFILE}%g"             ${SUB}
 sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
-CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB}"
+CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name ggs.${NAME}"
 echo ${CMD}
 ${CMD}
 

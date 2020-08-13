@@ -61,5 +61,5 @@ sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
 CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name tree.${BASENAME}"
 echo ${CMD}
-${CMD}
+#${CMD}
 

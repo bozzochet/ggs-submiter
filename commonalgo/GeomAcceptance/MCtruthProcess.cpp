@@ -158,6 +158,20 @@ bool MCtruthProcess::Process() {
 
 	  }
 
+  //Hadronic interaction
+  _processstore->mcHashadint = mctruth->primaries[0].HadronicInelasticInteractionIsPresent();
+  if (_processstore->mcHashadint) {
+    _processstore->mcFirsthadint[0] = mctruth->primaries[0].HadronicInelasticInteraction().intPosition[Herd::RefFrame::Coo::X];
+    _processstore->mcFirsthadint[1] = mctruth->primaries[0].HadronicInelasticInteraction().intPosition[Herd::RefFrame::Coo::Y];
+    _processstore->mcFirsthadint[2] = mctruth->primaries[0].HadronicInelasticInteraction().intPosition[Herd::RefFrame::Coo::Z];
+    COUT(INFO)<<mctruth->primaries[0].HadronicInelasticInteraction().processName.c_str()<<ENDL;
+  }
+  else{
+    _processstore->mcFirsthadint[0] = -999;
+    _processstore->mcFirsthadint[1] = -999;
+    _processstore->mcFirsthadint[2] = -999;
+  }
+
   //Check MC track length
   if(calotrack->trackLengthCaloX0<mincalotrackx0) SetFilterResult(FilterResult::REJECT);
 

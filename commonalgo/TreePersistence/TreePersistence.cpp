@@ -71,6 +71,8 @@ bool TreePersistence::Connect() {
   _outputTree->Branch("mcTrackcaloexitplane",  &(mcTrackcaloexitplane),  "mcTrackcaloexitplane/I");
   _outputTree->Branch("mcTracklenghtexactlysocm",  &(mcTracklenghtexactlysocm),  "mcTracklenghtexactlysocm/F");
   _outputTree->Branch("mcTracklenghtlysoafii",  &(mcTracklenghtlysoafii),  "mcTracklenghtlysoafii/F");
+  _outputTree->Branch("mcFirsthadint",         &(mcFirsthadint[0]),          "mcFirsthadint[3]/F");
+  _outputTree->Branch("mcHashadint",         &(mcHashadint),          "mcHashadint/O");
 
   }
 
@@ -210,6 +212,10 @@ bool TreePersistence::EndOfEvent() {
       mcTrackcaloexit[2] = mcTruthProcessStore->mcTrackcaloexit[2];
       mcTrackcaloentryplane = mcTruthProcessStore->mcTrackcaloentryplane;
       mcTrackcaloexitplane = mcTruthProcessStore->mcTrackcaloexitplane;
+      mcFirsthadint[0] = mcTruthProcessStore->mcFirsthadint[0];
+      mcFirsthadint[1] = mcTruthProcessStore->mcFirsthadint[1];
+      mcFirsthadint[2] = mcTruthProcessStore->mcFirsthadint[2];
+      mcHashadint = mcTruthProcessStore->mcHashadint;;
       //
       mcTruthProcessStore->Reset();
     }

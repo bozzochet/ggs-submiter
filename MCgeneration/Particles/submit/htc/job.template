@@ -2,7 +2,11 @@
 
 SUBMITDIR=_SUBMITDIR_
 
-source _SETENV_
+source _SETENVCOMMON_
+source _SETENVHERD_
+
+env
+
 cd ${SUBMITDIR}
 
 HOME=`pwd`
@@ -22,9 +26,6 @@ SEED2=_SEED2_
 
 cp -v ${DATACARD} ${OUTPUT}.datacard
 cp -v ${GEODATACARD} ${OUTPUT}.geo
-
-echo "ls -altrh /lib64"
-ls -altrh /lib64
 
 GGS=`which ${PENNY}`
 echo "ldd $GGS"
