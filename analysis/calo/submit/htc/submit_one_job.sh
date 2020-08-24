@@ -60,6 +60,7 @@ sed -i "s%_ERROR_%${ERRFILE}%g"             ${SUB}
 sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
 CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name tree.${BASENAME}"
+#CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name test"
 echo ${CMD}
-#${CMD}
+${CMD}
 

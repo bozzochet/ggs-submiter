@@ -164,7 +164,7 @@ bool MCtruthProcess::Process() {
     _processstore->mcFirsthadint[0] = mctruth->primaries[0].HadronicInelasticInteraction().intPosition[Herd::RefFrame::Coo::X];
     _processstore->mcFirsthadint[1] = mctruth->primaries[0].HadronicInelasticInteraction().intPosition[Herd::RefFrame::Coo::Y];
     _processstore->mcFirsthadint[2] = mctruth->primaries[0].HadronicInelasticInteraction().intPosition[Herd::RefFrame::Coo::Z];
-    COUT(INFO)<<mctruth->primaries[0].HadronicInelasticInteraction().processName.c_str()<<ENDL;
+    //COUT(INFO)<<mctruth->primaries[0].HadronicInelasticInteraction().processName.c_str()<<ENDL;
   }
   else{
     _processstore->mcFirsthadint[0] = -999;

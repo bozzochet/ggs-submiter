@@ -3,16 +3,21 @@
 USER=`whoami`
 WORKDIR=/storage/gpfs_data/herd/vvagelliherd/herd-vv-svn/MCgeneration/Particles/
 
+NAME=$1
+GEODATACARD=$2
+if [ ! -f $GEODATACARD ]; then echo "Cannot find ${GEODATACARD}"; exit; fi
+
 #NAME="protons_10GeV_1000GeV_E-1"
 #NAME="protons_1TeV_100TeV_E-1"
 #NAME="electrons_10GeV_1000GeV_E-1"
 #NAME="electrons_1TeV_100TeV_E-1"
-NAME="protons_1TeV"
+#NAME="protons_1TeV"
 
 GEOMETRY=${HERDINSTALL}/plugin/libHerdMCParametricGeo.so
+if [ ! -f $GEOMETRY ]; then echo "Cannot find ${GEOMETRY}"; exit; fi
 
 #GEODATACARD=${WORKDIR}/geometry.mac
-GEODATACARD=${WORKDIR}/datacards/geometry_calov2_stk_psdbar.mac
+#GEODATACARD=${WORKDIR}/datacards/geometry_calov2_stk_psdbar.mac
 #DATACARD=${WORKDIR}/protons.mac
 #DATACARD=${WORKDIR}/electrons_1000GeV_10000GeV.mac
 #DATACARD=${WORKDIR}/electrons.mac
@@ -38,7 +43,7 @@ if [ ! -f $SETENVHERD ]; then echo "Cannot find ${SETENVHERD}"; exit; fi
 
 
 
-ii=$1
+ii=$3
 SEED1="$RANDOM"
 SEED2="$RANDOM"
 JOBNAME="job_${ii}_${SEED1}_${SEED2}"

@@ -24,21 +24,23 @@ OUTPUT=_OUTPUT_
 SEED1=_SEED1_
 SEED2=_SEED2_
 
-cp -v ${DATACARD} ${OUTPUT}.datacard
-cp -v ${GEODATACARD} ${OUTPUT}.geo
 
 GGS=`which ${PENNY}`
 echo "ldd $GGS"
 ldd $GGS
 
 # Launch the simulation
-EXEC="$PENNY -d $DATACARD -g $GEOMETRY -gd $GEODATACARD -ro $OUTPUT --seed1 ${SEED1} --seed2 ${SEED2}"
+EXEC="$PENNY -d $DATACARD -g $GEOMETRY -gd $GEODATACARD -ro local.root --seed1 ${SEED1} --seed2 ${SEED2}"
 
 CMD="time ${EXEC}"
 echo ${CMD}
 ${CMD}
 
 ls -altrh
+mv -v local.root $OUTPUT
+cp -v ${DATACARD} ${OUTPUT}.datacard
+cp -v ${GEODATACARD} ${OUTPUT}.geo
+
 cd $HOME
 pwd
 rm -frv $SANDBOX

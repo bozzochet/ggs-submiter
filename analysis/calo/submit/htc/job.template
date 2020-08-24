@@ -21,18 +21,25 @@ OUTDIR=_OUTDIR_
 DATACARD=_DATACARD_
 cp -v ${DATACARD} ${OUTDIR}/_NAME_.datacard
 
-# Launch the simulation
-EXEC="EventAnalysis -c $DATACARD -v info -d rootProvider,_INFILE_ _OPTS_"
+for F in `cat _INFILE_`
+do
 
-CMD="time ${EXEC}"
-echo ${CMD}
-${CMD}
+    FNAME=`basename $F .dig.root`
+    echo "FNAME=$FNAME"
+    # Launch the simulation
+    EXEC="EventAnalysis -c $DATACARD -v info -d rootProvider,$F _OPTS_"
 
-ls -altrh
+    CMD="time ${EXEC}"
+    echo ${CMD}
+    ${CMD}
 
-mv -v tree.root _NAME_.tree.root
-mv -v output.root _NAME_.output.root
-mv -v *.root ${OUTDIR}
+    ls -altrh
+
+    mv -v tree.root $FNAME.tree.root
+    mv -v output.root $FNAME.output.root
+    mv -v *.root ${OUTDIR}
+
+done
 
 cd $HOME
 pwd
