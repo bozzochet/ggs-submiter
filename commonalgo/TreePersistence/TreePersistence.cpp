@@ -105,6 +105,11 @@ if(bookCaloGlob){
   _outputTree->Branch("calonhits",           &(calonhits),          "calonhits/I");
   _outputTree->Branch("calototedep",         &(calototedep),         "calototedep/F");
   _outputTree->Branch("calonclusters",       &(calonclusters),       "calonclusters/I");
+  _outputTree->Branch("caloicluster",        &(caloicluster),        "caloicluster/I");
+  _outputTree->Branch("caloclusteredep",     &(caloclusteredep),     "caloclusteredep/F");
+  _outputTree->Branch("caloclusteredepall",  &(caloclusteredepall),  "caloclusteredepall/F");
+  _outputTree->Branch("caloclusterhits",     &(caloclusterhits),     "caloclusterhits/I");
+  _outputTree->Branch("caloclusterhitsall",  &(caloclusterhitsall),  "caloclusterhitsall/I");
   _outputTree->Branch("calonmiphitsontrack", &(calonmiphitsontrack), "calonmiphitsontrack/S");
   _outputTree->Branch("calomiptrack",        &(calomiptrack),        "calomiptrack/F");
 
@@ -262,6 +267,11 @@ if( bookCaloGeomFidVolume )
       calonhits = caloGlobStore->calonhits;
       calototedep = caloGlobStore->calototedep;
       calonclusters = caloGlobStore->calonclusters;
+      caloicluster = caloGlobStore->caloicluster;
+      caloclusteredep = caloGlobStore->caloclusteredep;
+      caloclusteredepall = caloGlobStore->caloclusteredepall;
+      caloclusterhits = caloGlobStore->caloclusterhits;
+      caloclusterhitsall = caloGlobStore->caloclusterhitsall;
       calonmiphitsontrack = caloGlobStore->calonmiphitsontrack;
       calomiptrack = caloGlobStore->calomiptrack;
       

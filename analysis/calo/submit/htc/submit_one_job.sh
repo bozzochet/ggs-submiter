@@ -16,7 +16,7 @@ BASENAME=${FULLBASENAME%??????} #remove last 6 trailing characters
 JOBTEMPLATE=${SUBMITDIR}/job.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
 #DATACARD=${SUBMITDIR}/analysis.$BASENAME.eaconf
-DATACARD=${SUBMITDIR}/analysis.generic.eaconf
+DATACARD=${SUBMITDIR}/analysis.generic.caloclusters.eaconf
 LIST=${LISTFILE}
 
 if [ ! -f $JOBTEMPLATE ]; then echo "$JOBTEMPLATE not found"; exit; fi
@@ -24,7 +24,7 @@ if [ ! -f $SUBTEMPLATE ]; then echo "$SUBTEMPLATE not found"; exit; fi
 if [ ! -f $DATACARD ];    then echo "$DATACARD    not found"; exit; fi
 if [ ! -f $LIST ];        then echo "$LIST        not found"; exit; fi
 
-OUTDIR=${SUBMITDIR}/output/${BASENAME}
+OUTDIR=${SUBMITDIR}/output.caloclusters/${BASENAME}
 LOGDIR=${SUBMITDIR}/logs/${BASENAME}
 JOBDIR=${SUBMITDIR}/jobs/${BASENAME}
 
@@ -59,7 +59,7 @@ sed -i "s%_OUTPUT_%${OUTFILE}%g"            ${SUB}
 sed -i "s%_ERROR_%${ERRFILE}%g"             ${SUB}
 sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
-CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name tree.${BASENAME}"
+CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name tree.calocl.${BASENAME}"
 #CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name test"
 echo ${CMD}
 ${CMD}

@@ -76,8 +76,9 @@ bool CaloGlob::Process() {
   if (!caloHits) { COUT(DEBUG) << "CaloHitsMC not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
   auto caloGeoParams = globStore->GetObject<Herd::CaloGeoParams>("caloGeoParams");
   if (!caloGeoParams) { COUT(DEBUG) << "caloGeoParams not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
-  //auto caloClusters = _evStore->GetObject<Herd::CaloClusters>("caloClusters");
-  //if (!caloClusters) { COUT(DEBUG) << "caloClusters not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
+
+  auto caloClusters = _evStore->GetObject<Herd::CaloClusters>("caloClusters");
+
   auto mcTruth = _evStore->GetObject<Herd::MCTruth>("mcTruth");
   if (!mcTruth) {COUT(ERROR) << "mcTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL;return false;}
   auto caloaxes = _evStore->GetObject<CaloAxes>("caloAxes");
@@ -87,8 +88,35 @@ bool CaloGlob::Process() {
   int calonhits =     std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; });
   _processstore->calonhits = calonhits;
   _processstore->calototedep = calototedep;
+  
+  _processstore->calonclusters=0;
+  _processstore->caloicluster=-1;
+  _processstore->caloclusteredep=0;
+  _processstore->caloclusteredepall=0;
+  _processstore->caloclusterhits=0;
+  _processstore->caloclusterhitsall=0;
+
   //COUT(INFO)<<caloClusters->size()<<ENDL;
-  //if( caloClusters ) _processstore->calonclusters = (int)caloClusters->size();
+  if( caloClusters )
+    if( (int)caloClusters->size()>0 )
+      {
+	int imaxcl=0; float maxedep=0; int maxclhits=0;
+	_processstore->calonclusters = (int)caloClusters->size();
+	for(int icl=0; icl<(int)caloClusters->size(); icl++){
+	  auto const caloclHits = caloClusters->at(icl);
+	  float _edep = std::accumulate(caloclHits.begin(), caloclHits.end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
+	  int _hits = std::accumulate(caloclHits.begin(), caloclHits.end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; });
+	  _processstore->caloclusteredepall += _edep;
+	  _processstore->caloclusterhitsall += _hits;
+	  
+	  if( _edep>maxedep){ maxedep=_edep; maxclhits=_hits; imaxcl=icl; }
+	}
+	_processstore->caloclusteredep=maxedep;
+	_processstore->caloclusterhits=maxclhits;
+	_processstore->caloicluster=imaxcl;
+      }
+  
+  //printf("%f %d\n", _processstore->calototedep, _processstore->calonhits);
 
   const Momentum &mcMom = mcTruth->primaries[0].GetInitialMomentum();
   const Point &mcPos    = mcTruth->primaries[0].GetInitialPosition();
@@ -99,8 +127,9 @@ bool CaloGlob::Process() {
   std::vector<std::array<float,3>> hits;
   std::vector<std::array<float,3>> pcahits;
 
-
-  for( auto const &hit : *caloHits){
+  auto caloAxisHits = caloHits;
+  if( _processstore->caloicluster>=0 ){ *caloAxisHits = caloClusters->at(_processstore->caloicluster); }
+  for( auto const &hit : *caloAxisHits){
     hcalohitsedep->Fill( log10(hit.EDep()) );
     double pathl = GetHitPathLenght(&mctrack, &hit);
     double distance = PointLineDistance(caloGeoParams->Position(hit.VolumeID()), mctrack);
@@ -132,7 +161,7 @@ bool CaloGlob::Process() {
   cog[2] = caloaxes->at(0).GetCOG()[RefFrame::Coo::Z];
   //printf("%f\t%f\t%f\n", cog[0], cog[1], cog[2]);
 
-  for( auto const &hit : *caloHits){
+  for( auto const &hit : *caloAxisHits){
   if(hit.EDep()>pcaedepth){
    double pathl = GetHitPathLenght(&mctrack, &hit);
    _processstore->calohitsX.push_back(caloGeoParams->Position(hit.VolumeID())[RefFrame::Coo::X]);
@@ -152,8 +181,8 @@ bool CaloGlob::Process() {
         _pcahit[j] += R[j][k] * (hits.at(i)[k] - cog[k]);
       }
     }
-pcahits.push_back(_pcahit);
-_processstore->calopcahits0.push_back(_pcahit[0]);
+    pcahits.push_back(_pcahit);
+    _processstore->calopcahits0.push_back(_pcahit[0]);
   _processstore->calopcahits1.push_back(_pcahit[1]);
   _processstore->calopcahits2.push_back(_pcahit[2]);
   }

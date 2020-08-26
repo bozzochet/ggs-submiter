@@ -24,7 +24,9 @@ OPTS="${OPTS} --parameter histo*,naxisbins,100 --parameter histo*,axismin,10 --p
 OPTS="${OPTS} --parameter mcgenspectrum,naxisbin,150 --parameter mcgenspectrum,axismin,1 --parameter mcgenspectrum,axismax,100000 --parameter mcgenspectrum,minmom,10 -p mcgenspectrum,maxmom,1000"
 
 #for STREAM  in "protons_10GeV" "protons_50GeV" "protons_100GeV" "protons_500GeV" "protons_1TeV" "protons_5TeV" "protons_10TeV" "protons_50TeV" "protons_100TeV" "protons_10GeV_1000GeV_E-1" "electrons_10GeV_1000GeV_E-1"
-for STREAM  in "protons_1TeV" "protons_5TeV" "protons_10TeV" "protons_50TeV" "protons_100TeV" "protons_1TeV_100TeV_E-1" "electrons_1TeV_100TeV_E-1" 
+#for STREAM  in "protons_1TeV" "protons_5TeV" "protons_10TeV" "protons_50TeV" "protons_100TeV" "protons_1TeV_100TeV_E-1" "electrons_1TeV_100TeV_E-1" 
+for STREAM in "protons_1TeV_100TeV_E-1" "electrons_1TeV_100TeV_E-1" "protons_10GeV_1000GeV_E-1" #"electrons_10GeV_1000GeV_E-1" 
+#for STREAM in "electrons_10GeV_1000GeV_E-1" 
 do
 
     for flist in `ls ${LISTDIR}/${STREAM}/*.list.txt`

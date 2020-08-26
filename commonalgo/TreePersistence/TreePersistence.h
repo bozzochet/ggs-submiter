@@ -98,6 +98,11 @@ private:
   int calonhits;
   float calototedep;
   int calonclusters;
+  int caloicluster;
+  float caloclusteredep;
+  float caloclusteredepall;
+  int caloclusterhits;
+  int caloclusterhitsall;
   short calonmiphitsontrack;
   float calomiptrack;
 

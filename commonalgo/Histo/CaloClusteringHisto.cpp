@@ -83,7 +83,6 @@ bool CaloClusteringHisto::Process() {
     double caloclusterenefrac = caloclusteredep.at(0)/(double)calototedep;
     double caloclusterhitsfrac = ncaloclusterhits.at(0)/(double)calotothits;
     double caloclusterleakfrac = 1 - caloclusteredep.at(0)/(double)calototedep;
-    COUT(INFO)<<mcmom<<" "<<caloclusterenefrac<<" "<<caloclusterhitsfrac<<" "<<ENDL;
     honecaloclusterhitsedep->Fill(mcmom, caloclusterenefrac, caloclusterhitsfrac);
     honecaloclusterhitsleak->Fill(mcmom, caloclusterleakfrac, caloclusterhitsfrac);
 
