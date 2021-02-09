@@ -9,6 +9,7 @@ argv=("$@")
 argc=${#argv[@]}
 
 NAME=${argv[0]}    
+NAME=${NAME}_calopddig
 
 JOBTEMPLATE=${SUBMITDIR}/job.dig.template
 JOBTEMPLATEHEAD=${SUBMITDIR}/job.dig.head.template
@@ -16,7 +17,8 @@ JOBTEMPLATEBODY=${SUBMITDIR}/job.dig.body.template
 JOBTEMPLATETAIL=${SUBMITDIR}/job.dig.tail.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
 #DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_fit_psdbar.eaconf.template
-DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_stk_psdbar.eaconf.template
+#DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_stk_psdbar.eaconf.template
+DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_calopddig_stk_psdbar.eaconf.template
 OUTDIR=${SUBMITDIR}/output/${NAME}
 LOGDIR=${SUBMITDIR}/logs/${NAME}
 JOBDIR=${SUBMITDIR}/jobs/${NAME}
