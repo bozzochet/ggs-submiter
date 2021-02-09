@@ -26,6 +26,8 @@ do
 
     FNAME=`basename $F .dig.root`
     echo "FNAME=$FNAME"
+    FNAMEOUT=${FNAME}_SUFFIX_
+    echo "FNAMEOUT=$FNAMEOUT"
     # Launch the simulation
     EXEC="EventAnalysis -c $DATACARD -v info -d rootProvider,$F _OPTS_"
 
@@ -35,8 +37,8 @@ do
 
     ls -altrh
 
-    mv -v tree.root $FNAME.tree.root
-    mv -v output.root $FNAME.output.root
+    mv -v tree.root ${FNAMEOUT}.tree.root
+    mv -v output.root ${FNAMEOUT}.output.root
     mv -v *.root ${OUTDIR}
 
 done

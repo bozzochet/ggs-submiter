@@ -60,6 +60,7 @@ set(MY_PUBLIC_HEADERS
   commonalgo/TreePersistence/TreePersistence.h
   commonalgo/GeomAcceptance/CaloGeomFidVolume.h
   commonalgo/Calo/CaloGlob.h
+  commonalgo/Calo/CaloDig.h	
   commonalgo/Calo/CaloAxisProcess.h
  # commonalgo/Calo/CaloAxisInfo.h
   commonalgo/Calo/CaloTest.h

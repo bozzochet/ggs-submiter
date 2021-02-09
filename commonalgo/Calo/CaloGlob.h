@@ -74,15 +74,17 @@ public:
   short calonmiphitsontrack;
   float calomiptrack;
   
-std::vector<float> calohitsX;
-std::vector<float> calohitsY;
-std::vector<float> calohitsZ;
-std::vector<float> calohitsE;
-std::vector<float> calohitsPL;
-std::vector<float> calopcahits0;
-std::vector<float> calopcahits1;
-std::vector<float> calopcahits2;
+  std::vector<int> calohitsID;
+  std::vector<float> calohitsX;
+  std::vector<float> calohitsY;
+  std::vector<float> calohitsZ;
+  std::vector<float> calohitsE;
+  std::vector<float> calohitsPL;
+  std::vector<float> calopcahits0;
+  std::vector<float> calopcahits1;
+  std::vector<float> calopcahits2;
 
+  
 private:
   // Algorithm parameters
   // Created global objects

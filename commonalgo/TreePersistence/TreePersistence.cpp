@@ -3,6 +3,7 @@
 #include "../GeomAcceptance/MCtruthProcess.h"
 #include "../GeomAcceptance/CaloGeomFidVolume.h"
 #include "../Calo/CaloGlob.h"
+#include "../Calo/CaloDig.h"
 #include "../Calo/CaloAxisProcess.h"
 
 
@@ -31,12 +32,14 @@ TreePersistence::TreePersistence(const std::string &name, const std::string &out
     bookMCtruthProcess{false},
     bookCaloGeomFidVolume{false}, 
     bookCaloGlob{false},
+  bookCaloDig{false},
     bookCaloAxis{false}
     {
   //DefineParameter("psdHitThreshold", _psdHitThreshold);
   DefineParameter("BookMCtruthProcess",bookMCtruthProcess);
   DefineParameter("BookCaloGeomFidVolume",bookCaloGeomFidVolume);
   DefineParameter("BookCaloGlob",bookCaloGlob);
+  DefineParameter("BookCaloDig",bookCaloDig);
   DefineParameter("BookCaloAxis",bookCaloAxis);
   
 
@@ -112,9 +115,22 @@ if(bookCaloGlob){
   _outputTree->Branch("caloclusterhitsall",  &(caloclusterhitsall),  "caloclusterhitsall/I");
   _outputTree->Branch("calonmiphitsontrack", &(calonmiphitsontrack), "calonmiphitsontrack/S");
   _outputTree->Branch("calomiptrack",        &(calomiptrack),        "calomiptrack/F");
-
-
 }
+
+ if(bookCaloDig){
+   _outputTree->Branch("calototedepSPDE",        &(calototedepSPDE),        "calototedepSPDE/F");
+   _outputTree->Branch("calototedepLPDE",        &(calototedepLPDE),        "calototedepLPDE/F");
+   _outputTree->Branch("calototedepPDE",         &(calototedepPDE),         "calototedepPDE/F");
+   _outputTree->Branch("caloclusteredepSPDE",    &(caloclusteredepSPDE),    "caloclusteredepSPDE/F");
+   _outputTree->Branch("caloclusteredepLPDE",    &(caloclusteredepLPDE),    "caloclusteredepLPDE/F");
+   _outputTree->Branch("caloclusteredepPDE",     &(caloclusteredepPDE),     "caloclusteredepPDE/F");
+   _outputTree->Branch("calopdhitsSPDE",  &calopdhitsSPDE);
+   _outputTree->Branch("calopdhitsSPDID",  &calopdhitsSPDID);
+   _outputTree->Branch("calopdhitsLPDE",  &calopdhitsLPDE);
+   _outputTree->Branch("calopdhitsLPDID",  &calopdhitsLPDID);
+   _outputTree->Branch("calopdhitsPDE",  &calopdhitsPDE);
+   _outputTree->Branch("calopdhitsPDID",  &calopdhitsPDID);
+ }
 
 if(bookCaloAxis){
   _outputTree->Branch("caloaxishits",    &(caloaxishits),      "caloaxishits/s");
@@ -133,6 +149,7 @@ if(bookCaloAxis){
 /*  _outputTree->Branch("calohits",        "std::vector< std::array<float, 4> >",      &calohits);
   _outputTree->Branch("calopcahits",     "std::vector< std::array<float, 4> >",      &calopcahits);
 */
+  _outputTree->Branch("calohitsID",  &calohitsID);
   _outputTree->Branch("calohitsX",  &calohitsX);
   _outputTree->Branch("calohitsY",  &calohitsY);
   _outputTree->Branch("calohitsZ",  &calohitsZ);
@@ -164,7 +181,7 @@ bool TreePersistence::Disconnect() {
 
 bool TreePersistence::BookEventObject(const std::string &objName, const std::string &objStore) {
   const std::string routineName("TreePersistence::BookEventObject");
-  
+
   // Don't create the branch here. The tree is created in Connect, which is executed later, so at this point the tree
   // is still not available.
  
@@ -276,6 +293,7 @@ if( bookCaloGeomFidVolume )
       calomiptrack = caloGlobStore->calomiptrack;
       
         for(int ihit=0; ihit<(int)caloGlobStore->calohitsX.size(); ihit++){
+     calohitsID.push_back(caloGlobStore->calohitsID.at(ihit));
      calohitsX.push_back(caloGlobStore->calohitsX.at(ihit));
      calohitsY.push_back(caloGlobStore->calohitsY.at(ihit));
      calohitsZ.push_back(caloGlobStore->calohitsZ.at(ihit));
@@ -291,6 +309,33 @@ if( bookCaloGeomFidVolume )
      }
   }
 
+  if(bookCaloDig){
+    auto caloDigStore = _evStore->GetObject<CaloDigStore>("caloDigStore");
+    if(caloDigStore)
+    {
+
+      calototedepSPDE = caloDigStore->calototedepSPDE;
+      calototedepLPDE = caloDigStore->calototedepLPDE;
+      calototedepPDE = caloDigStore->calototedepPDE;
+      caloclusteredepSPDE = caloDigStore->caloclusteredepSPDE;
+      caloclusteredepLPDE = caloDigStore->caloclusteredepLPDE;
+      caloclusteredepPDE = caloDigStore->caloclusteredepPDE;
+
+        for(int ihit=0; ihit<(int)caloDigStore->calopdhitsSPDE.size(); ihit++){
+	  calopdhitsSPDE.push_back(caloDigStore->calopdhitsSPDE.at(ihit));
+	  calopdhitsSPDID.push_back(caloDigStore->calopdhitsSPDID.at(ihit));}
+        for(int ihit=0; ihit<(int)caloDigStore->calopdhitsLPDE.size(); ihit++){
+	  calopdhitsLPDE.push_back(caloDigStore->calopdhitsLPDE.at(ihit));
+	  calopdhitsLPDID.push_back(caloDigStore->calopdhitsLPDID.at(ihit));}
+        for(int ihit=0; ihit<(int)caloDigStore->calopdhitsPDE.size(); ihit++){
+	  calopdhitsPDE.push_back(caloDigStore->calopdhitsPDE.at(ihit));
+	  calopdhitsPDID.push_back(caloDigStore->calopdhitsPDID.at(ihit));}
+	
+	//
+	caloDigStore->Reset();
+    }
+  }
+  
   if(bookCaloAxis){
     auto caloAxisStore = _evStore->GetObject<Herd::CaloAxisProcessStore>("CaloAxisProcessStore");
     if(caloAxisStore)
@@ -327,14 +372,15 @@ if(fillthisevent){
   _outputTree->Fill();
 }
 
-calohitsX.clear();
-     calohitsY.clear();
-     calohitsZ.clear();
-     calohitsE.clear();
-     calohitsPL.clear();
-     calopcahits0.clear();
-     calopcahits1.clear();
-     calopcahits2.clear();
+ calohitsID.clear();
+ calohitsX.clear();
+ calohitsY.clear();
+ calohitsZ.clear();
+ calohitsE.clear();
+ calohitsPL.clear();
+ calopcahits0.clear();
+ calopcahits1.clear();
+ calopcahits2.clear();
 
 
 return true;

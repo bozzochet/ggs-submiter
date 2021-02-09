@@ -19,7 +19,7 @@ Persistence TreePersistence treePersistence tree.root
    Set BookCaloGlob true
    Set BookCaloAxis true
 
-EventLoop #0 1000
+EventLoop #0 10
 
   #Compute the variables for Calo acceptance check
   Algo CaloTrackInfoAlgo caloTrackInfoAlgo

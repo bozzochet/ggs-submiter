@@ -54,7 +54,7 @@ bool EneHisto::Process() {
   if( strcmp(var.c_str(),"MCmom")==0 ){
     auto mctruth = _evStore->GetObject<Herd::MCTruth>("mcTruth");
     if (!mctruth) { COUT(DEBUG) << "MCTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
-    float mcmom = std::sqrt(mctruth->primaries.at(0).GetInitialMomentum()* mctruth->primaries.at(0).GetInitialMomentum());
+    float mcmom = std::sqrt(mctruth->primaries.at(0).InitialMomentum()* mctruth->primaries.at(0).InitialMomentum());
     histo->Fill(mcmom);
   }
 

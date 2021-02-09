@@ -98,8 +98,8 @@ bool MCtruthProcess::Process() {
   _gdiscarded->SetPoint(_gdiscarded->GetN(), _gdiscarded->GetN(), mctruth->nDiscarded);
 
   const auto &primary = mctruth->primaries.at(0);
-  Herd::Point gencoo = primary.GetInitialPosition();
-  TVector3 genmom (primary.GetInitialMomentum()[Herd::RefFrame::Coo::X],primary.GetInitialMomentum()[Herd::RefFrame::Coo::Y],primary.GetInitialMomentum()[Herd::RefFrame::Coo::Z]);
+  Herd::Point gencoo = primary.InitialPosition();
+  TVector3 genmom (primary.InitialMomentum()[Herd::RefFrame::Coo::X],primary.InitialMomentum()[Herd::RefFrame::Coo::Y],primary.InitialMomentum()[Herd::RefFrame::Coo::Z]);
   Double_t genctheta = genmom.CosTheta();
   Double_t genphi = genmom.Phi();
   Double_t mom = genmom.Mag();
@@ -110,13 +110,13 @@ bool MCtruthProcess::Process() {
   int nstkintersections = static_cast<int>(stkintersections->intersections.size());
   _hstkintersections->Fill(nstkintersections);
   
-  _processstore->mcDir[0] = primary.GetInitialMomentum()[Herd::RefFrame::Coo::X] / genmom.Mag();
-  _processstore->mcDir[1] = primary.GetInitialMomentum()[Herd::RefFrame::Coo::Y] / genmom.Mag();
-  _processstore->mcDir[2] = primary.GetInitialMomentum()[Herd::RefFrame::Coo::Z] / genmom.Mag();
+  _processstore->mcDir[0] = primary.InitialMomentum()[Herd::RefFrame::Coo::X] / genmom.Mag();
+  _processstore->mcDir[1] = primary.InitialMomentum()[Herd::RefFrame::Coo::Y] / genmom.Mag();
+  _processstore->mcDir[2] = primary.InitialMomentum()[Herd::RefFrame::Coo::Z] / genmom.Mag();
   _processstore->mcNdiscarded = mctruth->nDiscarded;
-  _processstore->mcCoo[0] = primary.GetInitialPosition()[Herd::RefFrame::Coo::X];
-  _processstore->mcCoo[1] = primary.GetInitialPosition()[Herd::RefFrame::Coo::Y];
-  _processstore->mcCoo[2] = primary.GetInitialPosition()[Herd::RefFrame::Coo::Z];
+  _processstore->mcCoo[0] = primary.InitialPosition()[Herd::RefFrame::Coo::X];
+  _processstore->mcCoo[1] = primary.InitialPosition()[Herd::RefFrame::Coo::Y];
+  _processstore->mcCoo[2] = primary.InitialPosition()[Herd::RefFrame::Coo::Z];
   _processstore->mcMom = genmom.Mag();
   _processstore->mcPhi = genmom.Phi();
   _processstore->mcCtheta = genmom.CosTheta();

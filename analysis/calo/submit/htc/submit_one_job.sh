@@ -2,7 +2,11 @@
 #
 USER=`whoami`
 
-NAME=$1
+#NAME=$1
+#SUFFIX=$2
+#LISTFILE=$3
+#OPTS=$4
+SUFFIX=$1
 LISTFILE=$2
 OPTS=$3
 
@@ -24,15 +28,16 @@ if [ ! -f $SUBTEMPLATE ]; then echo "$SUBTEMPLATE not found"; exit; fi
 if [ ! -f $DATACARD ];    then echo "$DATACARD    not found"; exit; fi
 if [ ! -f $LIST ];        then echo "$LIST        not found"; exit; fi
 
-OUTDIR=${SUBMITDIR}/output.caloclusters/${BASENAME}
-LOGDIR=${SUBMITDIR}/logs/${BASENAME}
-JOBDIR=${SUBMITDIR}/jobs/${BASENAME}
+OUTDIR=${SUBMITDIR}/output.caloclusters/${BASENAME}${SUFFIX}
+LOGDIR=${SUBMITDIR}/logs/${BASENAME}${SUFFIX}
+JOBDIR=${SUBMITDIR}/jobs/${BASENAME}${SUFFIX}
 
 if [ ! -d $OUTDIR ]; then mkdir -pv ${OUTDIR}; fi
 if [ ! -d $LOGDIR ]; then mkdir -pv ${LOGDIR}; fi
 if [ ! -d $JOBDIR ]; then mkdir -pv ${JOBDIR}; fi
 
-JOBNAME="${NAME}"
+#JOBNAME="${NAME}${SUFFIX}"
+JOBNAME="${BASENAME}${SUFFIX}"
 
 JOB=${JOBDIR}/${JOBNAME}.job
 SUB=${JOBDIR}/${JOBNAME}.sub
@@ -42,14 +47,17 @@ OUTFILE=${LOGDIR}/${JOBNAME}.out
 rm -fv ${ERRFILE}
 rm -fv ${LOGFILE}
 
-cp -v ${DATACARD} ${SUBMITDIR}/output/${BASENAME}/
+cp -v ${DATACARD} ${SUBMITDIR}/output/${BASENAME}${SUFFIX}
 
 cp -v ${JOBTEMPLATE}                        ${JOB}
 sed -i "s%_DATACARD_%${DATACARD}%g"         ${JOB}
 sed -i "s%_OUTDIR_%${OUTDIR}%g"             ${JOB}
 sed -i "s%_INFILE_%${LIST}%g"               ${JOB}
 sed -i "s%_OPTS_%${OPTS}%g"                 ${JOB}
-sed -i "s%_NAME_%${NAME}%g"                 ${JOB}
+#sed -i "s%_NAME_%${NAME}%g"                 ${JOB}
+sed -i "s%_BASENAME_%${BASENAME}%g"                 ${JOB}
+sed -i "s%_SUFFIX_%${SUFFIX}%g"             ${JOB}
+
 
 chmod 777 ${JOB}
 
@@ -59,7 +67,7 @@ sed -i "s%_OUTPUT_%${OUTFILE}%g"            ${SUB}
 sed -i "s%_ERROR_%${ERRFILE}%g"             ${SUB}
 sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
-CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name tree.calocl.${BASENAME}"
+CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name tree.calocl.${BASENAME}${SUFFIX}"
 #CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name test"
 echo ${CMD}
 ${CMD}

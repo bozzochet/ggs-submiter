@@ -60,7 +60,7 @@ bool CaloAxis::Process() {
 
   if( process_clusters ){
     auto caloclusters = _evStore->GetObject<CaloClusters>("caloClusters");
-    if (!_globStore) {COUT(ERROR) << "Global data store not found." << ENDL; return false;}
+    if (!caloclusters) {COUT(ERROR) << "caloClusters not found." << ENDL; return false;}
     BuildAxis( *caloclusters );
   }
   else{

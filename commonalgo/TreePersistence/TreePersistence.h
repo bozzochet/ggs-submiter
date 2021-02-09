@@ -106,6 +106,21 @@ private:
   short calonmiphitsontrack;
   float calomiptrack;
 
+  bool bookCaloDig;
+  float calototedepSPDE;
+  float calototedepLPDE;
+  float calototedepPDE;
+  float caloclusteredepSPDE;
+  float caloclusteredepLPDE;
+  float caloclusteredepPDE;
+  std::vector<float> calopdhitsSPDE;
+  std::vector<int> calopdhitsSPDID;
+  std::vector<float> calopdhitsLPDE;
+  std::vector<int> calopdhitsLPDID;
+  std::vector<float> calopdhitsPDE;
+  std::vector<int> calopdhitsPDID;
+
+
   bool bookCaloAxis;
   unsigned short caloaxishits;
   float caloaxiscog[3];
@@ -119,10 +134,12 @@ private:
   float caloaxiseigval[3];
   float caloaxiseigvec[3][3];
 
+
 /*
   std::vector< std::array<float, 4> > calohits;
   std::vector< std::array<float, 4> > calopcahits;
 */
+std::vector<int> calohitsID;
 std::vector<float> calohitsX;
 std::vector<float> calohitsY;
 std::vector<float> calohitsZ;

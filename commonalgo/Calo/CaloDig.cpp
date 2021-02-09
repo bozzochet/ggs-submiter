@@ -1,11 +1,10 @@
 // Example headers
-#include "CaloGlob.h"
+#include "CaloDig.h"
 #include "dataobjects/CaloHits.h"
 #include "dataobjects/CaloClusters.h"
 #include "dataobjects/CaloGeoParams.h"
 #include "dataobjects/MCTruth.h"
 #include "dataobjects/CaloAxes.h"
-
 
 // Root headers
 #include "TMatrixD.h"
@@ -17,53 +16,45 @@
 
 namespace Herd{ 
 
-RegisterAlgorithm(CaloGlob);
-RegisterAlgorithm(CaloGlobStore);
+RegisterAlgorithm(CaloDig);
+RegisterAlgorithm(CaloDigStore);
 
 
-CaloGlob::CaloGlob(const std::string &name) :
+CaloDig::CaloDig(const std::string &name) :
   Algorithm{name},
-  filterenable{true},
-  calohitscutmc{false},
-  fillpathl{false},
-  pcaedepth{0.020}
+  filterenable{true}
    {
     DefineParameter("filterenable",  filterenable ); 
-    DefineParameter("calohitscutmc", calohitscutmc);
-    DefineParameter("fillpathl",     fillpathl    );
-    DefineParameter("pcaedepth",     pcaedepth    );
+   }
 
-  }
 
-bool CaloGlob::Initialize() {
-  const std::string routineName("CaloGlob::Initialize");
+bool CaloDig::Initialize() {
+  const std::string routineName("CaloDig::Initialize");
 
   _evStore = GetDataStoreManager()->GetEventDataStore("evStore"); if (!_evStore) { COUT(ERROR) << "Event data store not found." << ENDL; return false; }
 
-  _processstore = std::make_shared<CaloGlobStore>("caloGlobStore");
+  _processstore = std::make_shared<CaloDigStore>("caloDigStore");
+
+  hcalototedepSPDE = std::make_shared<TH2F>("hcalototedepSPDE",";Log_{10}(Energy (GeV));Log_{10}(Edep (GeV))",120,0,6,200,-4,6);
+  hcalototedepLPDE = std::make_shared<TH2F>("hcalototedepLPDE",";Log_{10}(Energy (GeV));Log_{10}(Edep (GeV))",120,0,6,200,-4,6);
+  hcalototedepPDE = std::make_shared<TH2F>("hcalototedepPDE",";Log_{10}(Energy (GeV));Log_{10}(Edep (GeV))",120,0,6,200,-4,6);
+  hcaloclusteredepSPDE = std::make_shared<TH2F>("hcaloclusteredepSPDE",";Log_{10}(Energy (GeV));Log_{10}(Edep (GeV))",120,0,6,200,-4,6);
+  hcaloclusteredepLPDE = std::make_shared<TH2F>("hcaloclusteredepLPDE",";Log_{10}(Energy (GeV));Log_{10}(Edep (GeV))",120,0,6,200,-4,6);
+  hcaloclusteredepPDE = std::make_shared<TH2F>("hcaloclusteredepPDE",";Log_{10}(Energy (GeV));Log_{10}(Edep (GeV))",120,0,6,200,-4,6);
   
-  hcalohitsedep      = std::make_shared<TH1F>("hcalohitsedep",";Log_{10}(Edep/GeV)",1000,-6,4);
-  hcalohitsedeppathl = std::make_shared<TH1F>("hcalohitsedeppathl",";Edep/pathl",1000,0.0001,0.1);
-  hcalohitspathl     = std::make_shared<TH1F>("hcalohitspathl",";Pathl (cm)",1000,-4,6);
-  hcalopathldist     = std::make_shared<TH2F>("hcalopathldist",";Distance (cm);Pathl (cm)",3000,0,3,1000,-4,6);
-  hcalohitontrackedep    = std::make_shared<TH1F>("hcalohitontrackedep",";Log_{10}(Edep/GeV)",1000,-6,4);
-  hcalohitontrackedeplin    = std::make_shared<TH1F>("hcalohitontrackedeplin",";Edep/GeV",1000,0,0.2);
-
- 
-
   // Setup the filter                                                                                                                                                                                                                       
   if (filterenable) SetFilterStatus(FilterStatus::ENABLED); else SetFilterStatus(FilterStatus::DISABLED);
 
   return true;
 }
 
-bool CaloGlob::Process() {
-  const std::string routineName("CaloGlob::Process");
+bool CaloDig::Process() {
+  const std::string routineName("CaloDig::Process");
 
   //Add the ProcessStore object for this event to the event data store
   //_processstore->Reset();
   _processstore->Reset();
-  _evStore->AddObject("caloGlobStore",_processstore);
+  _evStore->AddObject("caloDigStore",_processstore);
 
   //Set Filter Status
   SetFilterResult(FilterResult::ACCEPT);
@@ -71,31 +62,84 @@ bool CaloGlob::Process() {
   auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
   if (!globStore) {COUT(ERROR) << "Global data store not found." << ENDL;}
 
+
   Herd::CaloHits* caloHits = NULL;
   try { caloHits = _evStore->GetObject<Herd::CaloHits>("caloHitsMC"); }
   catch(Retrieval::Exception &exc) { caloHits=NULL; }
-  static bool caloHits_f=true; if(caloHits_f){ COUT(INFO)<<Form("CaloGlob::Process::caloHitsMC::%s",caloHits?"FOUND":"NOT-FOUND")<<ENDL; } caloHits_f=false;
+  static bool caloHits_f=true; if(caloHits_f){ COUT(INFO)<<Form("CaloDig::Process::caloHitsMC::%s",caloHits?"FOUND":"NOT-FOUND")<<ENDL; } caloHits_f=false;
   
   Herd::CaloGeoParams* caloGeoParams = NULL;
   try { caloGeoParams = globStore->GetObject<Herd::CaloGeoParams>("caloGeoParams"); }
   catch(Retrieval::Exception &exc) { COUT(INFO) << "caloGeoParams not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
-  static bool caloGeoParams_f=true; if(caloGeoParams_f){ COUT(INFO)<<Form("CaloGlob::Process::caloGeoParams::%s",caloGeoParams?"FOUND":"NOT-FOUND")<<ENDL; } caloGeoParams_f=false;
+  static bool caloGeoParams_f=true; if(caloGeoParams_f){ COUT(INFO)<<Form("CaloDig::Process::caloGeoParams::%s",caloGeoParams?"FOUND":"NOT-FOUND")<<ENDL; } caloGeoParams_f=false;
 
   Herd::CaloClusters* caloClusters = NULL;
   try { caloClusters = _evStore->GetObject<Herd::CaloClusters>("caloClusters"); }
   catch(Retrieval::Exception &exc) { caloClusters=NULL; }
-  static bool caloClusters_f=true; if(caloClusters_f){ COUT(INFO)<<Form("CaloGlob::Process::caloClusters::%s",caloClusters?"FOUND":"NOT-FOUND")<<ENDL; } caloClusters_f=false;
+  static bool caloClusters_f=true; if(caloClusters_f){ COUT(INFO)<<Form("CaloDig::Process::caloClusters::%s",caloClusters?"FOUND":"NOT-FOUND")<<ENDL; } caloClusters_f=false;
   
   Herd::MCTruth* mcTruth = NULL;
   try { mcTruth = _evStore->GetObject<Herd::MCTruth>("mcTruth"); }
   catch(Retrieval::Exception &exc) { mcTruth=NULL; }
-  static bool mcTruth_f=true; if(mcTruth_f){ COUT(INFO)<<Form("CaloGlob::Process::mcTruth::%s",mcTruth?"FOUND":"NOT-FOUND")<<ENDL; } mcTruth_f=false;
+  static bool mcTruth_f=true; if(mcTruth_f){ COUT(INFO)<<Form("CaloDig::Process::mcTruth::%s",mcTruth?"FOUND":"NOT-FOUND")<<ENDL; } mcTruth_f=false;
 
   Herd::CaloAxes* caloAxes = NULL;
   try { caloAxes = _evStore->GetObject<Herd::CaloAxes>("caloAxes"); }
   catch(Retrieval::Exception &exc) { caloAxes=NULL; }
-  static bool caloAxes_f=true; if(caloAxes_f){ COUT(INFO)<<Form("CaloGlob::Process::caloAxes::%s",caloAxes?"FOUND":"NOT-FOUND")<<ENDL; } caloAxes_f=false;
+  static bool caloAxes_f=true; if(caloAxes_f){ COUT(INFO)<<Form("CaloDig::Process::caloAxes::%s",caloAxes?"FOUND":"NOT-FOUND")<<ENDL; } caloAxes_f=false;
 
+  Herd::CaloHits* caloLPDHits = NULL;
+  try { caloLPDHits = _evStore->GetObject<Herd::CaloHits>("caloLPDHitsGeV"); }
+  catch(Retrieval::Exception &exc) { caloLPDHits=NULL; }
+  static bool caloLPDHits_f=true; if(caloLPDHits_f){ COUT(INFO)<<Form("CaloDig::Process::caloLPDHitsGeV::%s",caloLPDHits?"FOUND":"NOT-FOUND")<<ENDL; } caloLPDHits_f=false;
+
+  Herd::CaloHits* caloSPDHits = NULL;
+  try { caloSPDHits = _evStore->GetObject<Herd::CaloHits>("caloSPDHitsGeV"); }
+  catch(Retrieval::Exception &exc) { caloSPDHits=NULL; }
+  static bool caloSPDHits_f=true; if(caloSPDHits_f){ COUT(INFO)<<Form("CaloDig::Process::caloSPDHitsGeV::%s",caloSPDHits?"FOUND":"NOT-FOUND")<<ENDL; } caloSPDHits_f=false;
+
+  Herd::CaloHits* caloStitchedHits = NULL;
+  try { caloStitchedHits = _evStore->GetObject<Herd::CaloHits>("caloHitsGeV"); }
+  catch(Retrieval::Exception &exc) { caloStitchedHits=NULL; }
+  static bool caloStitchedHits_f=true; if(caloStitchedHits_f){ COUT(INFO)<<Form("CaloDig::Process::caloHitsGeV::%s",caloStitchedHits?"FOUND":"NOT-FOUND")<<ENDL; } caloStitchedHits_f=false;
+
+  float calototedepSPDE = accumulate(caloSPDHits->begin(), caloSPDHits->end(), 0.,
+			     [](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
+  float calototedepLPDE = accumulate(caloLPDHits->begin(), caloLPDHits->end(), 0.,
+                             [](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
+  float calototedepPDE = accumulate(caloStitchedHits->begin(), caloStitchedHits->end(), 0.,
+                             [](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
+  float calototedep = std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
+  hcalototedepSPDE->Fill( log10(calototedep), log10(calototedepSPDE) );
+  hcalototedepLPDE->Fill( log10(calototedep), log10(calototedepLPDE) );
+  hcalototedepPDE ->Fill( log10(calototedep), log10(calototedepPDE) );
+  
+  _processstore->calototedepSPDE = calototedepSPDE;
+  _processstore->calototedepLPDE = calototedepLPDE;
+  _processstore->calototedepPDE = calototedepPDE;
+
+  int nSPD=0;
+  for( auto const &hit : *caloSPDHits){
+    _processstore->calopdhitsSPDE.push_back(hit.EDep());
+    _processstore->calopdhitsSPDID.push_back(hit.VolumeID());   
+    nSPD++;
+  }
+
+  int nLPD=0;
+  for( auto const &hit : *caloLPDHits){
+    _processstore->calopdhitsLPDE.push_back(hit.EDep());
+    _processstore->calopdhitsLPDID.push_back(hit.VolumeID());   
+    nLPD++;
+  }
+
+  int nPD=0;
+  for( auto const &hit : *caloStitchedHits){
+    _processstore->calopdhitsPDE.push_back(hit.EDep());
+    _processstore->calopdhitsPDID.push_back(hit.VolumeID());   
+    nPD++;
+  }
+
+  /*
   float calototedep = std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
   int calonhits =     std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; });
   _processstore->calonhits = calonhits;
@@ -107,7 +151,6 @@ bool CaloGlob::Process() {
   _processstore->caloclusteredepall=0;
   _processstore->caloclusterhits=0;
   _processstore->caloclusterhitsall=0;
-
 
   //COUT(INFO)<<caloClusters->size()<<ENDL;
   if( caloClusters )
@@ -128,6 +171,7 @@ bool CaloGlob::Process() {
 	_processstore->caloclusterhits=maxclhits;
 	_processstore->caloicluster=imaxcl;
       }
+  
   //printf("%f %d\n", _processstore->calototedep, _processstore->calonhits);
 
   const Momentum &mcMom = mcTruth->primaries[0].InitialMomentum();
@@ -140,7 +184,7 @@ bool CaloGlob::Process() {
   std::vector<std::array<float,3>> pcahits;
 
   auto caloAxisHits = caloHits;
-  if( caloClusters ) { if( _processstore->caloicluster>=0 ){ *caloAxisHits = caloClusters->at(_processstore->caloicluster); } }
+  if( _processstore->caloicluster>=0 ){ *caloAxisHits = caloClusters->at(_processstore->caloicluster); }
   for( auto const &hit : *caloAxisHits){
     hcalohitsedep->Fill( log10(hit.EDep()) );
     double pathl = GetHitPathLenght(&mctrack, &hit);
@@ -155,12 +199,12 @@ bool CaloGlob::Process() {
   _processstore->calomiptrack = calomiptrack;
 
 
- if(caloAxes->size() != 0){
+ if(caloaxes->size() != 0){
   TMatrixD R(3,3); //rotation matrix
   for(int i=0; i<3; i++){
-      R[0][i] = caloAxes->at(0).GetEigenvectors()[i][RefFrame::Coo::X];
-      R[1][i] = caloAxes->at(0).GetEigenvectors()[i][RefFrame::Coo::Y];
-      R[2][i] = caloAxes->at(0).GetEigenvectors()[i][RefFrame::Coo::Z];
+      R[0][i] = caloaxes->at(0).GetEigenvectors()[i][RefFrame::Coo::X];
+      R[1][i] = caloaxes->at(0).GetEigenvectors()[i][RefFrame::Coo::Y];
+      R[2][i] = caloaxes->at(0).GetEigenvectors()[i][RefFrame::Coo::Z];
     }
   R.Invert();
   //printf("%f\t%f\t%f\n", R[0][0], R[0][1], R[0][2]);
@@ -168,9 +212,9 @@ bool CaloGlob::Process() {
   //printf("%f\t%f\t%f\n", R[2][0], R[2][1], R[2][2]);
 
   float cog[3];
-  cog[0] = caloAxes->at(0).GetCOG()[RefFrame::Coo::X];
-  cog[1] = caloAxes->at(0).GetCOG()[RefFrame::Coo::Y];
-  cog[2] = caloAxes->at(0).GetCOG()[RefFrame::Coo::Z];
+  cog[0] = caloaxes->at(0).GetCOG()[RefFrame::Coo::X];
+  cog[1] = caloaxes->at(0).GetCOG()[RefFrame::Coo::Y];
+  cog[2] = caloaxes->at(0).GetCOG()[RefFrame::Coo::Z];
   //printf("%f\t%f\t%f\n", cog[0], cog[1], cog[2]);
 
   for( auto const &hit : *caloAxisHits){
@@ -210,36 +254,35 @@ bool CaloGlob::Process() {
     float mcmom = std::sqrt(mcTruth->primaries.at(0).InitialMomentum() * mcTruth->primaries.at(0).InitialMomentum());
     if(calonhits < std::pow(10,(((1+log10(2))/3.))*std::log10(mcmom) + (2 - (1+std::log10(2))/3.)) ){ SetFilterResult(FilterResult::REJECT); }
   }
-
+  */
 return true;
 }
 
-bool CaloGlob::Finalize() {
-  const std::string routineName("CaloGlob::Finalize");
+bool CaloDig::Finalize() {
+  const std::string routineName("CaloDig::Finalize");
 
   auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
   if (!globStore) { COUT(ERROR) << "Global data store not found." << ENDL; return false; }
 
-  globStore->AddObject(hcalohitsedep->GetName(), hcalohitsedep);
-  globStore->AddObject(hcalohitsedeppathl->GetName(), hcalohitsedeppathl);
-  globStore->AddObject(hcalohitspathl->GetName(), hcalohitspathl);
-  globStore->AddObject(hcalopathldist->GetName(), hcalopathldist);
-  globStore->AddObject(hcalohitontrackedep->GetName(), hcalohitontrackedep);
-  globStore->AddObject(hcalohitontrackedeplin->GetName(), hcalohitontrackedeplin);
-
+  globStore->AddObject(hcalototedepSPDE->GetName(),hcalototedepSPDE);
+  globStore->AddObject(hcalototedepLPDE->GetName(),hcalototedepLPDE);
+  globStore->AddObject(hcalototedepPDE->GetName(),hcalototedepPDE);
+  globStore->AddObject(hcaloclusteredepSPDE->GetName(),hcaloclusteredepSPDE);
+  globStore->AddObject(hcaloclusteredepLPDE->GetName(),hcaloclusteredepLPDE);
+  globStore->AddObject(hcaloclusteredepPDE->GetName(),hcaloclusteredepPDE);
 
   return true;
 }
 
-double CaloGlob::PointLineDistance(const Point p, const Line l){
+  /*double CaloDig::PointLineDistance(const Point p, const Line l){
   //https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Vector_formulation
   Point distance = (l.Origin()- p) - (l.Direction() * (l.Origin()- p)*l.Direction());
   return sqrt( distance*distance );
 }
 
-double CaloGlob::GetHitPathLenght(const Line* track, const Hit* hit){
+double CaloDig::GetHitPathLenght(const Line* track, const Hit* hit){
 
-  const std::string routineName("CaloGlob::GetHitPathLenght");
+  const std::string routineName("CaloDig::GetHitPathLenght");
 
   auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
   if (!globStore) {COUT(ERROR) << "Global data store not found." << ENDL;}
@@ -288,52 +331,51 @@ double CaloGlob::GetHitPathLenght(const Line* track, const Hit* hit){
   return -3;
 
 }
+  
 
-int CaloGlob::MipOnTrack( double pathl, double edep ){
+int CaloDig::MipOnTrack( double pathl, double edep ){
   if( edep/pathl<0.025) return 1;
   return 0;
 }
-
+  */
 
 //***************************
 
-CaloGlobStore::CaloGlobStore(const std::string &name) :
+CaloDigStore::CaloDigStore(const std::string &name) :
   Algorithm{name}
    {
   }
 
-  bool CaloGlobStore::Initialize() {
-  const std::string routineName("CaloGlobStore::Initialize");
+  bool CaloDigStore::Initialize() {
+  const std::string routineName("CaloDigStore::Initialize");
   Reset();
   return true;
 }
 
-  bool CaloGlobStore::Process() {
-  const std::string routineName("CaloGlobStore::Process");
+  bool CaloDigStore::Process() {
+  const std::string routineName("CaloDigStore::Process");
   return true;
 }
-  bool CaloGlobStore::Finalize() {
-  const std::string routineName("CaloGlobStore::Finalize");
+  bool CaloDigStore::Finalize() {
+  const std::string routineName("CaloDigStore::Finalize");
   return true;
 }
-bool CaloGlobStore::Reset() {
-  const std::string routineName("CaloGlobStore::Finalize");
+bool CaloDigStore::Reset() {
+  const std::string routineName("CaloDigStore::Finalize");
 
-  calonhits=0;
-  calototedep=0;
-  calonclusters=0;
-  calonmiphitsontrack=0;
-  calomiptrack=0;
+  calototedepSPDE = 0;
+  calototedepLPDE = 0;
+  calototedepPDE = 0;
+  caloclusteredepSPDE = 0;
+  caloclusteredepLPDE = 0;
+  caloclusteredepPDE = 0;
 
-  calohitsID.clear();
-  calohitsX.clear();
-  calohitsY.clear();
-  calohitsZ.clear();
-  calohitsE.clear();
-  calohitsPL.clear();
-  calopcahits0.clear();
-  calopcahits1.clear();
-  calopcahits2.clear();
+  calopdhitsSPDE.clear();
+  calopdhitsSPDID.clear();
+  calopdhitsLPDE.clear();
+  calopdhitsLPDID.clear();
+  calopdhitsPDE.clear();
+  calopdhitsPDID.clear();
 
   return true;
 }

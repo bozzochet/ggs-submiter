@@ -62,7 +62,7 @@ bool CaloClusteringHisto::Process() {
   auto mcTruth = _evStore->GetObject<Herd::MCTruth>("mcTruth");
   if (!mcTruth) {COUT(ERROR) << "mcTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL;return false;}
   
-  double mcmom = std::sqrt(mcTruth->primaries.at(0).GetInitialMomentum() * mcTruth->primaries.at(0).GetInitialMomentum());
+  double mcmom = std::sqrt(mcTruth->primaries.at(0).InitialMomentum() * mcTruth->primaries.at(0).InitialMomentum());
   double calototedep = std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
   int calotothits = (int)caloHits->size();
   int ncaloclusters = (int)caloClusters->size();
