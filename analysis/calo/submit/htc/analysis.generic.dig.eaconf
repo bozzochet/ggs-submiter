@@ -20,14 +20,14 @@ Persistence TreePersistence treePersistence tree.root
    Set BookCaloAxis true
    Set BookCaloDig true
 
-EventLoop 0 10
+EventLoop #0 10
 
   Algo CaloTrackInfoAlgo caloTrackInfoAlgo
   Algo StkIntersectionsAlgo stkTrackInfoAlgo
 
-  Algo MCGenSpectrum mcgenspectrum
-  Set minmom 10
-  Set maxmom 1000  
+#  Algo MCGenSpectrum mcgenspectrum
+#  Set minmom 10
+#  Set maxmom 1000  
 
   Algo EneHisto histoeneall
   Set naxisbins 75
@@ -75,7 +75,7 @@ EventLoop 0 10
 	Algo CaloGlobStore caloGlobStore
         Algo CaloGlob caloGlob
       	     Set filterenable false
-	     Set calohitscutmc true
+	     Set calohitscutmc false
 
 	 Algo CaloDigStore caloDigStore
 	 Algo CaloDig caloDig

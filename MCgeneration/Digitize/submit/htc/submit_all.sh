@@ -4,12 +4,15 @@
 #LISTFILE=lists/${NAME}.list
 
 #for NAME in "protons_10GeV"  "protons_50GeV" "protons_100GeV" "protons_500GeV" "protons_1TeV" "protons_5TeV" "protons_10TeV" "protons_50TeV" "protons_100TeV" "protons_10GeV_1000GeV_E-1" "protons_1TeV_100TeV_E-1" "electrons_10GeV_1000GeV_E-1" "electrons_1TeV_100TeV_E-1"
-for NAME in "electrons_1TeV_100TeV_E-1"
 
+only_one_submit=0
+
+#for NAME in "protons_10GeV_1000GeV_E-1" "protons_1TeV_100TeV_E-1" "electrons_10GeV_1000GeV_E-1" "electrons_1TeV_100TeV_E-1"
+for NAME in "electrons_10GeV_1000GeV_E-1" "protons_10GeV_1000GeV_E-1" 
 do
     LISTFILE=lists/${NAME}.list
 
-    fperjob=20
+    fperjob=5
 
     i=0
     flist=""
@@ -26,8 +29,11 @@ do
 	    echo $cmd
 	    $cmd
 	    flist=""
+	    if [ $only_one_submit -eq 1 ]; then
+		break
+	    fi
 	fi
-
+	
 	
     done < $LISTFILE
 

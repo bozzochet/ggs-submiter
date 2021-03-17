@@ -15,8 +15,12 @@ add_library(CommonAlgo  SHARED
 			Calo/CaloDig.cpp
                         Calo/CaloAxisProcess.cpp
                         Calo/CaloTest.cpp
+			Calo/CaloSkimHits.cpp
                         Histo/EneHisto.cpp
                         Histo/MCGenSpectrum.cpp
                         Histo/CaloClusteringHisto.cpp
+                        Histo/CaloDigHisto.cpp
+			Histo/CaloAxisHisto.cpp	
+			Selection/CaloMcTrackLenghtSelection.cpp
            )
 target_link_libraries(CommonAlgo EACore EAData EAAlgorithm EAUtils EAAnalysis HerdDataObjects ${ROOT_LIBRARIES})

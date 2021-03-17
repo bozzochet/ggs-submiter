@@ -64,10 +64,13 @@ set(MY_PUBLIC_HEADERS
   commonalgo/Calo/CaloAxisProcess.h
  # commonalgo/Calo/CaloAxisInfo.h
   commonalgo/Calo/CaloTest.h
+   commonalgo/Calo/CaloSkimHits.h	
   commonalgo/Histo/EneHisto.h
   commonalgo/Histo/MCGenSpectrum.h
   commonalgo/Histo/CaloClusteringHisto.h
-
+  commonalgo/Histo/CaloDigHisto.h
+  commonalgo/Histo/CaloAxisHisto.h	
+  commonalgo/Selection/CaloMcTrackLenghtSelection.h
 )
 
 set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")

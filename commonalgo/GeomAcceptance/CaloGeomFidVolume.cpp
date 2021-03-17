@@ -48,7 +48,14 @@ bool CaloGeomFidVolumeAlgo::Initialize() {
   const std::string routineName = GetName() + "::Initialize";
 
   // Setup the filter                                                                                                                                                                                                                       
-  if (filterenable) SetFilterStatus(FilterStatus::ENABLED); else SetFilterStatus(FilterStatus::DISABLED);
+  if (filterenable){
+    SetFilterStatus(FilterStatus::ENABLED);
+    COUT(INFO) << "FilterStatus::ENABLED"<<ENDL; }
+  else
+    {
+      COUT(INFO) << "FilterStatus::DISABLED"<<ENDL;
+      SetFilterStatus(FilterStatus::DISABLED);
+    } 
 
   _evStore = GetDataStoreManager()->GetEventDataStore("evStore");
   if (!_evStore) { COUT(ERROR) << "Event data store not found." << ENDL; return false; }
@@ -609,7 +616,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
   _evStore->AddObject("caloGeomFidVolumeStore",_processstore);
 
   //Set Filter Status
-  SetFilterResult(FilterResult::ACCEPT);
+  //  SetFilterResult(FilterResult::ACCEPT);
 
   auto mcTruth = _evStore->GetObject<MCTruth>("mcTruth");
   if (!mcTruth) {COUT(ERROR) << "mcTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL;return false;}
@@ -740,12 +747,14 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
 }// FillCoo(intXposYpos,_processstore->calofidvolxposyposEntry,nintXposYpos-1); } 
  
      
+  COUT(INFO)<<GetEventLoopProxy()->GetCurrentEvent()<<"::Intersections_Found::"<<nint<<ENDL;
  if( nint > 2) {
    COUT(INFO)<<GetEventLoopProxy()->GetCurrentEvent()<<"::Intersections_Found::"<<nint<<"  --- Maybe_A_Corner?"<<ENDL;
+   SetFilterResult(FilterResult::REJECT);
   }
 
-  if(nint ==1) { COUT(INFO)<<"nint 1"<<ENDL;}
-  if( nint > 1) {
+ if(nint ==1) { COUT(INFO)<<"nint 1"<<ENDL; SetFilterResult(FilterResult::REJECT);}
+  if( nint == 2) {
     //_processstore->calofidvolxposypos=1; _processstore->calofidvolpass=false;
     SetFilterResult(FilterResult::ACCEPT);
     _processstore->calofidvolpass=true;
@@ -754,6 +763,7 @@ bool CaloGeomFidVolumeAlgo::CheckInt() {
     {
     SetFilterResult(FilterResult::REJECT);
     _processstore->calofidvolpass=false;
+    COUT(INFO)<<GetEventLoopProxy()->GetCurrentEvent()<<"::REJECT::"<<ENDL;
 }
 
   return true;

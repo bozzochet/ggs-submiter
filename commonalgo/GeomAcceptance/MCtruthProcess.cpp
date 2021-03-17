@@ -85,9 +85,6 @@ bool MCtruthProcess::Process() {
   //_processstore->Reset();
   _evStore->AddObject("MCtruthProcessStore",_processstore);
 
-  //Set Filter Status
-  SetFilterResult(FilterResult::ACCEPT);
-
   auto mctruth = _evStore->GetObject<Herd::MCTruth>("mcTruth");
   if (!mctruth) { COUT(DEBUG) << "MCTruth not present for event " << GetEventLoopProxy()->GetCurrentEvent() << ENDL; return false; }
   auto calotrack = _evStore->GetObject<Herd::TrackInfoForCalo>("trackInfoForCaloMC");
@@ -172,8 +169,14 @@ bool MCtruthProcess::Process() {
     _processstore->mcFirsthadint[2] = -999;
   }
 
-  //Check MC track length
-  if(calotrack->trackLengthCaloX0<mincalotrackx0) SetFilterResult(FilterResult::REJECT);
+  //Check MC track length  
+  if(calotrack->trackLengthCaloX0<mincalotrackx0 || calotrack->trackLengthCaloX0>1e+5) 
+    {
+      /*COUT(INFO)<<calotrack->trackLengthCaloX0<<" "<<"REJECT"<<ENDL;*/ SetFilterResult(FilterResult::REJECT); }
+  else
+    {
+      /*COUT(INFO)<<calotrack->trackLengthCaloX0<<" "<<"ACCEPT"<<ENDL;*/ SetFilterResult(FilterResult::ACCEPT); }
+
 
   return true;
 }

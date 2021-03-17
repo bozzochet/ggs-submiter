@@ -20,7 +20,8 @@ BASENAME=${FULLBASENAME%??????} #remove last 6 trailing characters
 JOBTEMPLATE=${SUBMITDIR}/job.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
 #DATACARD=${SUBMITDIR}/analysis.$BASENAME.eaconf
-DATACARD=${SUBMITDIR}/analysis.generic.caloclusters.eaconf
+#DATACARD=${SUBMITDIR}/analysis.generic.dig.eaconf
+DATACARD=${SUBMITDIR}/analysis.dighisto.eaconf
 LIST=${LISTFILE}
 
 if [ ! -f $JOBTEMPLATE ]; then echo "$JOBTEMPLATE not found"; exit; fi
@@ -28,7 +29,8 @@ if [ ! -f $SUBTEMPLATE ]; then echo "$SUBTEMPLATE not found"; exit; fi
 if [ ! -f $DATACARD ];    then echo "$DATACARD    not found"; exit; fi
 if [ ! -f $LIST ];        then echo "$LIST        not found"; exit; fi
 
-OUTDIR=${SUBMITDIR}/output.caloclusters/${BASENAME}${SUFFIX}
+#OUTDIR=${SUBMITDIR}/output.caloclusters/${BASENAME}${SUFFIX}
+OUTDIR=${SUBMITDIR}/output.calopddighisto/${BASENAME}${SUFFIX}
 LOGDIR=${SUBMITDIR}/logs/${BASENAME}${SUFFIX}
 JOBDIR=${SUBMITDIR}/jobs/${BASENAME}${SUFFIX}
 
