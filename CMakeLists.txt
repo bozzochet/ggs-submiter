@@ -70,7 +70,9 @@ set(MY_PUBLIC_HEADERS
   commonalgo/Histo/CaloClusteringHisto.h
   commonalgo/Histo/CaloDigHisto.h
   commonalgo/Histo/CaloAxisHisto.h	
+  commonalgo/Histo/CaloMcHitsHisto.h
   commonalgo/Selection/CaloMcTrackLenghtSelection.h
+  commonalgo/Selection/CaloMcHitsNumberSelection.h	
 )
 
 set_target_properties(CommonAlgo PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")
