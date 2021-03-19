@@ -3,16 +3,18 @@
 #NAME="protons_500GeV"
 #LISTFILE=lists/${NAME}.list
 
-#for NAME in "protons_10GeV"  "protons_50GeV" "protons_100GeV" "protons_500GeV" "protons_1TeV" "protons_5TeV" "protons_10TeV" "protons_50TeV" "protons_100TeV" "protons_10GeV_1000GeV_E-1" "protons_1TeV_100TeV_E-1" "electrons_10GeV_1000GeV_E-1" "electrons_1TeV_100TeV_E-1"
-
 only_one_submit=0
 
 #for NAME in "protons_10GeV_1000GeV_E-1" "protons_1TeV_100TeV_E-1" "electrons_10GeV_1000GeV_E-1" "electrons_1TeV_100TeV_E-1"
-for NAME in "electrons_10GeV_1000GeV_E-1" "protons_10GeV_1000GeV_E-1" 
+WORKDIR=${STORAGE}/herd-vv-svn/MCgeneration/Digitize
+SUBMITDIR=${WORKDIR}/submit/htc
+DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_caloonly.eaconf.template
+ 
+for NAME in "electrons_10GeV_1000GeV_E-1_2828_caloonly" "electrons_10GeV_1000GeV_E-1_3030_caloonly"
 do
     LISTFILE=lists/${NAME}.list
 
-    fperjob=5
+    fperjob=20
 
     i=0
     flist=""
@@ -25,7 +27,7 @@ do
 	n=`echo $flist | wc -w`
 	
 	if [ $n -eq ${fperjob} ]; then 
-	    cmd="./submit_one_job.sh $NAME $flist"
+	    cmd="./submit_one_job.sh $NAME ${DATACARDTEMPLATE} $flist" 
 	    echo $cmd
 	    $cmd
 	    flist=""
@@ -38,7 +40,7 @@ do
     done < $LISTFILE
 
     if [ $n -gt 0 ]; then
-	cmd="./submit_one_job.sh $NAME $flist"
+	cmd="./submit_one_job.sh $NAME $flist ${DATACARDTEMPLATE}"
 	echo $cmd
 	$cmd
     fi

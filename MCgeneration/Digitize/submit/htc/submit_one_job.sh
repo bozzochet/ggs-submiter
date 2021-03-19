@@ -18,7 +18,10 @@ JOBTEMPLATETAIL=${SUBMITDIR}/job.dig.tail.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
 #DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_fit_psdbar.eaconf.template
 #DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_stk_psdbar.eaconf.template
-DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_calopddig_stk_psdbar.eaconf.template
+#DATACARDTEMPLATE=${SUBMITDIR}/digitize.calov2_calopddig_stk_psdbar.eaconf.template
+DATACARDTEMPLATE=${argv[1]}
+if [ ! -f $DATACARDTEMPLATE ]; then echo "DATACARD ${DATACARDTEMPLATE} does not exist"; exit; fi
+
 OUTDIR=${SUBMITDIR}/output/${NAME}
 LOGDIR=${SUBMITDIR}/logs/${NAME}
 JOBDIR=${SUBMITDIR}/jobs/${NAME}
@@ -45,7 +48,7 @@ echo $INFILE
 #head -n 15 ${JOBTEMPLATE} >> ${JOB}
 cat ${JOBTEMPLATEHEAD} >> ${JOB}
 
-for INFILE in "${argv[@]:1}"; do   #loop on array of arguments starting from second
+for INFILE in "${argv[@]:2}"; do   #loop on array of arguments starting from second
 
 echo $INFILE
 BASENAME=`basename $INFILE ".root"`
