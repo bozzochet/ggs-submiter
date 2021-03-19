@@ -60,6 +60,9 @@ bool CaloMcTrackLengthSelection::Process() {
   catch(Retrieval::Exception &exc) { caloGeoParams=NULL; }
   static bool caloGeoParams_f=true; if(caloGeoParams_f){ COUT(INFO)<<Form("%s::caloGeoParams::%s",routineName.c_str(),caloGeoParams?"FOUND":"NOT-FOUND")<<ENDL; } caloGeoParams_f=false;
 
+  //Check if teh track enter the calorimeter volume at all
+  if(mcCaloTrack->entrancePlane == Herd::RefFrame::Direction::NONE) SetFilterResult(FilterResult::REJECT);
+  
   //Check MC track entrance plane
   if(_notfrombottom) {
     if(mcCaloTrack->entrancePlane == Herd::RefFrame::Direction::Zneg) SetFilterResult(FilterResult::REJECT);

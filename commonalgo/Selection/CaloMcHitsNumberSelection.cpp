@@ -10,6 +10,10 @@
 // C/C++ standard headers
 #include <numeric>
 
+
+//temp
+#include "dataobjects/TrackInfoForCalo.h"
+
 using namespace std;
 
 RegisterAlgorithm(CaloMcHitsNumberSelection);
@@ -56,14 +60,19 @@ bool CaloMcHitsNumberSelection::Process() {
   catch(Retrieval::Exception &exc) { caloGeoParams=NULL; }
   static bool caloGeoParams_f=true; if(caloGeoParams_f){ COUT(INFO)<<Form("%s::caloGeoParams::%s",routineName.c_str(),caloGeoParams?"FOUND":"NOT-FOUND")<<ENDL; } caloGeoParams_f=false;
 
-  //Check 
-  //int ncalohits = std::accumulate(caloHits->begin(), caloHits->end(), 0.,[this](int n, const Herd::Hit &hit) { return hit.EDep()<_edepth ? n : n+1; });
+  observer_ptr<Herd::TrackInfoForCalo> trackInfoForCalo = nullptr;
+  try { trackInfoForCalo = _evStore->GetObject<Herd::TrackInfoForCalo>("trackInfoForCaloMC"); }
+  catch(Retrieval::Exception &exc) { trackInfoForCalo=NULL; }
+  static bool trackInfoForCalo_f=true; if(trackInfoForCalo_f){ COUT(INFO)<<Form("%s::trackInfoForCalo::%s",routineName.c_str(),trackInfoForCalo?"FOUND":"NOT-FOUND")<<ENDL; } trackInfoForCalo_f=false;
+
   int ncalohits=0;
+  int ncalohitsall=0;
   for( auto const &caloHit : *caloHits ){
     if( caloHit.EDep()>_edepth ){ ncalohits++; }
+    ncalohitsall++;
   }
-
-  if( ncalohits < _minhits ) SetFilterResult(FilterResult::REJECT);
+  // COUT(INFO)<<Form("%f %d %d", trackInfoForCalo->trackLengthCaloX0, ncalohits, ncalohitsall)<<ENDL;
+  if( ncalohits < _minhits ) { SetFilterResult(FilterResult::REJECT);}
 
   return true;
 }
