@@ -5,9 +5,7 @@
 
 // HerdSoftware headers
 #include "dataobjects/MCTruth.h"
-#include "dataobjects/CaloHits.h"
 #include "dataobjects/TrackInfoForCalo.h"
-#include "dataobjects/StkIntersections.h"
 #include "dataobjects/CaloGeoParams.h"
 
 using namespace EA;
@@ -33,26 +31,26 @@ private:
 
   //Store pointer
   std::shared_ptr<MCtruthProcessStore> _processstore;
-  
+
   // Algorithm parameters
-  bool filterenable;
-  int minstkintersections;
   bool printcalocubemap;
-  float mincalotrackx0;
-  bool notfrombottom;
+  /* bool filterenable; */
+  /* int minstkintersections; */
+  /* float mincalotrackx0; */
+  /* bool notfrombottom; */
 
   // Created global objects
   // std::shared_ptr<TH1F> _histo; // Objects to be pushed on global store must be held by a shared_ptr
-  std::shared_ptr<TGraph> _gdiscarded;
-  std::shared_ptr<TH1F> _hstkintersections;
-  std::shared_ptr<TH2F> _hgencthetaphi;
-  std::shared_ptr<TH3F> _hgencoo;
-  std::shared_ptr<TGraph2D> _ggencoo;
-  std::shared_ptr<TGraph2D> _gcaloentry;
-  std::shared_ptr<TGraph2D> _gcaloexit;
-  std::shared_ptr<TH2F>_hcaloentryexitdir;
-  std::shared_ptr<TH1F>_hshowerlength[Herd::RefFrame::NDirections][Herd::RefFrame::NDirections];
-  std::shared_ptr<TH1F>_hshowerlengthall;
+  /* std::shared_ptr<TGraph> _gdiscarded; */
+  /* std::shared_ptr<TH1F> _hstkintersections; */
+  /* std::shared_ptr<TH2F> _hgencthetaphi; */
+  /* std::shared_ptr<TH3F> _hgencoo; */
+  /* std::shared_ptr<TGraph2D> _ggencoo; */
+  /* std::shared_ptr<TGraph2D> _gcaloentry; */
+  /* std::shared_ptr<TGraph2D> _gcaloexit; */
+  /* std::shared_ptr<TH2F>_hcaloentryexitdir; */
+  /* std::shared_ptr<TH1F>_hshowerlength[Herd::RefFrame::NDirections][Herd::RefFrame::NDirections]; */
+  /* std::shared_ptr<TH1F>_hshowerlengthall; */
 
   //std::shared_ptr<TH2F> _hgencoo;
 
@@ -78,7 +76,6 @@ public:
   float mcMom;
   float mcPhi;
   float mcCtheta;
-  int mcStkintersections;
   float mcTracklengthcalox0;
   float mcTracklengthlysox0;
   float mcTracklenghtexactlysocm;

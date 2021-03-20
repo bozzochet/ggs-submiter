@@ -29,21 +29,20 @@ RegisterAlgorithm(TreePersistenceHelper);
 
 TreePersistence::TreePersistence(const std::string &name, const std::string &output)
     : PersistenceService{name, output},
-    bookMCtruthProcess{false},
-    bookCaloGeomFidVolume{false}, 
-    bookCaloGlob{false},
+  bookMCtruthProcess{false},
+  bookCaloGeomFidVolume{false}, 
+  bookCaloGlob{false},
   bookCaloDig{false},
-    bookCaloAxis{false}
+  bookCaloAxis{false}
     {
-  //DefineParameter("psdHitThreshold", _psdHitThreshold);
-  DefineParameter("BookMCtruthProcess",bookMCtruthProcess);
-  DefineParameter("BookCaloGeomFidVolume",bookCaloGeomFidVolume);
-  DefineParameter("BookCaloGlob",bookCaloGlob);
-  DefineParameter("BookCaloDig",bookCaloDig);
-  DefineParameter("BookCaloAxis",bookCaloAxis);
-  
-
-}
+      DefineParameter("BookMCtruthProcess",bookMCtruthProcess);
+      DefineParameter("BookCaloGeomFidVolume",bookCaloGeomFidVolume);
+      DefineParameter("BookCaloGlob",bookCaloGlob);
+      DefineParameter("BookCaloDig",bookCaloDig);
+      DefineParameter("BookCaloAxis",bookCaloAxis);
+      
+      
+    }
 
 bool TreePersistence::Connect() {
   const std::string routineName("TreePersistence::Connect");
@@ -65,7 +64,6 @@ bool TreePersistence::Connect() {
   _outputTree->Branch("mcMom",                 &(mcMom),                 "mcMom/F");
   _outputTree->Branch("mcPhi",                 &(mcPhi),                 "mcPhi/F");
   _outputTree->Branch("mcCtheta",              &(mcCtheta),              "mcCtheta/F");
-  _outputTree->Branch("mcStkintersections",    &(mcStkintersections),    "mcStkintersections/I");
   _outputTree->Branch("mcTracklengthcalox0",   &(mcTracklengthcalox0),   "mcTracklengthcalox0/F");
   _outputTree->Branch("mcTracklengthlysox0",   &(mcTracklengthlysox0),   "mcTracklengthlysox0/F");
   _outputTree->Branch("mcTrackcaloentry",      &(mcTrackcaloentry[0]),   "mcTrackcaloentry[3]/F");
@@ -190,12 +188,15 @@ bool TreePersistence::BookEventObject(const std::string &objName, const std::str
   return true;
 }
 
-bool TreePersistence::BeginningOfEvent() {
-  static const std::string routineName("TreePersistence::EndOfEvent");
+bool TreePersistence::BeginOfEvent() {
+  static const std::string routineName("TreePersistence::BeginOfEvent");
 
   // Handle default objects
   if (!_evStore) { _evStore = GetDataStoreManager()->GetEventDataStore("evStore");
   if (!_evStore) {COUT(ERROR) << "EventStore::\"evStore\"::NotFound." << ENDL; return false; } }
+
+  //Add flag to be eventually set true if this event will be filled
+  _evStore->AddObject("FillFlag",std::make_shared<bool>(false));
 
   return true;
 }
@@ -206,184 +207,204 @@ bool TreePersistence::EndOfEvent() {
   // Handle default objects
   if (!_evStore) { _evStore = GetDataStoreManager()->GetEventDataStore("evStore");
     if (!_evStore) {COUT(ERROR) << "EventStore::\"evStore\"::NotFound." << ENDL; return false; } }
+  
+  observer_ptr<bool> flagptr = nullptr;
+  try { flagptr = _evStore->GetObject<bool>("FillFlag"); }
+  catch(Retrieval::Exception &exc) { flagptr=NULL; }
+  static bool flagptr_f=true; if(flagptr_f){ COUT(INFO)<<Form("%s::FillFlag::%s",routineName.c_str(),flagptr?"FOUND":"NOT-FOUND")<<ENDL; } flagptr_f=false;
+  
 
-  if( bookMCtruthProcess )
-  {
-    auto mcTruthProcessStore = _evStore->GetObject<MCtruthProcessStore>("MCtruthProcessStore");
-    if(mcTruthProcessStore){
-      mcNdiscarded  = mcTruthProcessStore->mcNdiscarded;
-      mcDir[0] = mcTruthProcessStore->mcDir[0];
-      mcDir[1] = mcTruthProcessStore->mcDir[1];
-      mcDir[2] = mcTruthProcessStore->mcDir[2];
-      mcCoo[0] = mcTruthProcessStore->mcCoo[0];
-      mcCoo[1] = mcTruthProcessStore->mcCoo[1];
-      mcCoo[2] = mcTruthProcessStore->mcCoo[2];
-      mcMom = mcTruthProcessStore->mcMom;
-      mcPhi = mcTruthProcessStore->mcPhi;
-      mcCtheta = mcTruthProcessStore->mcCtheta;
-      mcStkintersections = mcTruthProcessStore->mcStkintersections;
-      mcTracklengthcalox0 = mcTruthProcessStore->mcTracklengthcalox0;
-      mcTracklengthlysox0 = mcTruthProcessStore->mcTracklengthlysox0;
-      mcTracklenghtlysoafii = mcTruthProcessStore->mcTracklenghtlysoafii;
-      mcTracklenghtexactlysocm = mcTruthProcessStore->mcTracklenghtexactlysocm;
-      mcTrackcaloentry[0] = mcTruthProcessStore->mcTrackcaloentry[0];
-      mcTrackcaloentry[1] = mcTruthProcessStore->mcTrackcaloentry[1];
-      mcTrackcaloentry[2] = mcTruthProcessStore->mcTrackcaloentry[2];
-      mcTrackcaloexit[0] = mcTruthProcessStore->mcTrackcaloexit[0];
-      mcTrackcaloexit[1] = mcTruthProcessStore->mcTrackcaloexit[1];
-      mcTrackcaloexit[2] = mcTruthProcessStore->mcTrackcaloexit[2];
-      mcTrackcaloentryplane = mcTruthProcessStore->mcTrackcaloentryplane;
-      mcTrackcaloexitplane = mcTruthProcessStore->mcTrackcaloexitplane;
-      mcFirsthadint[0] = mcTruthProcessStore->mcFirsthadint[0];
-      mcFirsthadint[1] = mcTruthProcessStore->mcFirsthadint[1];
-      mcFirsthadint[2] = mcTruthProcessStore->mcFirsthadint[2];
-      mcHashadint = mcTruthProcessStore->mcHashadint;;
-      //
-      mcTruthProcessStore->Reset();
-    }
-  }
-
-if( bookCaloGeomFidVolume )
-  {
-    auto caloGeomFidVolumeStore = _evStore->GetObject<CaloGeomFidVolumeStore>("caloGeomFidVolumeStore");
-    if(caloGeomFidVolumeStore){
-      calofidvolalpha = caloGeomFidVolumeStore->calofidvolalpha;
-      calofidvolpass = caloGeomFidVolumeStore->calofidvolpass;
-      calofidvolxpos = caloGeomFidVolumeStore->calofidvolxpos;
-      calofidvolxneg = caloGeomFidVolumeStore->calofidvolxneg;
-      calofidvolypos = caloGeomFidVolumeStore->calofidvolypos;
-      calofidvolyneg = caloGeomFidVolumeStore->calofidvolyneg;
-      calofidvolzpos = caloGeomFidVolumeStore->calofidvolzpos;
-      calofidvolzneg = caloGeomFidVolumeStore->calofidvolzneg;
-      calofidvolxnegyneg = caloGeomFidVolumeStore->calofidvolxnegyneg;
-      calofidvolxposyneg = caloGeomFidVolumeStore->calofidvolxposyneg;
-      calofidvolxnegypos = caloGeomFidVolumeStore->calofidvolxnegypos;
-      calofidvolxposypos = caloGeomFidVolumeStore->calofidvolxposypos;
-      for(int ii=0; ii<2; ii++){
-        for(int jj=0; jj<3; jj++){
-        calofidvolxposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposEntry[ii][jj];
-        calofidvolxnegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegEntry[ii][jj];
-        calofidvolyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolyposEntry[ii][jj];
-        calofidvolynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolynegEntry[ii][jj];
-        calofidvolzposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolzposEntry[ii][jj];
-        calofidvolznegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolznegEntry[ii][jj];
-        calofidvolxnegynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegynegEntry[ii][jj];
-        calofidvolxposynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposynegEntry[ii][jj];
-        calofidvolxnegyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegyposEntry[ii][jj];
-        calofidvolxposyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposyposEntry[ii][jj];
-        }
-      }
-      //
-      caloGeomFidVolumeStore->Reset();
-   }
-  }
-  if(bookCaloGlob){
-    auto caloGlobStore = _evStore->GetObject<CaloGlobStore>("caloGlobStore");
-    if(caloGlobStore)
+  if( (*flagptr)==true)
     {
-      calonhits = caloGlobStore->calonhits;
-      calototedep = caloGlobStore->calototedep;
-      calonclusters = caloGlobStore->calonclusters;
-      caloicluster = caloGlobStore->caloicluster;
-      caloclusteredep = caloGlobStore->caloclusteredep;
-      caloclusteredepall = caloGlobStore->caloclusteredepall;
-      caloclusterhits = caloGlobStore->caloclusterhits;
-      caloclusterhitsall = caloGlobStore->caloclusterhitsall;
-      calonmiphitsontrack = caloGlobStore->calonmiphitsontrack;
-      calomiptrack = caloGlobStore->calomiptrack;
+
+      if( bookMCtruthProcess )
+	{
+	  observer_ptr<MCtruthProcessStore> mcTruthProcessStore = nullptr;
+	  try { mcTruthProcessStore = _evStore->GetObject<MCtruthProcessStore>("mcTruthProcessStore"); }
+	  catch(Retrieval::Exception &exc) { mcTruthProcessStore=NULL; }
+	  static bool mcTruthProcessStore_f=true; if(mcTruthProcessStore_f){ COUT(INFO)<<Form("%s::mcTruthProcessStore::%s",routineName.c_str(),mcTruthProcessStore?"FOUND":"NOT-FOUND")<<ENDL; } mcTruthProcessStore_f=false;
+
+	  if(mcTruthProcessStore){
+	    mcNdiscarded  = mcTruthProcessStore->mcNdiscarded;
+	    mcDir[0] = mcTruthProcessStore->mcDir[0];
+	    mcDir[1] = mcTruthProcessStore->mcDir[1];
+	    mcDir[2] = mcTruthProcessStore->mcDir[2];
+	    mcCoo[0] = mcTruthProcessStore->mcCoo[0];
+	    mcCoo[1] = mcTruthProcessStore->mcCoo[1];
+	    mcCoo[2] = mcTruthProcessStore->mcCoo[2];
+	    mcMom = mcTruthProcessStore->mcMom;
+	    mcPhi = mcTruthProcessStore->mcPhi;
+	    mcCtheta = mcTruthProcessStore->mcCtheta;
+	    mcTracklengthcalox0 = mcTruthProcessStore->mcTracklengthcalox0;
+	    mcTracklengthlysox0 = mcTruthProcessStore->mcTracklengthlysox0;
+	    mcTracklenghtlysoafii = mcTruthProcessStore->mcTracklenghtlysoafii;
+	    mcTracklenghtexactlysocm = mcTruthProcessStore->mcTracklenghtexactlysocm;
+	    mcTrackcaloentry[0] = mcTruthProcessStore->mcTrackcaloentry[0];
+	    mcTrackcaloentry[1] = mcTruthProcessStore->mcTrackcaloentry[1];
+	    mcTrackcaloentry[2] = mcTruthProcessStore->mcTrackcaloentry[2];
+	    mcTrackcaloexit[0] = mcTruthProcessStore->mcTrackcaloexit[0];
+	    mcTrackcaloexit[1] = mcTruthProcessStore->mcTrackcaloexit[1];
+	    mcTrackcaloexit[2] = mcTruthProcessStore->mcTrackcaloexit[2];
+	    mcTrackcaloentryplane = mcTruthProcessStore->mcTrackcaloentryplane;
+	    mcTrackcaloexitplane = mcTruthProcessStore->mcTrackcaloexitplane;
+	    mcFirsthadint[0] = mcTruthProcessStore->mcFirsthadint[0];
+	    mcFirsthadint[1] = mcTruthProcessStore->mcFirsthadint[1];
+	    mcFirsthadint[2] = mcTruthProcessStore->mcFirsthadint[2];
+	    mcHashadint = mcTruthProcessStore->mcHashadint;;
+	    //
+	    mcTruthProcessStore->Reset();
+	  }
+	}
+
+      if( bookCaloGeomFidVolume )
+	{
+	  observer_ptr<CaloGeomFidVolumeStore> caloGeomFidVolumeStore = nullptr;
+	  try { caloGeomFidVolumeStore = _evStore->GetObject<CaloGeomFidVolumeStore>("caloGeomFidVolumeStore"); }
+	  catch(Retrieval::Exception &exc) { caloGeomFidVolumeStore=NULL; }
+	  static bool caloGeomFidVolumeStore_f=true; if(caloGeomFidVolumeStore_f){ COUT(INFO)<<Form("%s::caloGeomFidVolumeStore::%s",routineName.c_str(),caloGeomFidVolumeStore?"FOUND":"NOT-FOUND")<<ENDL; } caloGeomFidVolumeStore_f=false;
+
+	  if(caloGeomFidVolumeStore){
+	    calofidvolalpha = caloGeomFidVolumeStore->calofidvolalpha;
+	    calofidvolpass = caloGeomFidVolumeStore->calofidvolpass;
+	    calofidvolxpos = caloGeomFidVolumeStore->calofidvolxpos;
+	    calofidvolxneg = caloGeomFidVolumeStore->calofidvolxneg;
+	    calofidvolypos = caloGeomFidVolumeStore->calofidvolypos;
+	    calofidvolyneg = caloGeomFidVolumeStore->calofidvolyneg;
+	    calofidvolzpos = caloGeomFidVolumeStore->calofidvolzpos;
+	    calofidvolzneg = caloGeomFidVolumeStore->calofidvolzneg;
+	    calofidvolxnegyneg = caloGeomFidVolumeStore->calofidvolxnegyneg;
+	    calofidvolxposyneg = caloGeomFidVolumeStore->calofidvolxposyneg;
+	    calofidvolxnegypos = caloGeomFidVolumeStore->calofidvolxnegypos;
+	    calofidvolxposypos = caloGeomFidVolumeStore->calofidvolxposypos;
+	    for(int ii=0; ii<2; ii++){
+	      for(int jj=0; jj<3; jj++){
+		calofidvolxposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposEntry[ii][jj];
+		calofidvolxnegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegEntry[ii][jj];
+		calofidvolyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolyposEntry[ii][jj];
+		calofidvolynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolynegEntry[ii][jj];
+		calofidvolzposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolzposEntry[ii][jj];
+		calofidvolznegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolznegEntry[ii][jj];
+		calofidvolxnegynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegynegEntry[ii][jj];
+		calofidvolxposynegEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposynegEntry[ii][jj];
+		calofidvolxnegyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxnegyposEntry[ii][jj];
+		calofidvolxposyposEntry[ii][jj] = caloGeomFidVolumeStore->calofidvolxposyposEntry[ii][jj];
+	      }
+	    }
+	    //
+	    caloGeomFidVolumeStore->Reset();
+	  }
+	}
+      if(bookCaloGlob){
+
+	observer_ptr<Herd::CaloGlobStore> caloGlobStore = nullptr;
+	try { caloGlobStore = _evStore->GetObject<Herd::CaloGlobStore>("caloGlobStore"); }
+	catch(Retrieval::Exception &exc) { caloGlobStore=NULL; }
+	static bool caloGlobStore_f=true; if(caloGlobStore_f){ COUT(INFO)<<Form("%s::caloGlobStore::%s",routineName.c_str(),caloGlobStore?"FOUND":"NOT-FOUND")<<ENDL; } caloGlobStore_f=false;
+
+	if(caloGlobStore)
+	  {
+	    calonhits = caloGlobStore->calonhits;
+	    calototedep = caloGlobStore->calototedep;
+	    calonclusters = caloGlobStore->calonclusters;
+	    caloicluster = caloGlobStore->caloicluster;
+	    caloclusteredep = caloGlobStore->caloclusteredep;
+	    caloclusteredepall = caloGlobStore->caloclusteredepall;
+	    caloclusterhits = caloGlobStore->caloclusterhits;
+	    caloclusterhitsall = caloGlobStore->caloclusterhitsall;
+	    calonmiphitsontrack = caloGlobStore->calonmiphitsontrack;
+	    calomiptrack = caloGlobStore->calomiptrack;
       
-        for(int ihit=0; ihit<(int)caloGlobStore->calohitsX.size(); ihit++){
-     calohitsID.push_back(caloGlobStore->calohitsID.at(ihit));
-     calohitsX.push_back(caloGlobStore->calohitsX.at(ihit));
-     calohitsY.push_back(caloGlobStore->calohitsY.at(ihit));
-     calohitsZ.push_back(caloGlobStore->calohitsZ.at(ihit));
-     calohitsE.push_back(caloGlobStore->calohitsE.at(ihit));
-     calohitsPL.push_back(caloGlobStore->calohitsPL.at(ihit));
-     calopcahits0.push_back(caloGlobStore->calopcahits0.at(ihit));
-     calopcahits1.push_back(caloGlobStore->calopcahits1.at(ihit));
-     calopcahits2.push_back(caloGlobStore->calopcahits2.at(ihit));
+	    for(int ihit=0; ihit<(int)caloGlobStore->calohitsX.size(); ihit++){
+	      calohitsID.push_back(caloGlobStore->calohitsID.at(ihit));
+	      calohitsX.push_back(caloGlobStore->calohitsX.at(ihit));
+	      calohitsY.push_back(caloGlobStore->calohitsY.at(ihit));
+	      calohitsZ.push_back(caloGlobStore->calohitsZ.at(ihit));
+	      calohitsE.push_back(caloGlobStore->calohitsE.at(ihit));
+	      calohitsPL.push_back(caloGlobStore->calohitsPL.at(ihit));
+	      calopcahits0.push_back(caloGlobStore->calopcahits0.at(ihit));
+	      calopcahits1.push_back(caloGlobStore->calopcahits1.at(ihit));
+	      calopcahits2.push_back(caloGlobStore->calopcahits2.at(ihit));
 
-   }
-      //
-      caloGlobStore->Reset();
-     }
-  }
+	    }
+	    //
+	    caloGlobStore->Reset();
+	  }
+      }
 
-  if(bookCaloDig){
-    auto caloDigStore = _evStore->GetObject<CaloDigStore>("caloDigStore");
-    if(caloDigStore)
-    {
+      if(bookCaloDig){
+	auto caloDigStore = _evStore->GetObject<CaloDigStore>("caloDigStore");
+	if(caloDigStore)
+	  {
 
-      calototedepSPDE = caloDigStore->calototedepSPDE;
-      calototedepLPDE = caloDigStore->calototedepLPDE;
-      calototedepPDE = caloDigStore->calototedepPDE;
-      caloclusteredepSPDE = caloDigStore->caloclusteredepSPDE;
-      caloclusteredepLPDE = caloDigStore->caloclusteredepLPDE;
-      caloclusteredepPDE = caloDigStore->caloclusteredepPDE;
+	    calototedepSPDE = caloDigStore->calototedepSPDE;
+	    calototedepLPDE = caloDigStore->calototedepLPDE;
+	    calototedepPDE = caloDigStore->calototedepPDE;
+	    caloclusteredepSPDE = caloDigStore->caloclusteredepSPDE;
+	    caloclusteredepLPDE = caloDigStore->caloclusteredepLPDE;
+	    caloclusteredepPDE = caloDigStore->caloclusteredepPDE;
 
-        for(int ihit=0; ihit<(int)caloDigStore->calopdhitsSPDE.size(); ihit++){
-	  calopdhitsSPDE.push_back(caloDigStore->calopdhitsSPDE.at(ihit));
-	  calopdhitsSPDID.push_back(caloDigStore->calopdhitsSPDID.at(ihit));}
-        for(int ihit=0; ihit<(int)caloDigStore->calopdhitsLPDE.size(); ihit++){
-	  calopdhitsLPDE.push_back(caloDigStore->calopdhitsLPDE.at(ihit));
-	  calopdhitsLPDID.push_back(caloDigStore->calopdhitsLPDID.at(ihit));}
-        for(int ihit=0; ihit<(int)caloDigStore->calopdhitsPDE.size(); ihit++){
-	  calopdhitsPDE.push_back(caloDigStore->calopdhitsPDE.at(ihit));
-	  calopdhitsPDID.push_back(caloDigStore->calopdhitsPDID.at(ihit));}
+	    for(int ihit=0; ihit<(int)caloDigStore->calopdhitsSPDE.size(); ihit++){
+	      calopdhitsSPDE.push_back(caloDigStore->calopdhitsSPDE.at(ihit));
+	      calopdhitsSPDID.push_back(caloDigStore->calopdhitsSPDID.at(ihit));}
+	    for(int ihit=0; ihit<(int)caloDigStore->calopdhitsLPDE.size(); ihit++){
+	      calopdhitsLPDE.push_back(caloDigStore->calopdhitsLPDE.at(ihit));
+	      calopdhitsLPDID.push_back(caloDigStore->calopdhitsLPDID.at(ihit));}
+	    for(int ihit=0; ihit<(int)caloDigStore->calopdhitsPDE.size(); ihit++){
+	      calopdhitsPDE.push_back(caloDigStore->calopdhitsPDE.at(ihit));
+	      calopdhitsPDID.push_back(caloDigStore->calopdhitsPDID.at(ihit));}
 	
-	//
-	caloDigStore->Reset();
-    }
-  }
+	    //
+	    caloDigStore->Reset();
+	  }
+      }
   
-  if(bookCaloAxis){
-    auto caloAxisStore = _evStore->GetObject<Herd::CaloAxisProcessStore>("CaloAxisProcessStore");
-    if(caloAxisStore)
-    {
-      caloaxishits = caloAxisStore->caloaxishits;
-      caloaxispathlengthhit = caloAxisStore->caloaxispathlengthhit;
+      if(bookCaloAxis){
+    
+	observer_ptr<Herd::CaloAxisProcessStore> caloAxisStore = nullptr;
+	try { caloAxisStore = _evStore->GetObject<Herd::CaloAxisProcessStore>("caloAxisProcessStore"); }
+	catch(Retrieval::Exception &exc) { caloAxisStore=NULL; }
+	static bool caloAxisStore_f=true; if(caloAxisStore_f){ COUT(INFO)<<Form("%s::caloAxisProcessStore::%s",routineName.c_str(),caloAxisStore?"FOUND":"NOT-FOUND")<<ENDL; } caloAxisStore_f=false;
 
-      for(int i=0; i<3; i++){
-        caloaxiscog[i] = caloAxisStore->caloaxiscog[i];
-        caloaxissigma[i] = caloAxisStore->caloaxissigma[i];
-        caloaxisskew[i] = caloAxisStore->caloaxisskew[i];
-        caloaxiskurt[i] = caloAxisStore->caloaxiskurt[i];
-        caloaxisdir[i] = caloAxisStore->caloaxisdir[i];
-        caloaxiseigval[i] = caloAxisStore->caloaxiseigval[i];
-	caloaxisentryhit[i] = caloAxisStore->caloaxisentryhit[i];
-	caloaxisexithit[i] = caloAxisStore->caloaxisexithit[i];
+	if(caloAxisStore)
+	  {
+	    caloaxishits = caloAxisStore->caloaxishits;
+	    caloaxispathlengthhit = caloAxisStore->caloaxispathlengthhit;
 
-          for(int j=0; j<3; j++)
-           {
-          caloaxiseigvec[i][j] = caloAxisStore->caloaxiseigvec[i][j];
-	   }
-     }
+	    for(int i=0; i<3; i++){
+	      caloaxiscog[i] = caloAxisStore->caloaxiscog[i];
+	      caloaxissigma[i] = caloAxisStore->caloaxissigma[i];
+	      caloaxisskew[i] = caloAxisStore->caloaxisskew[i];
+	      caloaxiskurt[i] = caloAxisStore->caloaxiskurt[i];
+	      caloaxisdir[i] = caloAxisStore->caloaxisdir[i];
+	      caloaxiseigval[i] = caloAxisStore->caloaxiseigval[i];
+	      caloaxisentryhit[i] = caloAxisStore->caloaxisentryhit[i];
+	      caloaxisexithit[i] = caloAxisStore->caloaxisexithit[i];
+
+	      for(int j=0; j<3; j++)
+		{
+		  caloaxiseigvec[i][j] = caloAxisStore->caloaxiseigvec[i][j];
+		}
+	    }
+	    //
+	    caloAxisStore->Reset();
+	  }
+      }
+
+      _outputTree->Fill();
+    }  
+  
+  calohitsID.clear();
+  calohitsX.clear();
+  calohitsY.clear();
+  calohitsZ.clear();
+  calohitsE.clear();
+  calohitsPL.clear();
+  calopcahits0.clear();
+  calopcahits1.clear();
+  calopcahits2.clear();
   
 
- 
-
-      //
-      caloAxisStore->Reset();
-     }
-  }
-
-auto fillthisevent = _evStore->GetObject<bool>("FillTreeThisEvent");
-if(fillthisevent){
-  _outputTree->Fill();
-}
-
- calohitsID.clear();
- calohitsX.clear();
- calohitsY.clear();
- calohitsZ.clear();
- calohitsE.clear();
- calohitsPL.clear();
- calopcahits0.clear();
- calopcahits1.clear();
- calopcahits2.clear();
-
-
-return true;
+  return true;
 }
 
 //***************************
@@ -391,24 +412,29 @@ return true;
 TreePersistenceHelper::TreePersistenceHelper(const std::string &name) :
   Algorithm{name}
   {
-    DefineParameter("FillTreeThisEvent", filltreethisevent);
+    DefineParameter("FillFlag", filltreethisevent);
   }
 
   bool TreePersistenceHelper::Initialize() {
   const std::string routineName("TreePersistenceHelper::Initialize");
-  //fillflag = std::make_shared<bool>(false);
   _evStore = GetDataStoreManager()->GetEventDataStore("evStore"); if (!_evStore) { COUT(ERROR) << "Event data store not found." << ENDL;  return false; }
-  
   return true;
 }
 
   bool TreePersistenceHelper::Process() {
   const std::string routineName("TreePersistenceHelper::Process");
-  if(filltreethisevent) _evStore->AddObject("FillTreeThisEvent",std::make_shared<bool>(true));//"FillTreeThisEvent");
+
+  observer_ptr<bool> flagptr = nullptr;
+  try { flagptr = _evStore->GetObject<bool>("FillFlag"); }
+  catch(Retrieval::Exception &exc) { flagptr=NULL; }
+  static bool flagptr_f=true; if(flagptr_f){ COUT(INFO)<<Form("%s::FillFlag::%s",routineName.c_str(),flagptr?"FOUND":"NOT-FOUND")<<ENDL; } flagptr_f=false;
+
+  if(filltreethisevent) { *flagptr=true; }
+
   return true;
 }
-  bool TreePersistenceHelper::Finalize() {
 
+  bool TreePersistenceHelper::Finalize() {
   const std::string routineName("TreePersistenceHelper::Finalize");
   return true;
 }

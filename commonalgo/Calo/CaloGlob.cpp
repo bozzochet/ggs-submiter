@@ -23,13 +23,9 @@ RegisterAlgorithm(CaloGlobStore);
 
 CaloGlob::CaloGlob(const std::string &name) :
   Algorithm{name},
-  filterenable{true},
-  calohitscutmc{false},
   fillpathl{false},
   pcaedepth{0.020}
    {
-    DefineParameter("filterenable",  filterenable ); 
-    DefineParameter("calohitscutmc", calohitscutmc);
     DefineParameter("fillpathl",     fillpathl    );
     DefineParameter("pcaedepth",     pcaedepth    );
 
@@ -49,11 +45,6 @@ bool CaloGlob::Initialize() {
   hcalohitontrackedep    = std::make_shared<TH1F>("hcalohitontrackedep",";Log_{10}(Edep/GeV)",1000,-6,4);
   hcalohitontrackedeplin    = std::make_shared<TH1F>("hcalohitontrackedeplin",";Edep/GeV",1000,0,0.2);
 
- 
-
-  // Setup the filter                                                                                                                                                                                                                       
-  if (filterenable) SetFilterStatus(FilterStatus::ENABLED); else SetFilterStatus(FilterStatus::DISABLED);
-
   return true;
 }
 
@@ -64,9 +55,6 @@ bool CaloGlob::Process() {
   //_processstore->Reset();
   _processstore->Reset();
   _evStore->AddObject("caloGlobStore",_processstore);
-
-  //Set Filter Status
-  SetFilterResult(FilterResult::ACCEPT);
 
   auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
   if (!globStore) {COUT(ERROR) << "Global data store not found." << ENDL;}
@@ -97,7 +85,8 @@ bool CaloGlob::Process() {
   static bool caloAxes_f=true; if(caloAxes_f){ COUT(INFO)<<Form("CaloGlob::Process::caloAxes::%s",caloAxes?"FOUND":"NOT-FOUND")<<ENDL; } caloAxes_f=false;
 
   float calototedep = std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
-  int calonhits =     std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; });
+  int calonhits =     std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](int n, const Herd::Hit &hit) { return hit.EDep()>0 ? n+1 : n; });
+
   _processstore->calonhits = calonhits;
   _processstore->calototedep = calototedep;
   
@@ -118,7 +107,7 @@ bool CaloGlob::Process() {
 	for(int icl=0; icl<(int)caloClusters->size(); icl++){
 	  auto const caloclHits = caloClusters->at(icl);
 	  float _edep = std::accumulate(caloclHits.begin(), caloclHits.end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
-	  int _hits = std::accumulate(caloclHits.begin(), caloclHits.end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; });
+	  int _hits = std::accumulate(caloclHits.begin(), caloclHits.end(), 0.,[](int n, const Herd::Hit &hit) { return hit.EDep()>0 ? n+1 : n; });
 	  _processstore->caloclusteredepall += _edep;
 	  _processstore->caloclusterhitsall += _hits;
 	  
@@ -205,11 +194,11 @@ bool CaloGlob::Process() {
  hits.clear();
  pcahits.clear();
 
-  if(calohitscutmc){
+  // if(calohitscutmc){
    
-    float mcmom = std::sqrt(mcTruth->primaries.at(0).InitialMomentum() * mcTruth->primaries.at(0).InitialMomentum());
-    if(calonhits < std::pow(10,(((1+log10(2))/3.))*std::log10(mcmom) + (2 - (1+std::log10(2))/3.)) ){ SetFilterResult(FilterResult::REJECT); }
-  }
+  //   float mcmom = std::sqrt(mcTruth->primaries.at(0).InitialMomentum() * mcTruth->primaries.at(0).InitialMomentum());
+  //   if(calonhits < std::pow(10,(((1+log10(2))/3.))*std::log10(mcmom) + (2 - (1+std::log10(2))/3.)) ){ SetFilterResult(FilterResult::REJECT); }
+  // }
 
 return true;
 }
@@ -220,12 +209,12 @@ bool CaloGlob::Finalize() {
   auto globStore = GetDataStoreManager()->GetGlobalDataStore("globStore");
   if (!globStore) { COUT(ERROR) << "Global data store not found." << ENDL; return false; }
 
-  globStore->AddObject(hcalohitsedep->GetName(), hcalohitsedep);
-  globStore->AddObject(hcalohitsedeppathl->GetName(), hcalohitsedeppathl);
-  globStore->AddObject(hcalohitspathl->GetName(), hcalohitspathl);
-  globStore->AddObject(hcalopathldist->GetName(), hcalopathldist);
-  globStore->AddObject(hcalohitontrackedep->GetName(), hcalohitontrackedep);
-  globStore->AddObject(hcalohitontrackedeplin->GetName(), hcalohitontrackedeplin);
+  // globStore->AddObject(hcalohitsedep->GetName(), hcalohitsedep);
+  // globStore->AddObject(hcalohitsedeppathl->GetName(), hcalohitsedeppathl);
+  // globStore->AddObject(hcalohitspathl->GetName(), hcalohitspathl);
+  // globStore->AddObject(hcalopathldist->GetName(), hcalopathldist);
+  // globStore->AddObject(hcalohitontrackedep->GetName(), hcalohitontrackedep);
+  // globStore->AddObject(hcalohitontrackedeplin->GetName(), hcalohitontrackedeplin);
 
 
   return true;

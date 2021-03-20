@@ -86,11 +86,6 @@ private:
   double mXPOSYPOS;
   double qXPOSYPOS;
   
-
-  bool filterenable;
-  bool checkext;
-  bool checkint;
-
   const float _XSideBig;    // cm
   const float _XSideSmall;  // cm
   const float _YSideBig;    // cm
@@ -98,8 +93,12 @@ private:
   const float _ZCaloCenter; // cm
   const float _ZCaloHeight; // cm
   const float _phiXY;
+
   float cubeside; //cm
   float alpha;    //fraction of cube size to be contained in the fiducuial volume
+  bool checkext;
+  bool checkint;
+  bool filterenable;
   float shrink;   //cubeside*alpha
 
   std::array<Point,8> pxy;

@@ -74,7 +74,7 @@ bool MCGenSpectrum::Finalize() {
   const std::string routineName("MCGenSpectrum::Finalize");
 
   //index==-1
-  printf("ngen::%d\n",ngen);
+  COUT(INFO)<<"MC Generated Events: "<<ngen<<ENDL;
   for(int ibin=1; ibin<histo->GetNbinsX(); ibin++)
   {
    //if( histo->GetBinLowEdge(ibin+1) < momrange[0])    //bin is outside range of generated values

@@ -27,8 +27,6 @@ public:
   bool Finalize();
 
 private:
-  bool filterenable;
-  bool calohitscutmc;
   bool fillpathl;
   float pcaedepth;
 

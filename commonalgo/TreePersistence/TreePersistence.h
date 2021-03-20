@@ -38,7 +38,7 @@ public:
   bool Connect();
   bool Disconnect();
   bool BookEventObject(const std::string &objName, const std::string &objStore);
-  bool BeginningOfEvent();
+  bool BeginOfEvent();
   bool EndOfEvent();
 
 
