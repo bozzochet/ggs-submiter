@@ -72,6 +72,7 @@ set(MY_PUBLIC_HEADERS
   commonalgo/Histo/CaloAxisHisto.h	
   commonalgo/Histo/CaloMcHitsHisto.h
   commonalgo/Histo/CaloMcTrackOctogonalHisto.h
+  commonalgo/Histo/CaloEnergyDepositHisto.h	
   commonalgo/Selection/CaloMcTrackLenghtSelection.h
   commonalgo/Selection/CaloMcHitsNumberSelection.h	
 )

@@ -31,6 +31,7 @@ do
 	    echo $cmd
 	    $cmd
 	    flist=""
+	    n=0
 	    if [ $only_one_submit -eq 1 ]; then
 		break
 	    fi
@@ -39,7 +40,7 @@ do
 	
     done < $LISTFILE
 
-    if [ $n -gt 0 ]; then
+     if [ $n -gt 0 ]; then
 	cmd="./submit_one_job.sh $NAME $flist ${DATACARDTEMPLATE}"
 	echo $cmd
 	$cmd

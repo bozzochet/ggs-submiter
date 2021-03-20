@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WORKDIR=/storage/gpfs_data/herd/vvagelliherd/herd-vv-svn/MCgeneration/Particles/
+WORKDIR=${STORAGE}/herd-vv-svn/MCgeneration/Particles/
 GEODATACARD=${WORKDIR}/datacards/geometry_calov2_3030_caloonly.mac
 
 NAME="electrons_1TeV_100TeV_E-1_3030_caloonly"

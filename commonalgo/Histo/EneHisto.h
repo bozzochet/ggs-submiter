@@ -25,10 +25,8 @@ private:
   double axismax;
   double *axis;
   bool logaxis;
-  std::string title;
-
   std::string var;
-  
+  std::string title;  
   void GenerateLogBinning();
   void GenerateBinning();
   

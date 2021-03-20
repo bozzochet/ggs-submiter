@@ -94,16 +94,16 @@ bool CaloAxisHisto::Process() {
   static bool mcCaloTrack_f=true; if(mcCaloTrack_f){ COUT(INFO)<<Form("%s::mcCaloTrack::%s",routineName.c_str(),mcCaloTrack?"FOUND":"NOT-FOUND")<<ENDL; } mcCaloTrack_f=false;
 
   const auto &primary = mcTruth->primaries.at(0);
-  Herd::Point gencoo = primary.InitialPosition();
+  //Herd::Point gencoo = primary.InitialPosition();
   TVector3 genmom (primary.InitialMomentum()[Herd::RefFrame::Coo::X],primary.InitialMomentum()[Herd::RefFrame::Coo::Y],primary.InitialMomentum()[Herd::RefFrame::Coo::Z]);
-  Double_t mcctheta = genmom.CosTheta();
+  //Double_t mcctheta = genmom.CosTheta();
   Double_t mctheta = acos(genmom.CosTheta());
   Double_t mcphi = genmom.Phi();
   Double_t mcmom = genmom.Mag();
   Herd::Vec3D mcdir = primary.InitialTrajectory().Direction();
 
   Herd::RefFrame::Direction entrydir = mcCaloTrack->entrancePlane;
-  Herd::RefFrame::Direction exitdir = mcCaloTrack->exitPlane;
+  //Herd::RefFrame::Direction exitdir = mcCaloTrack->exitPlane;
 
   for( auto const &caloAxis : *caloAxes ){
     

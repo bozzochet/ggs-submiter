@@ -23,6 +23,7 @@ add_library(CommonAlgo  SHARED
 			Histo/CaloAxisHisto.cpp	
 			Histo/CaloMcHitsHisto.cpp
 			Histo/CaloMcTrackOctogonalHisto.cpp
+			Histo/CaloEnergyDepositHisto.cpp
 			Selection/CaloMcTrackLenghtSelection.cpp
 			Selection/CaloMcHitsNumberSelection.cpp
            )

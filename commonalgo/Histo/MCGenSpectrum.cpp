@@ -57,9 +57,7 @@ bool MCGenSpectrum::Initialize() {
 }
 
 bool ParseFromFileName(){
-
-
-
+  return true;
 }
 
 bool MCGenSpectrum::Process() {

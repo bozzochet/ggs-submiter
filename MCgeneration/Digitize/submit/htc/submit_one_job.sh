@@ -9,7 +9,7 @@ argv=("$@")
 argc=${#argv[@]}
 
 NAME=${argv[0]}    
-NAME=${NAME}_calopddig
+#NAME=${NAME}_calopddig
 
 JOBTEMPLATE=${SUBMITDIR}/job.dig.template
 JOBTEMPLATEHEAD=${SUBMITDIR}/job.dig.head.template

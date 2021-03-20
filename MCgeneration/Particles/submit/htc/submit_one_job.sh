@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 USER=`whoami`
-WORKDIR=/storage/gpfs_data/herd/vvagelliherd/herd-vv-svn/MCgeneration/Particles/
+WORKDIR=${STORAGE}/herd-vv-svn/MCgeneration/Particles/
 
 NAME=$1
 GEODATACARD=$2

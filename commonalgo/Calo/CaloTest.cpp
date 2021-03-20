@@ -41,10 +41,10 @@ bool CaloTest::Process() {
 
 
   float calototedep = std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](float sum, const Herd::Hit &hit) { return sum + hit.EDep(); });
-  int calonhits =     std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; });
-  int calonclusters = std::accumulate(caloClusters->begin(), caloClusters->end(), 0.,[](int n, const Herd::CaloHits &calohit) { return n+1; });
+  int calonhits =     std::accumulate(caloHits->begin(), caloHits->end(), 0.,[](int n, const Herd::Hit &hit) { if( hit.EDep()>0) return n+1; else return n;});
+  int calonclusters = (int)caloClusters->size();
   
-  COUT(INFO)<<calototedep<<" "<<calonhits<<" "<<caloClusters->size()<<ENDL;
+  COUT(INFO)<<calototedep<<" "<<calonhits<<" "<<calonclusters<<" "<<caloClusters->size()<<ENDL;
 
 return true;
 }
