@@ -15,13 +15,15 @@ SUBMITDIR=${WORKDIR}/submit/htc
 
 FULLBASENAME=`basename $LISTFILE .list.txt`
 echo $FULLBASENAME
-BASENAME=${FULLBASENAME%??????} #remove last 6 trailing characters
+BASENAME=${FULLBASENAME}
+BATCHNAME=${FULLBASENAME%??????} #remove last 6 trailing characters
+#BASENAME=${FULLBASENAME%??????} #remove last 6 trailing characters
 
 JOBTEMPLATE=${SUBMITDIR}/job.template
 SUBTEMPLATE=${SUBMITDIR}/submit.template
 #DATACARD=${SUBMITDIR}/analysis.$BASENAME.eaconf
 #DATACARD=${SUBMITDIR}/analysis.generic.dig.eaconf
-DATACARD=${SUBMITDIR}/analysis.dighisto.eaconf
+DATACARD=${SUBMITDIR}/analysis.caloonly.eaconf
 LIST=${LISTFILE}
 
 if [ ! -f $JOBTEMPLATE ]; then echo "$JOBTEMPLATE not found"; exit; fi
@@ -30,7 +32,7 @@ if [ ! -f $DATACARD ];    then echo "$DATACARD    not found"; exit; fi
 if [ ! -f $LIST ];        then echo "$LIST        not found"; exit; fi
 
 #OUTDIR=${SUBMITDIR}/output.caloclusters/${BASENAME}${SUFFIX}
-OUTDIR=${SUBMITDIR}/output.calopddighisto/${BASENAME}${SUFFIX}
+OUTDIR=${SUBMITDIR}/output.caloonly/${BASENAME}${SUFFIX}
 LOGDIR=${SUBMITDIR}/logs/${BASENAME}${SUFFIX}
 JOBDIR=${SUBMITDIR}/jobs/${BASENAME}${SUFFIX}
 
@@ -69,8 +71,8 @@ sed -i "s%_OUTPUT_%${OUTFILE}%g"            ${SUB}
 sed -i "s%_ERROR_%${ERRFILE}%g"             ${SUB}
 sed -i "s%_LOG_%${LOGFILE}%g"               ${SUB}
 
-CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name tree.calocl.${BASENAME}${SUFFIX}"
+CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name analysis.${BATCHNAME}"
 #CMD="condor_submit -spool -name sn-01.cr.cnaf.infn.it ${SUB} -batch-name test"
 echo ${CMD}
-${CMD}
+#${CMD}
 

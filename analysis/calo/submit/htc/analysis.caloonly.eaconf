@@ -20,7 +20,7 @@ Persistence TreePersistence treePersistence tree.root
    Set BookCaloAxis true
 #   Set BookCaloDig true
 
-EventLoop 0 1000
+EventLoop #0 1000
 
   Algo MCGenSpectrum histomcgenspectrum
   Set minmom 10

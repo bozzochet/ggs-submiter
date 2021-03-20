@@ -19,7 +19,7 @@ pwd
 
 OUTDIR=_OUTDIR_
 DATACARD=_DATACARD_
-cp -v ${DATACARD} ${OUTDIR}/_NAME_.datacard
+cp -v ${DATACARD} ${OUTDIR}/_BASENAME_.datacard
 
 for F in `cat _INFILE_`
 do
