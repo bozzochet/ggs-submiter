@@ -3,6 +3,7 @@ executable = _JOB_
 output = _OUTPUT_
 error = _ERROR_
 log = _LOG_
+getenv = True
 ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
 queue 1

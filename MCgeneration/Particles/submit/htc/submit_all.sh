@@ -1,10 +1,13 @@
 #!/bin/bash
 
-WORKDIR=${STORAGE}/herd-vv-svn/MCgeneration/Particles/
-GEODATACARD=${WORKDIR}/datacards/geometry_calov2_3030_caloonly.mac
+WORKDIR=${STORAGE}/MoriStuff/install/ggs-submiter/MCgeneration/Particles/
+GEODATACARD=${WORKDIR}/datacards/geo.mac
 
-NAME="electrons_1TeV_100TeV_E-1_3030_caloonly"
-NMAX=400
+#NAME="run_ele_hs_1000" 
+#NAME="run_ele_hs_100"
+NAME="run_pro_hs_1000"
+#NAME="run_pro_hs_100"
+NMAX=100
 i=0
 
 while [ ${i} -lt ${NMAX} ]

@@ -1,26 +1,15 @@
 #!/bin/sh
 #
 USER=`whoami`
-WORKDIR=${STORAGE}/herd-vv-svn/MCgeneration/Particles/
+WORKDIR=${STORAGE}/MoriStuff/install/ggs-submiter/MCgeneration/Particles/
 
 NAME=$1
 GEODATACARD=$2
 if [ ! -f $GEODATACARD ]; then echo "Cannot find ${GEODATACARD}"; exit; fi
 
-#NAME="protons_10GeV_1000GeV_E-1"
-#NAME="protons_1TeV_100TeV_E-1"
-#NAME="electrons_10GeV_1000GeV_E-1"
-#NAME="electrons_1TeV_100TeV_E-1"
-#NAME="protons_1TeV"
-
-GEOMETRY=${HERDINSTALL}/plugin/libHerdMCParametricGeo.so
+GEOMETRY=${DTPINSTALL}/lib/libTestGeometry.so
 if [ ! -f $GEOMETRY ]; then echo "Cannot find ${GEOMETRY}"; exit; fi
 
-#GEODATACARD=${WORKDIR}/geometry.mac
-#GEODATACARD=${WORKDIR}/datacards/geometry_calov2_stk_psdbar.mac
-#DATACARD=${WORKDIR}/protons.mac
-#DATACARD=${WORKDIR}/electrons_1000GeV_10000GeV.mac
-#DATACARD=${WORKDIR}/electrons.mac
 DATACARD=${WORKDIR}/datacards/${NAME}.mac
 
 SUBMITDIR=${WORKDIR}/submit/htc
@@ -36,12 +25,10 @@ if [ ! -d $OUTDIR ]; then mkdir -pv ${OUTDIR}; fi
 if [ ! -d $LOGDIR ]; then mkdir -pv ${LOGDIR}; fi
 if [ ! -d $JOBDIR ]; then mkdir -pv ${JOBDIR}; fi
 
-SETENVCOMMON=${STORAGE}/setcommon.sh
+SETENVCOMMON=${COMMONINSTALLDIR}/ggs-submiter/setcommon.sh
 if [ ! -f $SETENVCOMMON ]; then echo "Cannot find ${SETENVCOMMON}"; exit; fi
-SETENVHERD=${STORAGE}/setherd.sh
+SETENVHERD=${COMMONINSTALLDIR}/ggs-submiter/setenvHERD_master.sh
 if [ ! -f $SETENVHERD ]; then echo "Cannot find ${SETENVHERD}"; exit; fi
-
-
 
 ii=$3
 SEED1="$RANDOM"

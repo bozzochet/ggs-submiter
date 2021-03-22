@@ -2,6 +2,7 @@
 
 SUBMITDIR=_SUBMITDIR_
 
+source ~/.bashrc
 source _SETENVCOMMON_
 source _SETENVHERD_
 
